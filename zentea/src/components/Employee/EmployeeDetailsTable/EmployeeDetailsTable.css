@@ -1,0 +1,136 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+
+.IT22090508-Employee-Details-Form-container {
+    max-width: 2000px;
+    max-height: 5000px;
+    margin: 50px auto;
+    padding: 30px;
+    
+    
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.045);
+}
+
+.IT22090508-Employee-Details-Form-search-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    position: relative;
+   
+}
+
+.IT22090508-Employee-Details-Form-search-bar input {
+    width: 30%;
+    padding: 10px 40px 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.IT22090508-Employee-Details-Form-search-bar input:focus {
+    border-color: hsl(0, 0%, 87%);
+    outline: none;
+    box-shadow: 0 0 5px rgba(37, 37, 37, 0.3);
+}
+
+.IT22090508-Employee-Details-Form-search-bar i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    font-size: 18px;
+}
+
+.IT22090508-Employee-Details-Form-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: hsl(130, 100%, 37%);
+}
+
+.IT22090508-Employee-Details-Form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.IT22090508-Employee-Details-Form-table th,
+.IT22090508-Employee-Details-Form-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+.IT22090508-Employee-Details-Form-table th {
+    background: hsl(130, 100%, 37%);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.IT22090508-Employee-Details-Form-table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.IT22090508-Employee-Details-Form-table tr:hover {
+    background: #f0f8ff;
+}
+
+.IT22090508-Employee-Details-Form-table input,
+.IT22090508-Employee-Details-Form-table select,
+.IT22090508-Employee-Details-Form-table textarea {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #ebebeb;
+    color: #000000;
+}
+
+.IT22090508-Employee-Details-Form-table textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.IT22090508-Employee-Details-Form-edit-button {
+    background: #00f020;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.IT22090508-Employee-Details-Form-edit-button:hover {
+    background: #e53935;
+}
+
+.IT22090508-Employee-Details-Form-save-button {
+    background: hsl(130, 100%, 37%);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.IT22090508-Employee-Details-Form-save-button:hover {
+    background: #99ff00;
+}

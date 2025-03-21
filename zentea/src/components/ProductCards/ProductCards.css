@@ -1,0 +1,105 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.IT22090508-product-body{
+    font-family: 'Arial', sans-serif;
+    line-height: 1;
+    background-color: #ffffff;
+    color: #333;
+    padding: 160px;
+}
+
+/* Section Title */
+.IT22090508-section-title {
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+    color: #235600;
+    margin-bottom: 50px;
+    transform-origin: center; /* Ensures the zoom happens from the center */
+    animation: zoomInOut 4s ease-in-out 1s forwards; /* Zoom in/out effect */
+}
+
+/* Product Container */
+.IT22090508-product-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Product Card */
+.IT22090508-product-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+  
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.IT22090508-product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(64, 255, 0, 0.325);
+}
+
+/* Product Image */
+.IT22090508-product-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    
+}
+
+/* Product Title */
+.IT22090508-product-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #2c3e50;
+    
+}
+
+/* Product Description */
+.IT22090508-product-description {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+/* Product Price */
+.IT22090508-product-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #e74c3c;
+    margin-bottom: 15px;
+    transform-origin: center; /* Ensures the zoom happens from the center */
+    animation: zoomInOut 4s ease-in-out 1s forwards; /* Zoom in/out effect */
+}
+
+/* Buy Now Button */
+.IT22090508-buy-now-button {
+    background-color:  #119400;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.IT22090508-buy-now-button:hover {
+    background-color:rgb(85, 255, 0);
+}

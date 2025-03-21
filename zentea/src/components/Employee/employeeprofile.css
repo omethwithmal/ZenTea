@@ -1,0 +1,191 @@
+/* General Styles */
+.IT22090508-employeeprofile-profile-body {
+    font-family: 'Poppins', sans-serif;
+    
+    
+   margin-left: 400px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+}
+
+/* Profile Container */
+.IT22090508-employeeprofile-profile-container {
+    background: rgb(255, 255, 255);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    width: 600px;
+    max-width: 700px;
+    overflow: hidden;
+}
+
+/* Header Section */
+.IT22090508-employeeprofile-profile-header {
+    background-image: url('../../assets/EmployeeCover.jpg');
+    padding: 30px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+}
+
+.IT22090508-employeeprofile-profile-image {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.IT22090508-employeeprofile-profile-image img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid rgb(255, 255, 255);
+}
+
+.IT22090508-employeeprofile-edit-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 200px;
+    background: linear-gradient(45deg, #0003a6, #001752);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+}
+
+.IT22090508-employeeprofile-edit-btn svg {
+    width: 30px;
+    height: 30px;
+    stroke: white;
+}
+
+.IT22090508-employeeprofile-edit-btn:hover {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+.IT22090508-employeeprofile-profile-name {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 10px 0;
+}
+
+.IT22090508-employeeprofile-profile-department {
+    font-size: 16px;
+    opacity: 0.9;
+    padding: 5px 15px;
+    background:linear-gradient(45deg, #230095 0%, #001aff 100%);
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 8px;
+}
+
+/* Detail Section */
+.IT22090508-employeeprofile-profile-details {
+    padding: 50px;
+}
+
+.IT22090508-employeeprofile-detail-card {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.IT22090508-employeeprofile-detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+}
+
+.IT22090508-employeeprofile-detail-row .IT22090508-employeeprofile-label {
+    font-weight: 600;
+    color: #393939;
+    flex: 1;
+}
+
+.IT22090508-employeeprofile-detail-row .IT22090508-employeeprofile-value {
+    flex: 2;
+    text-align: right;
+    color: #333;
+    word-break: break-word;
+}
+
+/* Action Buttons */
+.IT22090508-employeeprofile-action-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.IT22090508-employeeprofile-attendance-btn {
+    background: linear-gradient(45deg, #1aff00 0%, #a6ff00 10%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    flex: 1;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.IT22090508-employeeprofile-task-btn {
+    background: linear-gradient(45deg, #2196F3 0%, #1e88e5 100%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    flex: 1;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+
+.IT22090508-employeeprofile-logout-btn{
+
+    background: linear-gradient(45deg, #9c21f3 0%, #391ee5 100%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    flex: 1;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+
+}
+
+
+.IT22090508-employeeprofile-attendance-btn:hover,
+.IT22090508-employeeprofile-task-btn:hover {
+    transform: translateY(-2px);
+   
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .IT22090508-employeeprofile-profile-image img {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .IT22090508-employeeprofile-profile-name {
+        font-size: 20px;
+    }
+    
+    .IT22090508-employeeprofile-action-buttons {
+        flex-direction: column;
+    }
+    
+    .IT22090508-employeeprofile-attendance-btn,
+    .IT22090508-employeeprofile-task-btn {
+        flex: 100%;
+        margin: 5px 0;
+    }
+}

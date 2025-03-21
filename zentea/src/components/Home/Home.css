@@ -1,0 +1,624 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  
+   
+   
+}
+
+a{
+    text-decoration: none;
+}
+
+
+
+.IT22090508-Home-active{
+    color: rgb(85, 255, 0);
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+body , html{
+    background: rgb(255, 255, 255);
+    overflow-x: hidden;
+}
+/*navbar*/
+
+ul{
+    list-style: none;
+}
+.IT22090508-Home-navbar{
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    width: 100%;
+    height: 11%;
+    justify-content: space-between;
+    padding: 30px;
+    color: rgb(255, 255, 255);
+    background-color: #119400;
+}
+
+.IT22090508-Home-navbar li a{
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    
+}
+
+.IT22090508-Home-navbar li a:hover{
+    color: rgb(85, 255, 0);
+}
+
+.IT22090508-Home-navbar h1{
+    margin-top: -10px;
+    font-size: 30px;
+}
+
+.IT22090508-Home-navbar-links{
+    display: flex;
+    align-items: center;
+}
+
+.IT22090508-Home-navbar-links li{
+    margin: 0 20px;
+    font-family: Microsoft YaHei UI;
+}
+
+.IT22090508-Home-navbar .logo{
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+
+}
+
+.IT22090508-Home-navbar .active{
+ color: #ffffff;
+
+}
+/* Header */
+.header {
+    width: 100vw;
+    height: 100vh;
+   background-image: url('../../assets/home.jpg');
+    background-position: bottom;
+    background-size: cover;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+/* Snowfall Animation */
+@keyframes snowfall {
+    0% {
+      transform: translateY(-10%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(100vh);
+      opacity: 1;
+    }
+  }
+  
+  .snowflake {
+    position: absolute;
+    top: -10%;
+    width: 8px;
+    height: 8px;
+    background: rgb(77, 255, 0);
+    border-radius: 50%;
+    filter: blur(1px);
+    animation: snowfall linear infinite;
+    z-index: 1000; /* Ensure snowflakes appear above other content */
+  }
+  
+  /* Adjust the speed and delay of each snowflake */
+  .snowflake:nth-child(1) {
+    left: 5%;
+    animation-duration: 10s;
+    animation-delay: 0s;
+  }
+  
+  .snowflake:nth-child(2) {
+    left: 15%;
+    animation-duration: 8s;
+    animation-delay: 2s;
+  }
+  
+  .snowflake:nth-child(3) {
+    left: 25%;
+    animation-duration: 12s;
+    animation-delay: 1s;
+  }
+  
+  .snowflake:nth-child(4) {
+    left: 35%;
+    animation-duration: 9s;
+    animation-delay: 3s;
+  }
+  
+  .snowflake:nth-child(5) {
+    left: 45%;
+    animation-duration: 11s;
+    animation-delay: 0.5s;
+  }
+  
+  .snowflake:nth-child(6) {
+    left: 55%;
+    animation-duration: 7s;
+    animation-delay: 2.5s;
+  }
+  
+  .snowflake:nth-child(7) {
+    left: 65%;
+    animation-duration: 10s;
+    animation-delay: 1.5s;
+  }
+  
+  .snowflake:nth-child(8) {
+    left: 75%;
+    animation-duration: 8s;
+    animation-delay: 0.7s;
+  }
+  
+  .snowflake:nth-child(9) {
+    left: 85%;
+    animation-duration: 9s;
+    animation-delay: 3.5s;
+  }
+  
+  .snowflake:nth-child(10) {
+    left: 95%;
+    animation-duration: 12s;
+    animation-delay: 2s;
+  }
+  
+  /* Add more snowflakes as needed */
+  .snowflake:nth-child(11) {
+    left: 10%;
+    animation-duration: 11s;
+    animation-delay: 1s;
+  }
+  
+  .snowflake:nth-child(12) {
+    left: 20%;
+    animation-duration: 9s;
+    animation-delay: 2.5s;
+  }
+  
+  .snowflake:nth-child(13) {
+    left: 30%;
+    animation-duration: 10s;
+    animation-delay: 0.3s;
+  }
+  
+  .snowflake:nth-child(14) {
+    left: 40%;
+    animation-duration: 8s;
+    animation-delay: 1.7s;
+  }
+  
+  .snowflake:nth-child(15) {
+    left: 50%;
+    animation-duration: 12s;
+    animation-delay: 0.9s;
+  }
+  
+  .snowflake:nth-child(16) {
+    left: 60%;
+    animation-duration: 7s;
+    animation-delay: 3s;
+  }
+  
+  .snowflake:nth-child(17) {
+    left: 70%;
+    animation-duration: 9s;
+    animation-delay: 1.2s;
+  }
+  
+  .snowflake:nth-child(18) {
+    left: 80%;
+    animation-duration: 11s;
+    animation-delay: 2.1s;
+  }
+  
+  .snowflake:nth-child(19) {
+    left: 90%;
+    animation-duration: 10s;
+    animation-delay: 0.6s;
+  }
+  
+  .snowflake:nth-child(20) {
+    left: 100%;
+    animation-duration: 8s;
+    animation-delay: 1.8s;
+  }
+  
+
+/* Header content */
+.IT22090508-Home-header-content {
+    margin-bottom: 100px;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    position: relative; /* Necessary for positioning the text */
+}
+
+/* Zoom In/Out Animation */
+.IT22090508-Home-header-content h1 {
+    font-size: 10vmin;
+    margin-bottom: 20px;
+    margin-top: 50px;
+    transform-origin: center; /* Ensures the zoom happens from the center */
+    animation: zoomInOut 4s ease-in-out 1s forwards; /* Zoom in/out effect */
+}
+
+/* Zoom In/Out Animation Keyframes */
+@keyframes zoomInOut {
+    0% {
+        transform: scale(0); /* Start with scale 0 (invisible) */
+    }
+    50% {
+        transform: scale(1.2); /* Zoom in to 1.2 times the size */
+    }
+    100% {
+        transform: scale(1); /* End with normal size */
+    }
+}
+
+.IT22090508-Home-line {
+    width: 350px;
+    height: 4px;
+    background: #ffffff;
+    margin: 10px auto; /* Center the line */
+    border-radius: 5px;
+    position: relative; /* Ensure it's placed relative to heading */     
+    top: -10px; /* Pull line closer to heading */
+    transition: transform 0.3s ease; /* Smooth transition for zoom effect */
+}
+
+.IT22090508-Home-line:hover {
+    transform: scaleX(1.1); /* Zoom In on hover */
+}
+
+.IT22090508-Home-line:active {
+    transform: scaleX(0.9); /* Zoom Out when clicked */
+}
+
+
+.IT22090508-Home-header-content h2 {
+    font-family: 'Comic Sans MS';
+    font-size: 4vmin; /* Adjust font size for "maintenance and tracking" */
+    margin-top: 30px; /* Add spacing above the text */
+    color: rgb(255, 255, 255); /* Ensure visibility */
+}
+
+.IT22090508-Home-ctn {
+    padding: 8px 15px;
+    background:rgb(85, 255, 0);
+    border-radius: 30px;
+    color: aliceblue;
+    margin-top: 40px; /* Increased margin-top for more space below "maintenance and tracking" */
+    transition: background (0.3s ease, color 0.3s ease);
+}
+
+.IT22090508-Home-ctn:hover {
+    background: white;
+    color: red;
+}
+
+
+/*section2*/
+.IT22090508-Home-section2 {
+   
+    height: 100%;
+    margin: 70px auto;
+    background: rgb(255, 255, 255);
+    
+}
+
+.IT22090508-Home-title{
+    text-align: center;
+    font-size: 2vmin;
+    color: rgb(71, 0, 46);
+    font-family: Arial Black;
+}
+
+.IT22090508-Home-row{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+
+    
+}
+
+col .src{
+    max-width: 90%;
+}
+
+.IT22090508-Home-row .col{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+h4{
+    font-size: 3vmin;
+    color: rgb(71, 0, 46);
+    margin: 20px auto;
+    font-family: Arial Black;
+   
+}
+
+p{
+    color:rgb(71, 0, 46);
+    padding: 0px 40px;
+    font-family: 'Comic Sans MS';
+    
+}
+
+.IT22090508-Home-section2 .ctn{
+    margin-top: 200px;
+}
+
+
+
+/*section3*/
+.IT22090508-Home-se3{
+    width: 100%;
+    height: 80vh;
+    background-image: url('../../assets/section3.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+
+}
+
+.IT22090508-Home-se3-content{
+    width: 60%;
+    padding: 50px;
+    color: rgb(255, 255, 255);
+    align-items: center;
+    flex-direction: column;
+    
+}
+
+.IT22090508-Home-se3-content h1{
+    font-size: 4vmin;
+    margin: 50px;
+}
+
+.IT22090508-Home-se3-content p{
+    color: rgb(255, 255, 255);
+    
+}
+
+
+/* About Section */
+.IT22090508-About-about-section {
+    padding: 60px 20px;
+    background-color: #fff;
+}
+
+.IT22090508-About-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.IT22090508-About-about-content {
+    flex: 1;
+    padding-right: 40px;
+}
+
+.IT22090508-About-about-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.IT22090508-About-about-content p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.IT22090508-About-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color:#119400;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.IT22090508-About-btn:hover {
+    background-color: rgb(85, 255, 0);
+}
+
+.IT22090508-About-about-image {
+    flex: 1;
+    text-align: center;
+}
+
+.IT22090508-About-about-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .IT22090508-About-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .IT22090508-About-about-content {
+        padding-right: 0;
+        margin-bottom: 30px;
+    }
+
+    .IT22090508-About-about-image img {
+        width: 80%;
+        margin: 0 auto;
+    }
+}
+
+
+
+
+/* Contact Section*/
+
+
+
+.IT22090508-Contact-contact-section {
+    padding: 60px 20px;
+    background-color: #fff;
+}
+
+.IT22090508-Contact-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.IT22090508-Contact-contact-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.IT22090508-Contact-contact-section p {
+    font-size: 1rem;
+    margin-bottom: 40px;
+    color: #555;
+}
+
+.IT22090508-Contact-contact-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.IT22090508-Contact-contact-form {
+    flex: 1;
+    padding-right: 40px;
+   
+}
+
+.IT22090508-Contact-form-group {
+    margin-bottom: 20px;
+    text-align: left;
+  
+}
+
+.IT22090508-Contact-form-group label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #333;
+   
+}
+
+.IT22090508-Contact-form-group input,
+.IT22090508-Contact-form-group textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+    background-color: #ffffff;
+}
+
+.IT22090508-Contact-form-group input:focus,
+.IT22090508-Contact-form-group textarea:focus {
+    border-color: #27ae60;
+    outline: none;
+}
+
+.IT22090508-Contact-contact-form button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color:  #119400;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.IT22090508-Contact-contact-form button:hover {
+    background-color:rgb(85, 255, 0);
+}
+
+.IT22090508-Contact-contact-info {
+    flex: 1;
+    text-align: left;
+    padding-left: 40px;
+}
+
+.IT22090508-Contact-contact-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.IT22090508-Contact-contact-info ul {
+    list-style: none;
+}
+
+.IT22090508-Contact-contact-info ul li {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.IT22090508-Contact-contact-info .icon-location::before,
+.IT22090508-Contact-contact-info .icon-phone::before,
+.IT22090508-Contact-contact-info .icon-email::before {
+    margin-right: 10px;
+    font-size: 1.2rem;
+    color: #27ae60;
+}
+
+.IT22090508-Contact-social-icons {
+    margin-top: 20px;
+}
+
+.IT22090508-Contact-social-icons a {
+    display: inline-block;
+    margin-right: 15px;
+    font-size: 1.5rem;
+    color: #27ae60;
+    transition: color 0.3s ease;
+}
+
+.IT22090508-Contact-social-icons a:hover {
+    color: #219150;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .IT22090508-Contact-contact-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .IT22090508-Contact-contact-form,
+    .IT22090508-Contact-contact-info {
+        padding: 0;
+        margin-bottom: 30px;
+    }
+}
+
+

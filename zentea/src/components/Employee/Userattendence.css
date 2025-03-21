@@ -1,0 +1,122 @@
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.IT22090508-userAttendence-form-container-body {
+  font-family: 'Poppins', sans-serif;
+  
+  min-height: 100vh;
+  margin-left: 400px;
+    
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.IT22090508-userAttendence-form-container {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  width: 100%;
+  max-width: 700px;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+
+.IT22090508-userAttendence-form-header {
+  background: linear-gradient(45deg, #1aff00 0%, #a6ff00 100%);
+  background-image: url('../../assets/Attendancerecord Cover.jpg');
+  color: white;
+  padding: 100px;
+  text-align: center;
+}
+
+.IT22090508-userAttendence-form-header h2 {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.IT22090508-userAttendence-form-body {
+  padding: 30px;
+}
+
+.IT22090508-userAttendence-form-group {
+  margin-bottom: 35px;
+}
+
+.IT22090508-userAttendence-form-group label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+/* Input Box Styles */
+.IT22090508-userAttendence-form-group input,
+.IT22090508-userAttendence-form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background-color: white; /* White background */
+  color: black; /* Black text color */
+}
+
+.IT22090508-userAttendence-form-group input:focus,
+.IT22090508-userAttendence-form-group select:focus {
+  border-color: #2fff00;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+}
+
+/* Select Box Styles */
+.IT22090508-userAttendence-department-select {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%236a11cb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>') no-repeat right 12px center;
+  background-size: 12px;
+  appearance: none;
+  background-color: white; /* White background */
+  color: black; /* Black text color */
+}
+
+.IT22090508-userAttendence-time-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.IT22090508-userAttendence-submit-btn {
+  background: linear-gradient(45deg, #1aff00 0%, #a6ff00 100%);
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.IT22090508-userAttendence-submit-btn:hover {
+  transform: translateY(-2px);
+}
+
+.IT22090508-userAttendence-form-footer {
+  text-align: center;
+  padding: 20px;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+@media (max-width: 480px) {
+  .IT22090508-userAttendence-time-row {
+      grid-template-columns: 1fr;
+  }
+}

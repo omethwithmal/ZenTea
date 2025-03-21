@@ -1,0 +1,414 @@
+
+
+
+
+.IT22090508-AddEmployeeForm-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ffffff00 0%, #ffffff00 100%);
+    padding: 20px;
+ 
+    margin: 100px;
+    margin-left: 450px;
+    
+  }
+
+  /* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.IT22090508-AddEmployeeForm-dashboard {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.IT22090508-admindashbord-sidebar {
+    background: linear-gradient(135deg, hsl(324, 100%, 47%) 0%, #1100ff 100%);
+    padding: 30px;
+    color: white;
+}
+
+.IT22090508-admindashbord-logo {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.IT22090508-admindashbord-logo i {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.IT22090508-admindashbord-logo h1 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 30px;
+    letter-spacing: 1px;
+}
+
+.IT22090508-admindashbord-logo h2 {
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.IT22090508-admindashbord-nav-link {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    margin: 10px 0;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.IT22090508-admindashbord-nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.IT22090508-admindashbord-nav-link i {
+    font-size: 20px;
+    margin-right: 15px;
+}
+
+/* Sidebar Active */
+.IT22090508-admindashbord-nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 600;
+}
+
+/* Main Content */
+.IT22090508-AddEmployeeForm-content {
+    padding: 60px;
+    margin-left: 260px;
+}
+
+.IT22090508-AddEmployeeForm-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.IT22090508-AddEmployeeForm-title {
+    text-align: center;
+    color: #096700;
+    margin-bottom: 50px;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.IT22090508-AddEmployeeForm-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.IT22090508-AddEmployeeForm-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+}
+
+.IT22090508-AddEmployeeForm-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.IT22090508-AddEmployeeForm-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.IT22090508-AddEmployeeForm-field label {
+    margin-bottom: 5px;
+    color: #222222;
+    font-weight: 500;
+}
+
+.IT22090508-AddEmployeeForm-field input,
+.IT22090508-AddEmployeeForm-field select,
+.IT22090508-AddEmployeeForm-field textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    background-color: #eaeaea;
+    color: #535353;
+}
+
+.IT22090508-AddEmployeeForm-field input:focus,
+.IT22090508-AddEmployeeForm-field select:focus,
+.IT22090508-AddEmployeeForm-field textarea:focus {
+    outline: none;
+    border-color: hsl(103, 100%, 70%);
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    background-color: #eaeaea;
+}
+
+.IT22090508-AddEmployeeForm-field textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.IT22090508-AddEmployeeForm-profile-section {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.IT22090508-AddEmployeeForm-profile-picture,
+.IT22090508-AddEmployeeForm-preview-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.IT22090508-AddEmployeeForm-upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.IT22090508-AddEmployeeForm-upload-area:hover {
+    border-color: #3498db;
+    background: #f0f8ff;
+}
+
+.IT22090508-AddEmployeeForm-upload-label {
+    cursor: pointer;
+    color: #3498db;
+    font-weight: 500;
+}
+
+.IT22090508-AddEmployeeForm-preview-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    height: 150
+
+}
+
+
+
+  
+  .IT22090508-AddEmployeeForm-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 800px;
+  }
+  
+  .IT22090508-AddEmployeeForm-title {
+    text-align: center;
+    color: #3701ae;
+    margin-bottom: 50px;
+    font-size: 30px;
+    font-weight: 600;
+    transform-origin: center; /* Ensures the zoom happens from the center */
+    animation: zoomInOut 4s ease-in-out 1s forwards; /* Zoom in/out effect */
+  }
+  
+  .IT22090508-AddEmployeeForm-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .IT22090508-AddEmployeeForm-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+  
+  .IT22090508-AddEmployeeForm-field {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .IT22090508-AddEmployeeForm-field.full-width {
+    grid-column: 1 / -1;
+  }
+  
+  .IT22090508-AddEmployeeForm-field label {
+    margin-bottom: 5px;
+    color: #222222;
+    font-weight: 500;
+  }
+  
+  .IT22090508-AddEmployeeForm-field input{
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    background-color: #eaeaea;
+    color: #535353;
+
+
+  }
+  .IT22090508-AddEmployeeForm-field select{
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    background-color: #eaeaea;
+    color: #1a1a1a;
+
+  }
+  .IT22090508-AddEmployeeForm-field textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .IT22090508-AddEmployeeForm-field input:focus{
+    outline: none;
+    border-color: hsl(242, 100%, 70%);
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    background-color: #eaeaea;
+
+  }
+  .IT22090508-AddEmployeeForm-field select:focus{
+    outline: none;
+    border-color: hsl(242, 100%, 70%);
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    background-color: #eaeaea;
+
+  }
+  .IT22090508-AddEmployeeForm-field textarea:focus {
+    outline: none;
+    border-color:hsl(242, 100%, 70%);;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    background-color: #eaeaea;
+  }
+  
+  .IT22090508-AddEmployeeForm-field textarea {
+    min-height: 80px;
+    resize: vertical;
+    outline: none;
+    border-color: hsl(242, 100%, 70%);
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    background-color: #eaeaea;
+  }
+  
+  .IT22090508-AddEmployeeForm-profile-section {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  
+  .IT22090508-AddEmployeeForm-profile-picture,
+  .IT22090508-AddEmployeeForm-preview-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .IT22090508-AddEmployeeForm-upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+  }
+  
+  .IT22090508-AddEmployeeForm-upload-area:hover {
+    border-color: #6634db;
+    background: #f0f8ff;
+  }
+  
+  .IT22090508-AddEmployeeForm-upload-label {
+    cursor: pointer;
+    color: #3498db;
+    font-weight: 500;
+  }
+  
+  .IT22090508-AddEmployeeForm-preview-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9;
+    overflow: hidden;
+  }
+  
+  .IT22090508-AddEmployeeForm-preview-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+  }
+  
+  .IT22090508-AddEmployeeForm-preview-placeholder {
+    color: #7f8c8d;
+    font-style: italic;
+  }
+  
+  .IT22090508-AddEmployeeForm-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+  }
+  
+  .IT22090508-AddEmployeeForm-cancel,
+  .IT22090508-AddEmployeeForm-save {
+    padding: 10px 25px;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .IT22090508-AddEmployeeForm-cancel {
+    background: #ecf0f1;
+    color: #7f8c8d;
+    border: none;
+  }
+  
+  .IT22090508-AddEmployeeForm-cancel:hover {
+    background: #4600a7;
+    color: white;
+  }
+  
+  .IT22090508-AddEmployeeForm-save {
+    background:#8600a7;
+    color: white;
+    border: none;
+  }
+  
+  .IT22090508-AddEmployeeForm-save:hover {
+    background:#4600a7;
+    transform: translateY(-2px);
+  }

@@ -1,0 +1,147 @@
+/* General Styles */
+
+
+
+.IT22090508-employeeTaskview-container {
+    padding: 205px;
+    padding-left: 300px;
+    max-width: 1550px;
+    margin: 0 auto;
+    background-image: url('../../../assets/EmployeeTaskView.jpg');
+ 
+  
+    box-shadow: 0 4px 15px rgb(255, 255, 255);
+}
+
+/* Search Bar */
+.IT22090508-employeeTaskview-search-bar {
+    position: relative;
+    margin-bottom: 30px;
+    background-color: #ffffff00;
+    color: #00ff3c;
+}
+
+.IT22090508-employeeTaskview-search-bar input {
+    width: 50%;
+    padding: 12px 40px;
+    border: 1px solid #a2ff83;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    background-color: #ffffff;
+    color: #333;
+}
+
+.IT22090508-employeeTaskview-search-bar input:focus {
+    border-color: hsl(130, 100%, 37%);
+}
+
+.IT22090508-employeeTaskview-search-bar i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #934040;
+}
+
+/* Table Styles */
+.IT22090508-employeeTaskview-table {
+    width: 100%;
+    
+    border-collapse: collapse;
+    margin-top: 2px;
+    background: rgb(255, 255, 255);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.IT22090508-employeeTaskview-table th,
+.IT22090508-employeeTaskview-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 20px solid #ffffff;
+}
+
+.IT22090508-employeeTaskview-table th {
+    background:linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%);
+    color: white;
+    font-weight: 400;
+}
+
+.IT22090508-employeeTaskview-table tr:hover {
+    background: #f8f9fa;
+}
+
+.highlight {
+    background: #d3ffd2; /* Highlight color for matching rows */
+}
+
+/* Status Styles */
+.IT22090508-employeeTaskview-status {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.IT22090508-employeeTaskview-status.in-progress {
+    background: #ffeeba;
+    color: #856404;
+}
+
+.IT22090508-employeeTaskview-status.completed {
+    background: #8cff8a;
+    color: #155724;
+}
+
+.IT22090508-employeeTaskview-status.pending {
+    background: #ff9393;
+    color: #850404;
+}
+
+/* Button Styles */
+.IT22090508-employeeTaskview-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+   
+}
+
+.IT22090508-employeeTaskview-button.start {
+    background: linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%);
+    color: white;
+    width: 100px;
+  
+}
+
+.IT22090508-employeeTaskview-button.complete {
+    background:linear-gradient(45deg, hsl(235, 100%, 50%) 0%, #0091ff 100%);
+    color: white;
+    width: 100px;
+}
+
+.IT22090508-employeeTaskview-button:disabled {
+    background: #ddffe1;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .IT22090508-employeeTaskview-table th,
+    .IT22090508-employeeTaskview-table td {
+        font-size: 14px;
+        padding: 10px;
+        
+    }
+
+    .IT22090508-employeeTaskview-search-bar {
+        margin-bottom: 20px;
+        
+    }
+}
