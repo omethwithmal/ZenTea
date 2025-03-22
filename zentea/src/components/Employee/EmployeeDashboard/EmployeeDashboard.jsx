@@ -2,13 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './EmployeeDashboard.css'; // Import the CSS file
 import { useNavigate } from 'react-router-dom';
 
-
 const EmployeeDashboard = () => {
-
     const navigate = useNavigate();
-
-
-
     const [activeTab, setActiveTab] = useState('attendance'); // State for toggling between tabs
     const [tasks, setTasks] = useState([]); // State for managing tasks
     const [progressAnimation, setProgressAnimation] = useState(false); // State for progress bar animation
@@ -49,42 +44,71 @@ const EmployeeDashboard = () => {
         }
     };
 
+    // Function to calculate OT time
+    const calculateOTTime = (inTime, outTime) => {
+        const standardInTime = new Date().setHours(8, 0, 0); // 8:00 AM
+        const standardOutTime = new Date().setHours(17, 0, 0); // 5:00 PM
+
+        const inTimeDate = new Date(`2023-01-01T${inTime}`);
+        const outTimeDate = new Date(`2023-01-01T${outTime}`);
+
+        let otTime = '';
+
+        if (inTimeDate < standardInTime) {
+            const diffMs = standardInTime - inTimeDate;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+            otTime += `${diffHours}h ${diffMinutes}m early`;
+        }
+
+        if (outTimeDate > standardOutTime) {
+            const diffMs = outTimeDate - standardOutTime;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+            otTime += otTime ? ', ' : '';
+            otTime += `${diffHours}h ${diffMinutes}m late`;
+        }
+
+        return otTime || 'No OT';
+    };
+
     return (
         <div className="dashboard">
             {/* Sidebar */}
-            <aside className="IT22090508-managersdashbord-sidebar">
-                <div className="IT22090508-managersdashbord-logo">
+            <aside className="IT22090508-EmployeeMnagerDashboard-sidebar">
+                <div className="IT22090508-EmployeeMnagerDashboard-logo">
                     <i className="fas fa-cogs"></i>
                     <h1>Employee</h1>
                     <h2>Dashboard</h2>
                 </div>
-                {/* Navigation Links */}
                 <nav>
-                    
-                    <a href="#" className="IT22090508-managersdashbord-nav-link active">
+                    <a href="#" className="IT22090508-EmployeeMnagerDashboard-nav-link active">
                         <i className="fas fa-users"></i>
                         <span>Employee</span>
                     </a>
-                    <a href="#" className="IT22090508-managersdashbord-nav-link">
+                    <a href="#" className="IT22090508-EmployeeMnagerDashboard-nav-link">
                         <i className="fas fa-wallet"></i>
                         <span>Notification</span>
                     </a>
-                    <a href="#" className="IT22090508-managersdashbord-nav-link"
-                    onClick={() =>navigate('/EmployeeDetailsTable')}
+                    <a
+                        href="#"
+                        className="IT22090508-EmployeeMnagerDashboard-nav-link"
+                        onClick={() => navigate('/EmployeeDetailsTable')}
                     >
                         <i className="fas fa-truck"></i>
                         <span>Employee details</span>
                     </a>
-                    <a href="#" className="IT22090508-managersdashbord-nav-link">
+                    <a href="#" className="IT22090508-EmployeeMnagerDashboard-nav-link">
                         <i className="fas fa-boxes"></i>
                         <span>Settings</span>
                     </a>
-                    <a href="#" className="IT22090508-managersdashbord-nav-link">
+                    <a href="#" className="IT22090508-EmployeeMnagerDashboard-nav-link">
                         <i className="fas fa-tools"></i>
                         <span>Log Out</span>
                     </a>
                 </nav>
             </aside>
+
             {/* Main Content */}
             <main className="content">
                 <header className="top-bar">
@@ -102,7 +126,6 @@ const EmployeeDashboard = () => {
                             Tasks
                         </button>
                     </div>
-                    {/* Attendance Search */}
                     {activeTab === 'attendance' && (
                         <div className="search-container attendance-search">
                             <div className="search-box">
@@ -114,7 +137,6 @@ const EmployeeDashboard = () => {
                             </button>
                         </div>
                     )}
-                    {/* Task Search */}
                     {activeTab === 'tasks' && (
                         <div className="search-container task-search">
                             <div className="search-box">
@@ -127,6 +149,7 @@ const EmployeeDashboard = () => {
                         </div>
                     )}
                 </header>
+
                 {/* Attendance Dashboard */}
                 {activeTab === 'attendance' && (
                     <div id="attendance" className="management-dashboard active">
@@ -137,7 +160,6 @@ const EmployeeDashboard = () => {
                                 <input type="month" className="date-picker" />
                             </div>
                         </div>
-                        {/* Attendance Widgets */}
                         <div className="widgets">
                             <div className="widget present-percentage">
                                 <h4>Present Employees</h4>
@@ -175,6 +197,7 @@ const EmployeeDashboard = () => {
                                         <th>Date</th>
                                         <th>In Time</th>
                                         <th>Out Time</th>
+                                        <th>OT Time</th>
                                         <th>Department</th>
                                         <th>Status</th>
                                         <th>Actions</th>
@@ -182,12 +205,27 @@ const EmployeeDashboard = () => {
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>John Doe</td>
+                                        <td>John</td>
                                         <td>EMP-1001</td>
                                         <td>2023-10-05</td>
-                                        <td>08:58 AM</td>
-                                        <td>05:02 PM</td>
+                                        <td>07:30 AM</td>
+                                        <td>08:00 PM</td>
+                                        <td>{calculateOTTime('07:30 AM', '06:00 PM')}</td>
                                         <td>Production</td>
+                                        <td className="status present">Present</td>
+                                        <td>
+                                            <button className="action-btn edit">Update</button>
+                                            <button className="action-btn delete">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jane Smith</td>
+                                        <td>EMP-1002</td>
+                                        <td>2023-10-05</td>
+                                        <td>08:00 AM</td>
+                                        <td>10:00 PM</td>
+                                        <td>{calculateOTTime('07:30 AM', '06:00 PM')}</td>
+                                        <td>HR</td>
                                         <td className="status present">Present</td>
                                         <td>
                                             <button className="action-btn edit">Update</button>
@@ -199,13 +237,13 @@ const EmployeeDashboard = () => {
                         </div>
                     </div>
                 )}
+
                 {/* Task Dashboard */}
                 {activeTab === 'tasks' && (
                     <div id="tasks" className="management-dashboard">
                         <div className="task-header">
                             <h3>Task Management</h3>
                         </div>
-                        {/* Task Widgets */}
                         <div className="widgets">
                             <div className="widget progress-task">
                                 <h4>In Progress Tasks</h4>
