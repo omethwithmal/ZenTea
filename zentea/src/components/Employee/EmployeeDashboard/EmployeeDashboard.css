@@ -15,31 +15,44 @@
     
 }
 
+.dashboard {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+}
+
 /* Sidebar */
-.IT22090508-managersdashbord-sidebar {
+.IT22090508-EmployeeMnagerDashboard-sidebar {
     background: linear-gradient(135deg, hsl(130, 100%, 37%) 0%, #99ff00 100%);
     padding: 30px;
     color: rgb(255, 255, 255);
 }
 
-.IT22090508-managersdashbord-logo {
+.IT22090508-EmployeeMnagerDashboard-logo {
     margin-bottom: 30px;
     text-align: center;
 }
 
-.IT22090508-managersdashbord-logo i {
+.IT22090508-EmployeeMnagerDashboard-logo i {
     font-size: 48px;
     margin-bottom: 10px;
 }
 
-.IT22090508-managersdashbord-logo h1,
-.IT22090508-managersdashbord-logo h2 {
+.IT22090508-EmployeeMnagerDashboard-logo h1{
     margin: 0;
     font-weight: 600;
     letter-spacing: 1px;
+    font-size: 40px;
+
+}
+.IT22090508-EmployeeMnagerDashboard-logo h2 {
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 1px;
+    
 }
 
-.IT22090508-managersdashbord-nav-link {
+.IT22090508-EmployeeMnagerDashboard-nav-link {
     display: flex;
     align-items: center;
     padding: 15px 20px;
@@ -48,15 +61,15 @@
     color: rgba(255, 255, 255, 0.8);
     transition: all 0.3s ease;
     text-decoration: none;
-    font-weight: bold
+    font-weight: bold;
 }
 
-.IT22090508-managersdashbord-nav-link:hover {
+.IT22090508-EmployeeMnagerDashboard-nav-link:hover {
     background: rgba(255, 255, 255, 0.2);
     color: white;
 }
 
-.IT22090508-managersdashbord-nav-link.active {
+.IT22090508-EmployeeMnagerDashboard-nav-link.active {
     background: rgba(255, 255, 255, 0.2);
     color: white;
     font-weight: 600;
