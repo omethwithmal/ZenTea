@@ -12,18 +12,26 @@ app.use(bodyParser.json());
 
 // Environment variables
 const PORT = process.env.PORT || 8070;
-const URL = process.env.MONGODB_URL;
+const MONGODB_URL = process.env.MONGODB_URL;
 
 // MongoDB connection
-mongoose.connect(URL)
-    .then(() => {
-        console.log("MongoDB Connection success!");
-    })
-    .catch((err) => {
-        console.error("MongoDB Connection failed:", err.message);
-    });
+mongoose.connect(MONGODB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log(" MongoDB Connected Successfully!"))
+    .catch((err) => console.error(" MongoDB Connection Failed:", err.message));
+
+// Import routes
+const taskRouter = require("./routes/tasks");
+app.use("/task", taskRouter);
+
+// Default Route
+app.get("/", (req, res) => {
+    res.send("Welcome to the ZenTea Task Management API 🚀");
+});
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`Server is up and running on port number: ${PORT}`);
+    console.log(`🚀 Server is running on port: ${PORT}`);
 });
