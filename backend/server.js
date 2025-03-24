@@ -23,15 +23,18 @@ mongoose.connect(MONGODB_URL, {
     .catch((err) => console.error(" MongoDB Connection Failed:", err.message));
 
 // Import routes
-const taskRouter = require("./routes/tasks");
+const taskRouter = require("./TaskManagement/routers/tasks");
 app.use("/task", taskRouter);
+
+const userRouter = require("./UserManagement/routes/addusers");
+app.use("/user", userRouter);
 
 // Default Route
 app.get("/", (req, res) => {
-    res.send("Welcome to the ZenTea Task Management API 🚀");
+    res.send("Welcome to the ZenTea Task Management API ");
 });
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`🚀 Server is running on port: ${PORT}`);
+    console.log(` Server is running on port: ${PORT}`);
 });
