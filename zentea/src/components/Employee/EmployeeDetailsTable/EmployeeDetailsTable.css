@@ -107,18 +107,31 @@
     min-height: 60px;
 }
 
-.IT22090508-Employee-Details-Form-edit-button {
-    background: #00f020;
+.IT22090508-Employee-Details-Form-delete-button{
+
+    background: #f02400;
     color: white;
     border: none;
     padding: 8px 12px;
-    border-radius: 4px;
+    border-radius: 0px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+
+
+.IT22090508-Employee-Details-Form-edit-button {
+    background: #ffffff;
+    color: rgb(39, 122, 0);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 0px;
     cursor: pointer;
     transition: background 0.3s ease;
 }
 
 .IT22090508-Employee-Details-Form-edit-button:hover {
-    background: #e53935;
+    background: #cacaca;
 }
 
 .IT22090508-Employee-Details-Form-save-button {
@@ -126,11 +139,11 @@
     color: white;
     border: none;
     padding: 8px 12px;
-    border-radius: 4px;
+    border-radius: 0px;
     cursor: pointer;
     transition: background 0.3s ease;
 }
 
 .IT22090508-Employee-Details-Form-save-button:hover {
-    background: #99ff00;
+    background: #006705;
 }

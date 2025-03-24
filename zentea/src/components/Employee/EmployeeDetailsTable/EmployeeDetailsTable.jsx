@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './EmployeeDetailsTable.css'; // Import the CSS file
+import './EmployeeDetailsTable.css';
 
 const EmployeeDetailsTable = () => {
     const [employees, setEmployees] = useState([
@@ -43,7 +43,11 @@ const EmployeeDetailsTable = () => {
 
     const handleSave = (id) => {
         setEditingEmployee(null);
-        // Add logic here to save changes to the backend or state
+    };
+
+    const handleDelete = (id) => {
+        const updatedEmployees = employees.filter((emp) => emp.id !== id);
+        setEmployees(updatedEmployees);
     };
 
     const handleSearch = (e) => {
@@ -61,7 +65,6 @@ const EmployeeDetailsTable = () => {
 
     return (
         <div className="IT22090508-Employee-Details-Form-container">
-            {/* Search Bar */}
             <div className="IT22090508-Employee-Details-Form-search-bar">
                 <input
                     type="text"
@@ -87,96 +90,31 @@ const EmployeeDetailsTable = () => {
                         <th>Start Date</th>
                         <th>Job Title</th>
                         <th>Department</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {filteredEmployees.map((employee) => (
                         <tr key={employee.id}>
-                            <td>
-                                {editingEmployee?.id === employee.id ? (
-                                    <input type="text" defaultValue={employee.firstName} />
-                                ) : (
-                                    employee.firstName
-                                )}
-                            </td>
-                            <td>
-                                {editingEmployee?.id === employee.id ? (
-                                    <input type="text" defaultValue={employee.lastName} />
-                                ) : (
-                                    employee.lastName
-                                )}
-                            </td>
-                            <td>
-                                {editingEmployee?.id === employee.id ? (
-                                    <input type="text" defaultValue={employee.employeeId} />
-                                ) : (
-                                    employee.employeeId
-                                )}
-                            </td>
-                            <td>
-                                {editingEmployee?.id === employee.id ? (
-                                    <input type="date" defaultValue={employee.birthDay} />
-                                ) : (
-                                    employee.birthDay
-                                )}
-                            </td>
-                            <td>
-                                {editingEmployee?.id === employee.id ? (
-                                    <input type="tel" defaultValue={employee.contactNumber} />
-                                ) : (
-                                    employee.contactNumber
-                                )}
-                            </td>
-                            <td>
-                                {editingEmployee?.id === employee.id ? (
-                                    <input type="email" defaultValue={employee.email} />
-                                ) : (
-                                    employee.email
-                                )}
-                            </td>
-                            <td>
-                                {editingEmployee?.id === employee.id ? (
-                                    <textarea defaultValue={employee.homeAddress} />
-                                ) : (
-                                    employee.homeAddress
-                                )}
-                            </td>
-                            <td>
-                                {editingEmployee?.id === employee.id ? (
-                                    <input type="text" defaultValue={employee.nationalId} />
-                                ) : (
-                                    employee.nationalId
-                                )}
-                            </td>
-                            <td>
-                                {editingEmployee?.id === employee.id ? (
-                                    <input type="date" defaultValue={employee.startDate} />
-                                ) : (
-                                    employee.startDate
-                                )}
-                            </td>
-                            <td>
-                                {editingEmployee?.id === employee.id ? (
-                                    <input type="text" defaultValue={employee.jobTitle} />
-                                ) : (
-                                    employee.jobTitle
-                                )}
-                            </td>
-                            <td>
-                                {editingEmployee?.id === employee.id ? (
-                                    <select defaultValue={employee.department}>
-                                        <option value="Plantation Department">Plantation Department</option>
-                                        <option value="Production & Processing Department">
-                                            Production & Processing Department
-                                        </option>
-                                        <option value="Quality Control Department">Quality Control Department</option>
-                                        <option value="Finance Department">Finance Department</option>
-                                        <option value="Development Department">Development Department</option>
-                                    </select>
-                                ) : (
-                                    employee.department
-                                )}
+                            <td>{editingEmployee?.id === employee.id ? <input type="text" defaultValue={employee.firstName} /> : employee.firstName}</td>
+                            <td>{editingEmployee?.id === employee.id ? <input type="text" defaultValue={employee.lastName} /> : employee.lastName}</td>
+                            <td>{editingEmployee?.id === employee.id ? <input type="text" defaultValue={employee.employeeId} /> : employee.employeeId}</td>
+                            <td>{editingEmployee?.id === employee.id ? <input type="date" defaultValue={employee.birthDay} /> : employee.birthDay}</td>
+                            <td>{editingEmployee?.id === employee.id ? <input type="tel" defaultValue={employee.contactNumber} /> : employee.contactNumber}</td>
+                            <td>{editingEmployee?.id === employee.id ? <input type="email" defaultValue={employee.email} /> : employee.email}</td>
+                            <td>{editingEmployee?.id === employee.id ? <textarea defaultValue={employee.homeAddress} /> : employee.homeAddress}</td>
+                            <td>{editingEmployee?.id === employee.id ? <input type="text" defaultValue={employee.nationalId} /> : employee.nationalId}</td>
+                            <td>{editingEmployee?.id === employee.id ? <input type="date" defaultValue={employee.startDate} /> : employee.startDate}</td>
+                            <td>{editingEmployee?.id === employee.id ? <input type="text" defaultValue={employee.jobTitle} /> : employee.jobTitle}</td>
+                            <td>{editingEmployee?.id === employee.id ? 
+                                <select defaultValue={employee.department}>
+                                    <option value="Plantation Department">Plantation Department</option>
+                                    <option value="Production & Processing Department">Production & Processing Department</option>
+                                    <option value="Quality Control Department">Quality Control Department</option>
+                                    <option value="Finance Department">Finance Department</option>
+                                    <option value="Development Department">Development Department</option>
+                                </select>
+                                : employee.department}
                             </td>
                             <td>
                                 {editingEmployee?.id === employee.id ? (
@@ -187,12 +125,20 @@ const EmployeeDetailsTable = () => {
                                         Save
                                     </button>
                                 ) : (
-                                    <button
-                                        className="IT22090508-Employee-Details-Form-edit-button"
-                                        onClick={() => handleEdit(employee.id)}
-                                    >
-                                        Edit
-                                    </button>
+                                    <>
+                                        <button
+                                            className="IT22090508-Employee-Details-Form-edit-button"
+                                            onClick={() => handleEdit(employee.id)}
+                                        >   
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="IT22090508-Employee-Details-Form-delete-button"
+                                            
+                                        >
+                                            Delete
+                                        </button>
+                                    </>
                                 )}
                             </td>
                         </tr>
