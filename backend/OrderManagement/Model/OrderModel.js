@@ -6,37 +6,37 @@ const orderSchema = new Schema ({
 
       Full_Name :{
         type:String,
-        required:true,
+        required:false,
       },
 
       Delivery_Address :{
         type:String,
-        required:true,
+        required:false,
       },
 
         Contact_Number :{
         type:Number,
-        required:true,
+        required:false,
       },
        
         Email_Address :{
         type:String,
-        required:true,
+        required:false,
       },
 
       Select_Tea_Type:{
         type:String,
-        required:true,
+        required:false,
       },
 
       Quantity :{
         type:String,
-        required:true,
+        required:false,
       },
 
       Price :{
         type:String,
-        required:true,
+        required:false,
       },
 
 });
