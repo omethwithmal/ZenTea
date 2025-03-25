@@ -29,6 +29,9 @@ app.use("/task", taskRouter);
 const userRouter = require("./UserManagement/routes/addusers");
 app.use("/user", userRouter);
 
+const orderRouter = require("./OrderManagement/Routes/OrderRoutes");
+app.use("/order", orderRouter);
+
 // Default Route
 app.get("/", (req, res) => {
     res.send("Welcome to the ZenTea Task Management API ");
