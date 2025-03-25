@@ -7,11 +7,25 @@ const EmployeeDashboard = () => {
     const [activeTab, setActiveTab] = useState('attendance'); // State for toggling between tabs
     const [tasks, setTasks] = useState([]); // State for managing tasks
     const [progressAnimation, setProgressAnimation] = useState(false); // State for progress bar animation
+    const [editingTask, setEditingTask] = useState(null); // State for tracking the task being edited
 
     // Trigger progress bar animation on component mount
     useEffect(() => {
         setProgressAnimation(true);
+        fetchTasks(); // Fetch tasks when the component mounts
     }, []);
+
+    // Fetch tasks from the backend
+    const fetchTasks = async () => {
+        try {
+            const response = await fetch('http://localhost:8070/task/display');
+            if (!response.ok) throw new Error('Failed to fetch tasks');
+            const data = await response.json();
+            setTasks(data);
+        } catch (error) {
+            console.error('Error fetching tasks:', error);
+        }
+    };
 
     // Function to toggle between Attendance and Tasks tabs
     const showTab = (tabName) => {
@@ -19,48 +33,87 @@ const EmployeeDashboard = () => {
     };
 
     // Function to handle task form submission
-    const handleTaskSubmit = (e) => {
+    const handleTaskSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const newTask = {
-            taskId: formData.get('task-id'),
+            taskID: formData.get('task-id'),
             title: formData.get('title'),
             description: formData.get('description'),
-            employee: formData.get('employee'),
+            employeeName: formData.get('employee'),
             department: formData.get('department'),
             date: formData.get('date'),
-            timePeriod: formData.get('time-period'),
+            timePeriodHours: formData.get('time-period'),
             status: formData.get('status'),
         };
-        setTasks([...tasks, newTask]); // Add the new task to the tasks array
-        e.target.reset(); // Reset the form
+
+        try {
+            let response;
+            if (editingTask) {
+                // Update existing task
+                response = await fetch(`http://localhost:8070/task/update/${editingTask._id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newTask),
+                });
+                setEditingTask(null); // Reset editing state
+            } else {
+                // Create new task
+                response = await fetch('http://localhost:8070/task/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newTask),
+                });
+            }
+
+            if (!response.ok) throw new Error(editingTask ? 'Failed to update task' : 'Failed to add task');
+            fetchTasks(); // Refresh the task list
+            e.target.reset(); // Reset the form
+        } catch (error) {
+            console.error(editingTask ? 'Error updating task:' : 'Error adding task:', error);
+        }
     };
 
-    // Function to delete a task or attendance record
-    const handleDelete = (index, type) => {
-        if (type === 'task') {
-            const updatedTasks = tasks.filter((_, i) => i !== index);
-            setTasks(updatedTasks);
+    // Function to delete a task
+    const handleDelete = async (taskId) => {
+        try {
+            const response = await fetch(`http://localhost:8070/task/delete/${taskId}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) throw new Error('Failed to delete task');
+            fetchTasks(); // Refresh the task list
+        } catch (error) {
+            console.error('Error deleting task:', error);
         }
+    };
+
+    // Function to edit a task
+    const handleEdit = (task) => {
+        setEditingTask(task);
+        const form = document.getElementById('taskForm');
+        form['task-id'].value = task.taskID;
+        form['title'].value = task.title;
+        form['description'].value = task.description;
+        form['employee'].value = task.employeeName;
+        form['department'].value = task.department;
+        form['date'].value = new Date(task.date).toISOString().split('T')[0];
+        form['time-period'].value = task.timePeriodHours;
+        form['status'].value = task.status;
     };
 
     // Function to calculate OT time
     const calculateOTTime = (inTime, outTime) => {
         const standardInTime = new Date().setHours(8, 0, 0); // 8:00 AM
         const standardOutTime = new Date().setHours(17, 0, 0); // 5:00 PM
-
         const inTimeDate = new Date(`2023-01-01T${inTime}`);
         const outTimeDate = new Date(`2023-01-01T${outTime}`);
-
         let otTime = '';
-
         if (inTimeDate < standardInTime) {
             const diffMs = standardInTime - inTimeDate;
             const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
             const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
             otTime += `${diffHours}h ${diffMinutes}m early`;
         }
-
         if (outTimeDate > standardOutTime) {
             const diffMs = outTimeDate - standardOutTime;
             const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
@@ -68,7 +121,6 @@ const EmployeeDashboard = () => {
             otTime += otTime ? ', ' : '';
             otTime += `${diffHours}h ${diffMinutes}m late`;
         }
-
         return otTime || 'No OT';
     };
 
@@ -108,7 +160,6 @@ const EmployeeDashboard = () => {
                     </a>
                 </nav>
             </aside>
-
             {/* Main Content */}
             <main className="content">
                 <header className="top-bar">
@@ -149,7 +200,6 @@ const EmployeeDashboard = () => {
                         </div>
                     )}
                 </header>
-
                 {/* Attendance Dashboard */}
                 {activeTab === 'attendance' && (
                     <div id="attendance" className="management-dashboard active">
@@ -237,7 +287,6 @@ const EmployeeDashboard = () => {
                         </div>
                     </div>
                 )}
-
                 {/* Task Dashboard */}
                 {activeTab === 'tasks' && (
                     <div id="tasks" className="management-dashboard">
@@ -298,7 +347,7 @@ const EmployeeDashboard = () => {
                             </div>
                         </div>
                         <div className="task-form">
-                            <h4>Create New Task</h4>
+                            <h4>{editingTask ? 'Update Task' : 'Create New Task'}</h4>
                             <form id="taskForm" onSubmit={handleTaskSubmit}>
                                 <div className="form-grid">
                                     <input type="text" placeholder="Task ID" name="task-id" required />
@@ -323,7 +372,7 @@ const EmployeeDashboard = () => {
                                     </select>
                                 </div>
                                 <button type="submit" className="submit-btn">
-                                    Create Task
+                                    {editingTask ? 'Update Task' : 'Create Task'}
                                 </button>
                             </form>
                         </div>
@@ -345,21 +394,26 @@ const EmployeeDashboard = () => {
                                 <tbody>
                                     {tasks.map((task, index) => (
                                         <tr key={index}>
-                                            <td>{task.taskId}</td>
+                                            <td>{task.taskID}</td>
                                             <td>{task.title}</td>
                                             <td>{task.description}</td>
-                                            <td>{task.employee}</td>
+                                            <td>{task.employeeName}</td>
                                             <td>{task.department}</td>
-                                            <td>{task.date}</td>
-                                            <td>{task.timePeriod}</td>
+                                            <td>{new Date(task.date).toLocaleDateString()}</td>
+                                            <td>{task.timePeriodHours} hrs</td>
                                             <td className={`status ${task.status.toLowerCase().replace(' ', '-')}`}>
                                                 {task.status}
                                             </td>
                                             <td>
-                                                <button className="action-btn edit">Update</button>
+                                                <button
+                                                    className="action-btn edit"
+                                                    onClick={() => handleEdit(task)}
+                                                >
+                                                    Update
+                                                </button>
                                                 <button
                                                     className="action-btn delete"
-                                                    onClick={() => handleDelete(index, 'task')}
+                                                    onClick={() => handleDelete(task._id)} // Use MongoDB's _id field
                                                 >
                                                     Delete
                                                 </button>

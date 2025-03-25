@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+// Define the Task Schema
 const taskSchema = new Schema({
     taskID: {
         type: String,
@@ -40,12 +41,13 @@ const taskSchema = new Schema({
     },
     status: {
         type: String,
-        required: true, // Fixed spelling mistake (require -> required)
+        required: true,
         enum: ['Pending', 'In Progress', 'Completed'],
         default: 'Pending'
     }
 }, { timestamps: true });
 
-const Task = mongoose.model('Task', taskSchema); // Fixed: taskSchema instead of taskShema
+// Create the Task Model
+const Task = mongoose.model('Task', taskSchema);
 
 module.exports = Task;

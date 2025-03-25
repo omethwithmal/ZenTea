@@ -1,15 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const Task = require("../models/task"); // Import Task model
+const Task = require("../models/task");
 
 // Add Task
 router.post("/add", async (req, res) => {
     const { taskID, title, description, employeeName, department, date, timePeriodHours, status } = req.body;
-
     if (!taskID || !title || !employeeName || !department || !date || !timePeriodHours || !status) {
         return res.status(400).json({ error: "All fields are required" });
     }
-
     try {
         const newTask = new Task({ taskID, title, description, employeeName, department, date, timePeriodHours, status });
         await newTask.save();
@@ -31,9 +29,7 @@ router.get("/display", async (req, res) => {
 
 // Update Task
 router.put("/update/:taskid", async (req, res) => {
-    
     const { title, description, employeeName, department, date, timePeriodHours, status } = req.body;
-
     try {
         const updatedTask = await Task.findByIdAndUpdate(req.params.taskid, { title, description, employeeName, department, date, timePeriodHours, status }, { new: true });
         if (!updatedTask) {
