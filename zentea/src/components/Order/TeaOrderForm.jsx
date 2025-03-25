@@ -2,8 +2,27 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const SuccessPopup = ({ onClose }) => {
+  return (
+    <div className="popup-overlay">
+      <div className="popup-content">
+        <div className="popup-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+          </svg>
+        </div>
+        <h2 className="popup-title">Order Submitted Successfully!</h2>
+        <p className="popup-message">Your tea order has been received and you're being redirected to payment.</p>
+        <button onClick={onClose} className="popup-button">Continue to Payment</button>
+      </div>
+    </div>
+  );
+};
+
 const TeaOrderForm = () => {
   const navigate = useNavigate();
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [orderData, setOrderData] = useState(null);
 
   const [formData, setFormData] = useState({
     Full_Name: '',
@@ -15,12 +34,154 @@ const TeaOrderForm = () => {
     Price: '',
   });
 
+  const [errors, setErrors] = useState({
+    Full_Name: '',
+    Delivery_Address: '',
+    Contact_Number: '',
+    Email_Address: '',
+    Price: '',
+  });
+
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [submitError, setSubmitError] = useState(null);
+
+  const formatPrice = (value) => {
+    if (!value) return '';
+    
+    const numValue = value.replace(/[^0-9.]/g, '');
+    if (!numValue) return '';
+    if (/\.\d{2}$/.test(numValue)) return numValue;
+    if (/\.\d$/.test(numValue)) return `${numValue}0`;
+    if (/^\d+$/.test(numValue)) return `${numValue}.00`;
+    return numValue;
+  };
+
+  const handlePriceBlur = (e) => {
+    const { value } = e.target;
+    const formattedPrice = formatPrice(value);
+    
+    if (formattedPrice !== value) {
+      setFormData(prev => ({
+        ...prev,
+        Price: formattedPrice
+      }));
+      
+      const error = validateField('Price', formattedPrice);
+      setErrors(prev => ({
+        ...prev,
+        Price: error
+      }));
+    }
+  };
+
+  const validateField = (name, value) => {
+    let error = '';
+    
+    switch (name) {
+      case 'Full_Name':
+        if (!value.trim()) {
+          error = 'Full Name is required';
+        } else if (!/^[a-zA-Z\s]*$/.test(value)) {
+          error = 'Name should only contain letters and spaces';
+        } else if (/\d/.test(value)) {
+          error = 'Name cannot contain numbers';
+        }
+        break;
+      case 'Delivery_Address':
+        if (!value.trim()) {
+          error = 'Delivery Address is required';
+        }
+        break;
+      case 'Contact_Number':
+        if (!value.trim()) {
+          error = 'Contact Number is required';
+        } else if (!/^\d+$/.test(value)) {
+          error = 'Contact Number should only contain numbers';
+        } else if (value.length !== 10) {
+          error = 'Contact Number must be 10 digits';
+        }
+        break;
+      case 'Email_Address':
+        if (!value.trim()) {
+          error = 'Email is required';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          error = 'Please enter a valid email address';
+        }
+        break;
+      case 'Price':
+        if (!value.trim()) {
+          error = 'Price is required';
+        } else if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+          error = 'Price should be a valid positive number';
+        } else if (parseFloat(value) <= 0) {
+          error = 'Price must be greater than 0';
+        } else if (value.includes('-')) {
+          error = 'Price cannot be negative';
+        }
+        break;
+      default:
+        break;
+    }
+    
+    return error;
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
+    
+    Object.keys(formData).forEach(key => {
+      if (key !== 'Select_Tea_Type' && key !== 'Quantity') {
+        const error = validateField(key, formData[key]);
+        newErrors[key] = error;
+        if (error) isValid = false;
+      }
+    });
+    
+    Object.keys(formData).forEach(key => {
+      if (key !== 'Select_Tea_Type' && key !== 'Quantity') {
+        if (!formData[key].trim()) {
+          newErrors[key] = `${key.replace('_', ' ')} is required`;
+          isValid = false;
+        }
+      }
+    });
+    
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    
+    let processedValue = value;
+    if (name === 'Full_Name') {
+      processedValue = value.replace(/[0-9]/g, '');
+    } else if (name === 'Contact_Number') {
+      processedValue = value.replace(/\D/g, '').substring(0, 10);
+    } else if (name === 'Price') {
+      processedValue = value.replace(/[^0-9.]/g, '');
+      const decimalCount = processedValue.split('.').length - 1;
+      if (decimalCount > 1) {
+        processedValue = processedValue.substring(0, processedValue.lastIndexOf('.'));
+      }
+      const decimalIndex = processedValue.indexOf('.');
+      if (decimalIndex !== -1) {
+        processedValue = processedValue.substring(0, decimalIndex + 3);
+      }
+    }
+    
+    const error = validateField(name, processedValue);
+    
+    setErrors({
+      ...errors,
+      [name]: error
+    });
+    
+    setFormData({ 
+      ...formData, 
+      [name]: processedValue 
+    });
   };
 
   const handleQuantityChange = (action) => {
@@ -32,8 +193,24 @@ const TeaOrderForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (formData.Price.trim()) {
+      const formattedPrice = formatPrice(formData.Price);
+      setFormData(prev => ({
+        ...prev,
+        Price: formattedPrice
+      }));
+    }
+    
+    const isValid = validateForm();
+    
+    if (!isValid) {
+      setSubmitError('Please fix all errors before submitting');
+      return;
+    }
+    
     setIsLoading(true);
-    setError(null);
+    setSubmitError(null);
 
     try {
       const response = await axios.post('http://localhost:8070/order/add', formData, {
@@ -41,22 +218,35 @@ const TeaOrderForm = () => {
       });
 
       if (response.status === 200 && response.data.orders) {
-        navigate('/payment', { state: { orderData: response.data.orders } });
+        setOrderData(response.data.orders);
+        setShowSuccessPopup(true);
+        
+        setTimeout(() => {
+          navigate('/payment', { state: { orderData: response.data.orders } });
+        }, 3000);
       } else {
         throw new Error('Failed to submit order');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'An error occurred while submitting the order');
+      setSubmitError(err.response?.data?.message || 'An error occurred while submitting the order');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const closePopup = () => {
+    setShowSuccessPopup(false);
+    if (orderData) {
+      navigate('/payment', { state: { orderData } });
+    }
+  };
+
   return (
     <div className="tea-order-container">
+      {showSuccessPopup && <SuccessPopup onClose={closePopup} />}
       <div className="tea-order-card">
         <h1 className="tea-order-title">Tea Order Form</h1>
-        {error && <p className="error-message">{error}</p>}
+        {submitError && <p className="error-message">{submitError}</p>}
         <form onSubmit={handleSubmit} className="tea-order-form">
           <div className="form-group">
             <input 
@@ -65,9 +255,9 @@ const TeaOrderForm = () => {
               placeholder="Full Name" 
               value={formData.Full_Name} 
               onChange={handleChange} 
-              required 
-              className="form-input"
+              className={`form-input ${errors.Full_Name ? 'input-error' : ''}`}
             />
+            {errors.Full_Name && <span className="error-text">{errors.Full_Name}</span>}
           </div>
           
           <div className="form-group">
@@ -77,9 +267,9 @@ const TeaOrderForm = () => {
               placeholder="Delivery Address" 
               value={formData.Delivery_Address} 
               onChange={handleChange} 
-              required 
-              className="form-input"
+              className={`form-input ${errors.Delivery_Address ? 'input-error' : ''}`}
             />
+            {errors.Delivery_Address && <span className="error-text">{errors.Delivery_Address}</span>}
           </div>
           
           <div className="form-group">
@@ -89,9 +279,10 @@ const TeaOrderForm = () => {
               placeholder="Contact Number" 
               value={formData.Contact_Number} 
               onChange={handleChange} 
-              required 
-              className="form-input"
+              maxLength="10"
+              className={`form-input ${errors.Contact_Number ? 'input-error' : ''}`}
             />
+            {errors.Contact_Number && <span className="error-text">{errors.Contact_Number}</span>}
           </div>
           
           <div className="form-group">
@@ -101,9 +292,9 @@ const TeaOrderForm = () => {
               placeholder="Email Address" 
               value={formData.Email_Address} 
               onChange={handleChange} 
-              required 
-              className="form-input"
+              className={`form-input ${errors.Email_Address ? 'input-error' : ''}`}
             />
+            {errors.Email_Address && <span className="error-text">{errors.Email_Address}</span>}
           </div>
           
           <div className="form-group">
@@ -113,10 +304,11 @@ const TeaOrderForm = () => {
               onChange={handleChange}
               className="form-select"
             >
-              <option value="green">Green Tea</option>
-              <option value="black">Black Tea</option>
-              <option value="herbal">Herbal Tea</option>
-              <option value="oolong">Oolong Tea</option>
+              <option value="">Select Tea Type</option>
+              <option value="Green Tea">Green Tea</option>
+              <option value="Black Tea">Black Tea</option>
+              <option value="Oolong Tea">Oolong Tea</option>
+              <option value="White Tea">White Tea</option>
             </select>
           </div>
           
@@ -143,14 +335,15 @@ const TeaOrderForm = () => {
           
           <div className="form-group">
             <input 
-              type="number" 
+              type="text" 
               name="Price" 
               placeholder="Price (LKR)" 
               value={formData.Price} 
-              onChange={handleChange} 
-              required 
-              className="form-input"
+              onChange={handleChange}
+              onBlur={handlePriceBlur}
+              className={`form-input ${errors.Price ? 'input-error' : ''}`}
             />
+            {errors.Price && <span className="error-text">{errors.Price}</span>}
           </div>
           
           <button 
@@ -174,11 +367,10 @@ const styles = `
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     width: 1600px;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     padding: 20px;
-
   }
 
   .tea-order-card {
@@ -211,7 +403,7 @@ const styles = `
   .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 5px;
   }
 
   .form-input, .form-select {
@@ -226,6 +418,16 @@ const styles = `
     border-color: #3498db;
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
     outline: none;
+  }
+
+  .input-error {
+    border-color: #e74c3c;
+  }
+
+  .error-text {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: 2px;
   }
 
   .quantity-group {
@@ -300,6 +502,87 @@ const styles = `
     font-weight: 500;
     color: #34495e;
     font-size: 14px;
+  }
+
+  /* Popup styles */
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .popup-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: popupFadeIn 0.3s ease-out;
+  }
+
+  @keyframes popupFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .popup-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background-color: #2ecc71;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .popup-icon svg {
+    width: 40px;
+    height: 40px;
+    color: white;
+  }
+
+  .popup-title {
+    color: #2c3e50;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .popup-message {
+    color: #7f8c8d;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .popup-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .popup-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
   }
 `;
 
