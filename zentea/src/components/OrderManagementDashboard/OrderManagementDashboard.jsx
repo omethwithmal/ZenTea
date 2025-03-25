@@ -1,12 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from "chart.js";
 import { Doughnut, Bar } from "react-chartjs-2";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faEdit, 
+  faTrashAlt, 
+  faBoxOpen, 
+  faClock, 
+  faCheckCircle, 
+  faExclamationTriangle,
+  faTachometerAlt,
+  faTruck,
+  faUsers,
+  faCoins,
+  faChartBar,
+  faCog
+} from '@fortawesome/free-solid-svg-icons';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 const OrderManagementDashboard = () => {
     const [reportGenerated, setReportGenerated] = useState(false);
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch orders from backend
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await fetch('http://localhost:8070/order');
+                const data = await response.json();
+                if (data.orders) {
+                    setOrders(data.orders);
+                }
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+                setLoading(false);
+            }
+        };
+
+        fetchOrders();
+    }, []);
 
     // Handle report generation
     const handleGenerateReport = () => {
@@ -19,12 +55,12 @@ const OrderManagementDashboard = () => {
         if (!reportGenerated) return;
 
         const reportContent = `
-            Order Management Report - 2025
+            Order Management Report - ${new Date().getFullYear()}
             ------------------------
-            Total Orders: 1,250
-            Pending Orders: 250
-            Completed Orders: 1,000
-            Delayed Orders: 50
+            Total Orders: ${orders.length}
+            Pending Orders: ${orders.filter(o => o.status === 'Pending').length}
+            Completed Orders: ${orders.filter(o => o.status === 'Completed').length}
+            Delayed Orders: ${orders.filter(o => o.status === 'Delayed').length}
 
             This report was generated on ${new Date().toLocaleString()}.
         `;
@@ -42,13 +78,48 @@ const OrderManagementDashboard = () => {
         URL.revokeObjectURL(url);
     };
 
+    // Handle update order
+    const handleUpdate = (orderId) => {
+        const orderToUpdate = orders.find(order => order._id === orderId);
+        if (orderToUpdate) {
+            alert(`Update order with ID: ${orderId}\nOrder details: ${JSON.stringify(orderToUpdate, null, 2)}`);
+        }
+    };
+
+    // Handle delete order - Updated to match your backend endpoint
+    const handleDelete = async (orderId) => {
+        if (window.confirm("Are you sure you want to delete this order?")) {
+            try {
+                const response = await fetch(`http://localhost:8070/order/deleteOrder/${orderId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    // Remove the order from state
+                    setOrders(orders.filter(order => order._id !== orderId));
+                    alert("Order deleted successfully");
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.message || "Failed to delete order");
+                }
+            } catch (error) {
+                console.error("Error deleting order:", error);
+                alert("Error deleting order");
+            }
+        }
+    };
+
     // Data for the Doughnut Chart (Order Status)
     const orderStatusData = {
         labels: ["Completed", "Pending", "Delayed"],
         datasets: [
             {
                 label: "Order Status",
-                data: [1000, 250, 50],
+                data: [
+                    orders.filter(o => o.status === 'Completed').length,
+                    orders.filter(o => o.status === 'Pending').length,
+                    orders.filter(o => o.status === 'Delayed').length
+                ],
                 backgroundColor: ["hsl(130, 100%, 37%)", "hsl(210, 100%, 50%)", "hsl(0, 100%, 60%)"],
                 hoverOffset: 4,
             },
@@ -69,6 +140,16 @@ const OrderManagementDashboard = () => {
         ],
     };
 
+    if (loading) {
+        return <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+            fontSize: '18px'
+        }}>Loading orders...</div>;
+    }
+
     return (
         <div style={{ display: "flex", height: "100vh", fontFamily: "Arial, sans-serif" }}>
             {/* Sidebar */}
@@ -80,7 +161,7 @@ const OrderManagementDashboard = () => {
                 boxSizing: "border-box"
             }}>
                 <div style={{ marginBottom: "20px" }}>
-                    <i className="fas fa-boxes" style={{ fontSize: "24px" }}></i>
+                    <FontAwesomeIcon icon={faBoxOpen} style={{ fontSize: "24px" }} />
                     <h1 style={{ fontSize: "20px", margin: "10px 0" }}>Order</h1>
                     <h2 style={{ fontSize: "20px" }}>Dashboard</h2>
                 </div>
@@ -95,27 +176,27 @@ const OrderManagementDashboard = () => {
                         borderRadius: "5px",
                         marginBottom: "10px"
                     }}>
-                        <i className="fas fa-tachometer-alt" style={{ marginRight: "10px" }}></i>
+                        <FontAwesomeIcon icon={faTachometerAlt} style={{ marginRight: "10px" }} />
                         <span>Dashboard</span>
                     </a>
                     <a href="#" style={{ display: "flex", alignItems: "center", color: "#fff", textDecoration: "none", padding: "10px", marginBottom: "10px" }}>
-                        <i className="fas fa-truck" style={{ marginRight: "10px" }}></i>
+                        <FontAwesomeIcon icon={faTruck} style={{ marginRight: "10px" }} />
                         <span>Orders</span>
                     </a>
                     <a href="#" style={{ display: "flex", alignItems: "center", color: "#fff", textDecoration: "none", padding: "10px", marginBottom: "10px" }}>
-                        <i className="fas fa-users" style={{ marginRight: "10px" }}></i>
+                        <FontAwesomeIcon icon={faUsers} style={{ marginRight: "10px" }} />
                         <span>Customers</span>
                     </a>
                     <a href="#" style={{ display: "flex", alignItems: "center", color: "#fff", textDecoration: "none", padding: "10px", marginBottom: "10px" }}>
-                        <i className="fas fa-coins" style={{ marginRight: "10px" }}></i>
+                        <FontAwesomeIcon icon={faCoins} style={{ marginRight: "10px" }} />
                         <span>Payments</span>
                     </a>
                     <a href="#" style={{ display: "flex", alignItems: "center", color: "#fff", textDecoration: "none", padding: "10px", marginBottom: "10px" }}>
-                        <i className="fas fa-chart-bar" style={{ marginRight: "10px" }}></i>
+                        <FontAwesomeIcon icon={faChartBar} style={{ marginRight: "10px" }} />
                         <span>Analytics</span>
                     </a>
                     <a href="#" style={{ display: "flex", alignItems: "center", color: "#fff", textDecoration: "none", padding: "10px" }}>
-                        <i className="fas fa-cog" style={{ marginRight: "10px" }}></i>
+                        <FontAwesomeIcon icon={faCog} style={{ marginRight: "10px" }} />
                         <span>Settings</span>
                     </a>
                 </nav>
@@ -173,19 +254,50 @@ const OrderManagementDashboard = () => {
 
                 {/* Dashboard Cards */}
                 <section style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px", marginBottom: "20px" }}>
-                    {["Total Orders", "Pending Orders", "Completed Orders", "Delayed Orders"].map((title, index) => (
-                        <div key={index} style={{
-                            background: "#fff",
-                            padding: "20px",
-                            borderRadius: "5px",
-                            boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-                            textAlign: "center"
-                        }}>
-                            <i className={`fas fa-${index === 0 ? "box-open" : index === 1 ? "clock" : index === 2 ? "check-circle" : "exclamation-triangle"}`} style={{ fontSize: "24px", marginBottom: "10px" }}></i>
-                            <h3 style={{ fontSize: "18px", margin: "10px 0" }}>{title}</h3>
-                            <p style={{ fontSize: "20px", fontWeight: "bold" }}>{index === 0 ? "1,250" : index === 1 ? "250" : index === 2 ? "1,000" : "50"}</p>
-                        </div>
-                    ))}
+                    <div style={{
+                        background: "#fff",
+                        padding: "20px",
+                        borderRadius: "5px",
+                        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                        textAlign: "center"
+                    }}>
+                        <FontAwesomeIcon icon={faBoxOpen} style={{ fontSize: "24px", marginBottom: "10px", color: "#3498db" }} />
+                        <h3 style={{ fontSize: "18px", margin: "10px 0" }}>Total Orders</h3>
+                        <p style={{ fontSize: "20px", fontWeight: "bold" }}>{orders.length}</p>
+                    </div>
+                    <div style={{
+                        background: "#fff",
+                        padding: "20px",
+                        borderRadius: "5px",
+                        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                        textAlign: "center"
+                    }}>
+                        <FontAwesomeIcon icon={faClock} style={{ fontSize: "24px", marginBottom: "10px", color: "#f1c40f" }} />
+                        <h3 style={{ fontSize: "18px", margin: "10px 0" }}>Pending Orders</h3>
+                        <p style={{ fontSize: "20px", fontWeight: "bold" }}>{orders.filter(o => o.status === 'Pending').length}</p>
+                    </div>
+                    <div style={{
+                        background: "#fff",
+                        padding: "20px",
+                        borderRadius: "5px",
+                        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                        textAlign: "center"
+                    }}>
+                        <FontAwesomeIcon icon={faCheckCircle} style={{ fontSize: "24px", marginBottom: "10px", color: "#2ecc71" }} />
+                        <h3 style={{ fontSize: "18px", margin: "10px 0" }}>Completed Orders</h3>
+                        <p style={{ fontSize: "20px", fontWeight: "bold" }}>{orders.filter(o => o.status === 'Completed').length}</p>
+                    </div>
+                    <div style={{
+                        background: "#fff",
+                        padding: "20px",
+                        borderRadius: "5px",
+                        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                        textAlign: "center"
+                    }}>
+                        <FontAwesomeIcon icon={faExclamationTriangle} style={{ fontSize: "24px", marginBottom: "10px", color: "#e74c3c" }} />
+                        <h3 style={{ fontSize: "18px", margin: "10px 0" }}>Delayed Orders</h3>
+                        <p style={{ fontSize: "20px", fontWeight: "bold" }}>{orders.filter(o => o.status === 'Delayed').length}</p>
+                    </div>
                 </section>
 
                 {/* Charts Section */}
@@ -205,62 +317,54 @@ const OrderManagementDashboard = () => {
                         <thead>
                             <tr>
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Full Name</th>
-                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>National Id Number</th>
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Delivery Address</th>
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Contact Number</th>
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Email Address</th>
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Tea Type</th>
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Quantity</th>
+                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Price</th>
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Status</th>
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {[
-                                { name: "Kavishka", id: "2000212345", address: "Matale", phone: "0778770920", email: "KavishkaDilshan888@gmail.com", teaType: "Black Tea", quantity: "1", status: "Completed" },
-                                { name: "Kavishka", id: "2000212345", address: "Matale", phone: "0778770920", email: "KavishkaDilshan888@gmail.com", teaType: "Black Tea", quantity: "1", status: "Pending" },
-                                { name: "Kavishka", id: "2000212345", address: "Matale", phone: "0778770920", email: "KavishkaDilshan888@gmail.com", teaType: "Black Tea", quantity: "1", status: "Delayed" }
-                            ].map((order, index) => (
-                                <tr key={index}>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.name}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.id}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.address}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.phone}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.email}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.teaType}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.quantity}</td>
+                            {orders.map((order) => (
+                                <tr key={order._id}>
+                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Full_Name}</td>
+                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Delivery_Address}</td>
+                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Contact_Number}</td>
+                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Email_Address}</td>
+                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Select_Tea_Type}</td>
+                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Quantity}</td>
+                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Price}</td>
+                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.status || 'Pending'}</td>
                                     <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>
-                                        <span style={{
-                                            padding: "5px 10px",
-                                            background: order.status === "Completed" ? "#2ecc71" : order.status === "Pending" ? "#f1c40f" : "#e74c3c",
-                                            color: "#fff",
-                                            borderRadius: "5px",
-                                            textTransform: "capitalize"
-                                        }}>
-                                            {order.status}
-                                        </span>
-                                    </td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>
-                                        <button style={{
-                                            padding: "5px 10px",
-                                            background: "#3498db",
-                                            color: "#fff",
-                                            border: "none",
-                                            borderRadius: "5px",
-                                            cursor: "pointer",
-                                            marginRight: "5px"
-                                        }}>
-                                            Update
+                                        <button 
+                                            onClick={() => handleUpdate(order._id)}
+                                            style={{
+                                                background: "none",
+                                                border: "none",
+                                                color: "#3498db",
+                                                cursor: "pointer",
+                                                marginRight: "15px",
+                                                fontSize: "16px"
+                                            }}
+                                            title="Edit Order"
+                                        >
+                                            <FontAwesomeIcon icon={faEdit} />
                                         </button>
-                                        <button style={{
-                                            padding: "5px 10px",
-                                            background: "#e74c3c",
-                                            color: "#fff",
-                                            border: "none",
-                                            borderRadius: "5px",
-                                            cursor: "pointer"
-                                        }}>
-                                            Delete
+                                        <button 
+                                            onClick={() => handleDelete(order._id)}
+                                            style={{
+                                                background: "none",
+                                                border: "none",
+                                                color: "#e74c3c",
+                                                cursor: "pointer",
+                                                fontSize: "16px"
+                                            }}
+                                            title="Delete Order"
+                                        >
+                                            <FontAwesomeIcon icon={faTrashAlt} />
                                         </button>
                                     </td>
                                 </tr>
