@@ -29,6 +29,9 @@ app.use("/task", taskRouter);
 const userRouter = require("./UserManagement/routes/addusers");
 app.use("/user", userRouter);
 
+const attendanceRouter = require("./Attendance/routes/attendances");
+app.use("/attendance", attendanceRouter);
+
 const orderRouter = require("./OrderManagement/Routes/OrderRoutes");
 app.use("/order", orderRouter);
 
