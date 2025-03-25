@@ -20,7 +20,7 @@ import IT22090508_QRcode_Scanner_Page from "./components/QRCodeScanner/QRCodeSca
 import PaymentForm from "./components/Payment/Payment";
 import TeaOrderForm from "./components/Order/TeaOrderForm";
 import OrderManagementDashboard from "./components/OrderManagementDashboard/OrderManagementDashboard";
-
+import CustomerOrderDashboard from "./components/CustomerOrderDashBoard/CustomerOrderDashBoard";
 
 
  
@@ -50,6 +50,7 @@ function App() {
                 <Route path="/TeaOrderForm" element={<TeaOrderForm />} />
                 <Route path="/Payment" element={<PaymentForm />} />
                 <Route path="/Orderdash" element={<OrderManagementDashboard />} />
+                <Route path="/CustomerDash" element={<CustomerOrderDashboard />} />
                
      
 
