@@ -580,19 +580,6 @@ const OrderManagementDashboard = () => {
                                     />
                                 </div>
                                 
-                                <div style={{ marginBottom: '15px' }}>
-                                    <label style={{ display: 'block', marginBottom: '5px' }}>Status</label>
-                                    <select
-                                        name="status"
-                                        value={editingOrder.status || ''}
-                                        onChange={handleInputChange}
-                                        style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
-                                    >
-                                        <option value="Pending">Pending</option>
-                                        <option value="Completed">Completed</option>
-                                        <option value="Delayed">Delayed</option>
-                                    </select>
-                                </div>
                     
                                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
                                     <button
