@@ -24,6 +24,8 @@ const OrderManagementDashboard = () => {
     const [reportGenerated, setReportGenerated] = useState(false);
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [editingOrder, setEditingOrder] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     // Fetch orders from backend
     useEffect(() => {
@@ -82,11 +84,50 @@ const OrderManagementDashboard = () => {
     const handleUpdate = (orderId) => {
         const orderToUpdate = orders.find(order => order._id === orderId);
         if (orderToUpdate) {
-            alert(`Update order with ID: ${orderId}\nOrder details: ${JSON.stringify(orderToUpdate, null, 2)}`);
+            setEditingOrder(orderToUpdate);
+            setShowEditModal(true);
         }
     };
 
-    // Handle delete order - Updated to match your backend endpoint
+    // Handle update form submission
+    const handleUpdateSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(`http://localhost:8070/order/updateOrder/${editingOrder._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(editingOrder)
+            });
+            
+            if (response.ok) {
+                // Update the order in state
+                setOrders(orders.map(order => 
+                    order._id === editingOrder._id ? editingOrder : order
+                ));
+                setShowEditModal(false);
+                alert("Order updated successfully");
+            } else {
+                const errorData = await response.json();
+                alert(errorData.message || "Failed to update order");
+            }
+        } catch (error) {
+            console.error("Error updating order:", error);
+            alert("Error updating order");
+        }
+    };
+
+    // Handle input changes in edit form
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setEditingOrder({
+            ...editingOrder,
+            [name]: value
+        });
+    };
+
+    // Handle delete order
     const handleDelete = async (orderId) => {
         if (window.confirm("Are you sure you want to delete this order?")) {
             try {
@@ -372,6 +413,146 @@ const OrderManagementDashboard = () => {
                         </tbody>
                     </table>
                 </section>
+
+                {/* Edit Order Modal */}
+                {showEditModal && editingOrder && (
+                    <div style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        zIndex: 1000
+                    }}>
+                        <div style={{
+                            backgroundColor: 'white',
+                            padding: '20px',
+                            borderRadius: '5px',
+                            width: '500px',
+                            maxWidth: '90%'
+                        }}>
+                            <h2 style={{ marginBottom: '20px' }}>Edit Order</h2>
+                            <form onSubmit={handleUpdateSubmit}>
+                                <div style={{ marginBottom: '15px' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px' }}>Full Name</label>
+                                    <input
+                                        type="text"
+                                        name="Full_Name"
+                                        value={editingOrder.Full_Name || ''}
+                                        onChange={handleInputChange}
+                                        style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                                    />
+                                </div>
+                                
+                                <div style={{ marginBottom: '15px' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px' }}>Delivery Address</label>
+                                    <input
+                                        type="text"
+                                        name="Delivery_Address"
+                                        value={editingOrder.Delivery_Address || ''}
+                                        onChange={handleInputChange}
+                                        style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                                    />
+                                </div>
+                                
+                                <div style={{ marginBottom: '15px' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px' }}>Contact Number</label>
+                                    <input
+                                        type="text"
+                                        name="Contact_Number"
+                                        value={editingOrder.Contact_Number || ''}
+                                        onChange={handleInputChange}
+                                        style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                                    />
+                                </div>
+                                
+                                <div style={{ marginBottom: '15px' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px' }}>Email Address</label>
+                                    <input
+                                        type="email"
+                                        name="Email_Address"
+                                        value={editingOrder.Email_Address || ''}
+                                        onChange={handleInputChange}
+                                        style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                                    />
+                                </div>
+                                
+                                <div style={{ marginBottom: '15px' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px' }}>Tea Type</label>
+                                    <select
+                                        name="Select_Tea_Type"
+                                        value={editingOrder.Select_Tea_Type || ''}
+                                        onChange={handleInputChange}
+                                        style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                                    >
+                                        <option value="">Select Tea Type</option>
+                                        <option value="Green Tea">Green Tea</option>
+                                        <option value="Black Tea">Black Tea</option>
+                                        <option value="Oolong Tea">Oolong Tea</option>
+                                        <option value="White Tea">White Tea</option>
+                                    </select>
+                                </div>
+                                
+                                <div style={{ marginBottom: '15px' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px' }}>Quantity</label>
+                                    <input
+                                        type="number"
+                                        name="Quantity"
+                                        value={editingOrder.Quantity || ''}
+                                        onChange={handleInputChange}
+                                        style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                                    />
+                                </div>
+                                
+                                <div style={{ marginBottom: '15px' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px' }}>Price</label>
+                                    <input
+                                        type="number"
+                                        name="Price"
+                                        value={editingOrder.Price || ''}
+                                        onChange={handleInputChange}
+                                        style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                                    />
+                                </div>
+                    
+                                
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowEditModal(false)}
+                                        style={{
+                                            padding: '8px 16px',
+                                            backgroundColor: '#e74c3c',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        style={{
+                                            padding: '8px 16px',
+                                            backgroundColor: '#2ecc71',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        Update Order
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
             </main>
         </div>
     );
