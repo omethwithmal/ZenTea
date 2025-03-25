@@ -14,18 +14,22 @@ import {
   faUsers,
   faCoins,
   faChartBar,
-  faCog
+  faCog,
+  faSearch
 } from '@fortawesome/free-solid-svg-icons';
+import { jsPDF } from "jspdf";
+import autoTable from 'jspdf-autotable';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 const OrderManagementDashboard = () => {
-    const [reportGenerated, setReportGenerated] = useState(false);
     const [orders, setOrders] = useState([]);
+    const [filteredOrders, setFilteredOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingOrder, setEditingOrder] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
 
     // Fetch orders from backend
     useEffect(() => {
@@ -35,6 +39,7 @@ const OrderManagementDashboard = () => {
                 const data = await response.json();
                 if (data.orders) {
                     setOrders(data.orders);
+                    setFilteredOrders(data.orders);
                 }
                 setLoading(false);
             } catch (error) {
@@ -46,38 +51,64 @@ const OrderManagementDashboard = () => {
         fetchOrders();
     }, []);
 
-    // Handle report generation
-    const handleGenerateReport = () => {
-        setReportGenerated(true);
-        alert("Report Generated Successfully!");
-    };
+    // Handle search functionality
+    useEffect(() => {
+        const results = orders.filter(order =>
+            Object.values(order).some(val =>
+                String(val).toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+        setFilteredOrders(results);
+    }, [searchTerm, orders]);
 
-    // Handle report download
-    const handleDownloadReport = () => {
-        if (!reportGenerated) return;
-
-        const reportContent = `
-            Order Management Report - ${new Date().getFullYear()}
-            ------------------------
-            Total Orders: ${orders.length}
-            Pending Orders: ${orders.filter(o => o.status === 'Pending').length}
-            Completed Orders: ${orders.filter(o => o.status === 'Completed').length}
-            Delayed Orders: ${orders.filter(o => o.status === 'Delayed').length}
-
-            This report was generated on ${new Date().toLocaleString()}.
-        `;
-
-        const blob = new Blob([reportContent], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "order_management_report.txt";
-        document.body.appendChild(a);
-        a.click();
-
-        a.remove();
-        URL.revokeObjectURL(url);
+    // Handle PDF report download
+    const handleDownloadPDFReport = () => {
+        const doc = new jsPDF();
+        
+        // Add title
+        doc.setFontSize(20);
+        doc.text('Order Management Report', 105, 15, { align: 'center' });
+        
+        // Add date
+        doc.setFontSize(12);
+        doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, 25, { align: 'center' });
+        
+        // Add summary statistics
+        doc.setFontSize(14);
+        doc.text('Summary Statistics', 14, 40);
+        
+        doc.setFontSize(12);
+        doc.text(`Total Orders: ${orders.length}`, 14, 50);
+        doc.text(`Pending Orders: ${orders.filter(o => o.status === 'Pending').length}`, 14, 60);
+        doc.text(`Completed Orders: ${orders.filter(o => o.status === 'Completed').length}`, 14, 70);
+        doc.text(`Delayed Orders: ${orders.filter(o => o.status === 'Delayed').length}`, 14, 80);
+        
+        // Add order table
+        doc.setFontSize(14);
+        doc.text('Order Details', 14, 100);
+        
+        // Prepare data for the table
+        const tableData = filteredOrders.map(order => [
+            order.Full_Name,
+            order.Delivery_Address,
+            order.Contact_Number,
+            order.Email_Address,
+            order.Select_Tea_Type,
+            order.Quantity,
+            order.Price,
+            order.status
+        ]);
+        
+        // Add the table using autoTable
+        autoTable(doc, {
+            head: [['Name', 'Address', 'Contact', 'Email', 'Tea Type', 'Quantity', 'Price', 'Status']],
+            body: tableData,
+            startY: 110,
+            styles: { fontSize: 8 },
+            headStyles: { fillColor: [52, 152, 219] }
+        });
+        
+        // Save the PDF
+        doc.save('order_management_report.pdf');
     };
 
     // Handle update order
@@ -103,9 +134,11 @@ const OrderManagementDashboard = () => {
             
             if (response.ok) {
                 // Update the order in state
-                setOrders(orders.map(order => 
+                const updatedOrders = orders.map(order => 
                     order._id === editingOrder._id ? editingOrder : order
-                ));
+                );
+                setOrders(updatedOrders);
+                setFilteredOrders(updatedOrders);
                 setShowEditModal(false);
                 alert("Order updated successfully");
             } else {
@@ -137,7 +170,9 @@ const OrderManagementDashboard = () => {
                 
                 if (response.ok) {
                     // Remove the order from state
-                    setOrders(orders.filter(order => order._id !== orderId));
+                    const updatedOrders = orders.filter(order => order._id !== orderId);
+                    setOrders(updatedOrders);
+                    setFilteredOrders(updatedOrders);
                     alert("Order deleted successfully");
                 } else {
                     const errorData = await response.json();
@@ -256,35 +291,18 @@ const OrderManagementDashboard = () => {
                     </div>
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <button
-                            id="generateReportBtn"
+                            id="downloadPdfReportBtn"
                             style={{
                                 padding: "10px 20px",
-                                background: "#3498db",
+                                background: "#e74c3c",
                                 color: "#fff",
                                 border: "none",
                                 borderRadius: "5px",
-                                cursor: "pointer",
-                                marginRight: "10px"
+                                cursor: "pointer"
                             }}
-                            onClick={handleGenerateReport}
+                            onClick={handleDownloadPDFReport}
                         >
-                            Generate Report
-                        </button>
-                        <button
-                            id="downloadReportBtn"
-                            style={{
-                                padding: "10px 20px",
-                                background: "#2ecc71",
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: "5px",
-                                cursor: "pointer",
-                                opacity: reportGenerated ? 1 : 0.5,
-                                pointerEvents: reportGenerated ? "auto" : "none"
-                            }}
-                            onClick={handleDownloadReport}
-                        >
-                            Download Report
+                            Download PDF Report
                         </button>
                         <div style={{ marginLeft: "20px", display: "flex", alignItems: "center" }}>
                             <img src="profile.jpg" alt="Profile Picture" style={{ width: "40px", height: "40px", borderRadius: "50%" }} />
@@ -351,9 +369,44 @@ const OrderManagementDashboard = () => {
                     </div>
                 </section>
 
+                {/* Search Bar */}
+                <div style={{ marginBottom: "20px", display: "flex", justifyContent: "flex-end" }}>
+                    <div style={{ position: "relative", width: "300px" }}>
+                        <input
+                            type="text"
+                            placeholder="Search orders..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{
+                                width: "100%",
+                                padding: "10px 15px 10px 40px",
+                                borderRadius: "5px",
+                                border: "1px solid #ddd",
+                                fontSize: "16px",
+                                boxSizing: "border-box"
+                            }}
+                        />
+                        <FontAwesomeIcon 
+                            icon={faSearch} 
+                            style={{
+                                position: "absolute",
+                                left: "15px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                color: "#777"
+                            }} 
+                        />
+                    </div>
+                </div>
+
                 {/* Order Table */}
                 <section style={{ background: "#fff", padding: "20px", borderRadius: "5px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
-                    <h2 style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "20px" }}>Recent Orders</h2>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                        <h2 style={{ fontSize: "20px", fontWeight: "bold" }}>Recent Orders</h2>
+                        <div style={{ color: "#777" }}>
+                            Showing {filteredOrders.length} of {orders.length} orders
+                        </div>
+                    </div>
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead>
                             <tr>
@@ -364,52 +417,60 @@ const OrderManagementDashboard = () => {
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Tea Type</th>
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Quantity</th>
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Price</th>
-                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Status</th>
+                            
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {orders.map((order) => (
-                                <tr key={order._id}>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Full_Name}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Delivery_Address}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Contact_Number}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Email_Address}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Select_Tea_Type}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Quantity}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Price}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.status || 'Pending'}</td>
-                                    <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>
-                                        <button 
-                                            onClick={() => handleUpdate(order._id)}
-                                            style={{
-                                                background: "none",
-                                                border: "none",
-                                                color: "#3498db",
-                                                cursor: "pointer",
-                                                marginRight: "15px",
-                                                fontSize: "16px"
-                                            }}
-                                            title="Edit Order"
-                                        >
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </button>
-                                        <button 
-                                            onClick={() => handleDelete(order._id)}
-                                            style={{
-                                                background: "none",
-                                                border: "none",
-                                                color: "#e74c3c",
-                                                cursor: "pointer",
-                                                fontSize: "16px"
-                                            }}
-                                            title="Delete Order"
-                                        >
-                                            <FontAwesomeIcon icon={faTrashAlt} />
-                                        </button>
+                            {filteredOrders.length > 0 ? (
+                                filteredOrders.map((order) => (
+                                    <tr key={order._id}>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Full_Name}</td>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Delivery_Address}</td>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Contact_Number}</td>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Email_Address}</td>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Select_Tea_Type}</td>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Quantity}</td>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Price}</td>
+                                    
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>
+                                            <button 
+                                                onClick={() => handleUpdate(order._id)}
+                                                style={{
+                                                    background: "none",
+                                                    border: "none",
+                                                    color: "#3498db",
+                                                    cursor: "pointer",
+                                                    marginRight: "15px",
+                                                    fontSize: "16px"
+                                                }}
+                                                title="Edit Order"
+                                            >
+                                                <FontAwesomeIcon icon={faEdit} />
+                                            </button>
+                                            <button 
+                                                onClick={() => handleDelete(order._id)}
+                                                style={{
+                                                    background: "none",
+                                                    border: "none",
+                                                    color: "#e74c3c",
+                                                    cursor: "pointer",
+                                                    fontSize: "16px"
+                                                }}
+                                                title="Delete Order"
+                                            >
+                                                <FontAwesomeIcon icon={faTrashAlt} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="9" style={{ padding: "20px", textAlign: "center" }}>
+                                        No orders found matching your search criteria
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </section>
@@ -518,8 +579,21 @@ const OrderManagementDashboard = () => {
                                         style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
                                     />
                                 </div>
-                    
                                 
+                                <div style={{ marginBottom: '15px' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px' }}>Status</label>
+                                    <select
+                                        name="status"
+                                        value={editingOrder.status || ''}
+                                        onChange={handleInputChange}
+                                        style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                                    >
+                                        <option value="Pending">Pending</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Delayed">Delayed</option>
+                                    </select>
+                                </div>
+                    
                                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
                                     <button
                                         type="button"
