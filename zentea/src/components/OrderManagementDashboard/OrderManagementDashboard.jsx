@@ -251,8 +251,8 @@ const OrderManagementDashboard = () => {
                     orders.filter(o => o.Price >= 20 && o.Price < 30).length,
                     orders.filter(o => o.Price >= 30).length
                 ],
-                backgroundColor: "hsl(210, 70%, 50%)",
-                borderColor: "hsl(210, 70%, 50%)",
+                backgroundColor: "hsl(117, 86.90%, 47.80%)",
+                borderColor: "hsl(106, 90.30%, 48.60%)",
                 borderWidth: 1,
             },
         ],
@@ -273,7 +273,7 @@ const OrderManagementDashboard = () => {
             {/* Sidebar */}
             <aside style={{
                 width: "250px",
-                background: "#2c3e50",
+                background: "#5a5f51",
                 color: "#fff",
                 padding: "20px",
                 boxSizing: "border-box"
@@ -290,7 +290,7 @@ const OrderManagementDashboard = () => {
                         color: "#fff",
                         textDecoration: "none",
                         padding: "10px",
-                        background: "#34495e",
+                        background: "#24f408",
                         borderRadius: "5px",
                         marginBottom: "10px"
                     }}>
