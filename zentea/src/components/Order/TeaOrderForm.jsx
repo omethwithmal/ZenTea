@@ -2,8 +2,27 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const SuccessPopup = ({ onClose }) => {
+  return (
+    <div className="popup-overlay">
+      <div className="popup-content">
+        <div className="popup-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+          </svg>
+        </div>
+        <h2 className="popup-title">Order Submitted Successfully!</h2>
+        <p className="popup-message">Your tea order has been received and you're being redirected to payment.</p>
+        <button onClick={onClose} className="popup-button">Continue to Payment</button>
+      </div>
+    </div>
+  );
+};
+
 const TeaOrderForm = () => {
   const navigate = useNavigate();
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [orderData, setOrderData] = useState(null);
 
   const [formData, setFormData] = useState({
     Full_Name: '',
@@ -29,22 +48,11 @@ const TeaOrderForm = () => {
   const formatPrice = (value) => {
     if (!value) return '';
     
-    // Remove any existing formatting
     const numValue = value.replace(/[^0-9.]/g, '');
-    
-    // If empty after cleaning, return empty
     if (!numValue) return '';
-    
-    // If value already has exactly two decimal places, return as is
     if (/\.\d{2}$/.test(numValue)) return numValue;
-    
-    // If value has one decimal digit, add a zero
     if (/\.\d$/.test(numValue)) return `${numValue}0`;
-    
-    // If value is a whole number, add .00
     if (/^\d+$/.test(numValue)) return `${numValue}.00`;
-    
-    // For any other case, return the cleaned value
     return numValue;
   };
 
@@ -58,7 +66,6 @@ const TeaOrderForm = () => {
         Price: formattedPrice
       }));
       
-      // Revalidate after formatting
       const error = validateField('Price', formattedPrice);
       setErrors(prev => ({
         ...prev,
@@ -123,7 +130,6 @@ const TeaOrderForm = () => {
     const newErrors = {};
     let isValid = true;
     
-    // Validate all fields
     Object.keys(formData).forEach(key => {
       if (key !== 'Select_Tea_Type' && key !== 'Quantity') {
         const error = validateField(key, formData[key]);
@@ -132,7 +138,6 @@ const TeaOrderForm = () => {
       }
     });
     
-    // Check for empty fields
     Object.keys(formData).forEach(key => {
       if (key !== 'Select_Tea_Type' && key !== 'Quantity') {
         if (!formData[key].trim()) {
@@ -149,30 +154,23 @@ const TeaOrderForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     
-    // Block invalid characters based on field type
     let processedValue = value;
     if (name === 'Full_Name') {
-      // Block numbers in name field
       processedValue = value.replace(/[0-9]/g, '');
     } else if (name === 'Contact_Number') {
-      // Block non-numeric characters in contact number
       processedValue = value.replace(/\D/g, '').substring(0, 10);
     } else if (name === 'Price') {
-      // Block non-numeric characters in price (except decimal)
       processedValue = value.replace(/[^0-9.]/g, '');
-      // Ensure only one decimal point
       const decimalCount = processedValue.split('.').length - 1;
       if (decimalCount > 1) {
         processedValue = processedValue.substring(0, processedValue.lastIndexOf('.'));
       }
-      // Limit to 2 decimal places
       const decimalIndex = processedValue.indexOf('.');
       if (decimalIndex !== -1) {
         processedValue = processedValue.substring(0, decimalIndex + 3);
       }
     }
     
-    // Validate the field
     const error = validateField(name, processedValue);
     
     setErrors({
@@ -196,7 +194,6 @@ const TeaOrderForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Format price before submission if it's not empty
     if (formData.Price.trim()) {
       const formattedPrice = formatPrice(formData.Price);
       setFormData(prev => ({
@@ -205,7 +202,6 @@ const TeaOrderForm = () => {
       }));
     }
     
-    // Validate the entire form before submission
     const isValid = validateForm();
     
     if (!isValid) {
@@ -222,7 +218,12 @@ const TeaOrderForm = () => {
       });
 
       if (response.status === 200 && response.data.orders) {
-        navigate('/payment', { state: { orderData: response.data.orders } });
+        setOrderData(response.data.orders);
+        setShowSuccessPopup(true);
+        
+        setTimeout(() => {
+          navigate('/payment', { state: { orderData: response.data.orders } });
+        }, 3000);
       } else {
         throw new Error('Failed to submit order');
       }
@@ -233,8 +234,16 @@ const TeaOrderForm = () => {
     }
   };
 
+  const closePopup = () => {
+    setShowSuccessPopup(false);
+    if (orderData) {
+      navigate('/payment', { state: { orderData } });
+    }
+  };
+
   return (
     <div className="tea-order-container">
+      {showSuccessPopup && <SuccessPopup onClose={closePopup} />}
       <div className="tea-order-card">
         <h1 className="tea-order-title">Tea Order Form</h1>
         {submitError && <p className="error-message">{submitError}</p>}
@@ -492,6 +501,87 @@ const styles = `
     font-weight: 500;
     color: #34495e;
     font-size: 14px;
+  }
+
+  /* Popup styles */
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .popup-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: popupFadeIn 0.3s ease-out;
+  }
+
+  @keyframes popupFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .popup-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background-color: #2ecc71;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .popup-icon svg {
+    width: 40px;
+    height: 40px;
+    color: white;
+  }
+
+  .popup-title {
+    color: #2c3e50;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .popup-message {
+    color: #7f8c8d;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .popup-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .popup-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
   }
 `;
 
