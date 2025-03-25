@@ -304,10 +304,11 @@ const TeaOrderForm = () => {
               onChange={handleChange}
               className="form-select"
             >
-              <option value="green">Green Tea</option>
-              <option value="black">Black Tea</option>
-              <option value="herbal">Herbal Tea</option>
-              <option value="oolong">Oolong Tea</option>
+              <option value="">Select Tea Type</option>
+              <option value="Green Tea">Green Tea</option>
+              <option value="Black Tea">Black Tea</option>
+              <option value="Oolong Tea">Oolong Tea</option>
+              <option value="White Tea">White Tea</option>
             </select>
           </div>
           

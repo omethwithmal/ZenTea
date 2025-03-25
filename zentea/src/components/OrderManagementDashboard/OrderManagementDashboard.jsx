@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from "chart.js";
-import { Doughnut, Bar } from "react-chartjs-2";
+import { Doughnut, Bar, Pie } from "react-chartjs-2";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faEdit, 
@@ -216,12 +216,54 @@ const OrderManagementDashboard = () => {
         ],
     };
 
+    // Data for Tea Type Distribution
+    const teaTypeData = {
+        labels: ["Green Tea", "Black Tea", "Oolong Tea", "White Tea"],
+        datasets: [
+            {
+                label: "Tea Type Distribution",
+                data: [
+                    orders.filter(o => o.Select_Tea_Type === 'Green Tea').length,
+                    orders.filter(o => o.Select_Tea_Type === 'Black Tea').length,
+                    orders.filter(o => o.Select_Tea_Type === 'Oolong Tea').length,
+                    orders.filter(o => o.Select_Tea_Type === 'White Tea').length
+                ],
+                backgroundColor: [
+                    "hsl(120, 60%, 50%)",
+                    "hsl(0, 60%, 50%)",
+                    "hsl(30, 60%, 50%)",
+                    "hsl(60, 60%, 50%)"
+                ],
+                hoverOffset: 4,
+            },
+        ],
+    };
+
+    // Data for Price Analysis
+    const priceAnalysisData = {
+        labels: ["< $10", "$10-$20", "$20-$30", "$30+"],
+        datasets: [
+            {
+                label: "Price Range Distribution",
+                data: [
+                    orders.filter(o => o.Price < 10).length,
+                    orders.filter(o => o.Price >= 10 && o.Price < 20).length,
+                    orders.filter(o => o.Price >= 20 && o.Price < 30).length,
+                    orders.filter(o => o.Price >= 30).length
+                ],
+                backgroundColor: "hsl(210, 70%, 50%)",
+                borderColor: "hsl(210, 70%, 50%)",
+                borderWidth: 1,
+            },
+        ],
+    };
+
     if (loading) {
         return <div style={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '100vh',
+            height: '90vh',
             fontSize: '18px'
         }}>Loading orders...</div>;
     }
@@ -281,11 +323,13 @@ const OrderManagementDashboard = () => {
             {/* Main Content */}
             <main style={{
                 flex: 1,
-                padding: "20px",
+                padding: "30px",
                 background: "#f4f4f4",
-                overflowY: "auto"
+                overflowY: "auto",
+                marginLeft:"50px",
+                
             }}>
-                <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px"}}>
                     <div>
                         <h1 style={{ fontSize: "24px", fontWeight: "bold" }}>Order Overview</h1>
                     </div>
@@ -360,12 +404,15 @@ const OrderManagementDashboard = () => {
                 </section>
 
                 {/* Charts Section */}
-                <section style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
-                    <div style={{ flex: 1, background: "#fff", padding: "20px", borderRadius: "5px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
-                        <Doughnut data={orderStatusData} options={{ responsive: true, plugins: { legend: { position: "top" } } }} />
+                <section style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "20px", marginBottom: "20px" }}>
+                   
+                    <div style={{ background: "#fff", padding: "20px", borderRadius: "5px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
+                        <h3 style={{ marginBottom: "15px", textAlign: "center" }}>Tea Type Distribution</h3>
+                        <Pie data={teaTypeData} options={{ responsive: true, plugins: { legend: { position: "top" } } }} />
                     </div>
-                    <div style={{ flex: 1, background: "#fff", padding: "20px", borderRadius: "5px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
-                        <Bar data={monthlyOrdersData} options={{ responsive: true, plugins: { legend: { position: "top" } } }} />
+                    <div style={{ background: "#fff", padding: "20px", borderRadius: "5px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
+                        <h3 style={{ marginBottom: "15px", textAlign: "center" }}>Price Range Analysis</h3>
+                        <Bar data={priceAnalysisData} options={{ responsive: true, plugins: { legend: { position: "top" } } }} />
                     </div>
                 </section>
 
@@ -410,29 +457,29 @@ const OrderManagementDashboard = () => {
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead>
                             <tr>
-                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Full Name</th>
-                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Delivery Address</th>
-                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Contact Number</th>
-                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Email Address</th>
-                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Tea Type</th>
-                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Quantity</th>
-                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Price</th>
-                            
-                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "left" }}>Actions</th>
+                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "center" }}>Full Name</th>
+                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "center" }}>Delivery Address</th>
+                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "center" }}>Contact Number</th>
+                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "center" }}>Email Address</th>
+                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "center" }}>Tea Type</th>
+                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "center" }}>Quantity</th>
+                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "center" }}>Price</th>
+                               
+                                <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "center" }}>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredOrders.length > 0 ? (
                                 filteredOrders.map((order) => (
                                     <tr key={order._id}>
-                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Full_Name}</td>
-                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Delivery_Address}</td>
-                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Contact_Number}</td>
-                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Email_Address}</td>
-                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Select_Tea_Type}</td>
-                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Quantity}</td>
-                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>{order.Price}</td>
-                                    
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd", textAlign: "center"  }}>{order.Full_Name}</td>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd", textAlign: "center"  }}>{order.Delivery_Address}</td>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd", textAlign: "center"  }}>{order.Contact_Number}</td>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd", textAlign: "center"  }}>{order.Email_Address}</td>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd", textAlign: "center"  }}>{order.Select_Tea_Type}</td>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd", textAlign: "center"  }}>{order.Quantity}</td>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd", textAlign: "center"  }}>{order.Price}</td>
+                                      
                                         <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>
                                             <button 
                                                 onClick={() => handleUpdate(order._id)}
@@ -580,7 +627,6 @@ const OrderManagementDashboard = () => {
                                     />
                                 </div>
                                 
-                    
                                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
                                     <button
                                         type="button"
