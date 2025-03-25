@@ -14,11 +14,14 @@ import EmployeeTaskView  from "./components/Employee/EmployeeTaskView/EmployeeTa
 import AddEmployeeForm  from "./components/Admin/AddEmployeeForm/AddEmployeeForm";
 import EmployeeDetailsTable  from "./components/Employee/EmployeeDetailsTable/EmployeeDetailsTable";
 import IT22090508_QRcode_Scanner_Page from "./components/QRCodeScanner/QRCodeScanner";
+
 // Kavishka Dilshan
 
 import PaymentForm from "./components/Payment/Payment";
 import TeaOrderForm from "./components/Order/TeaOrderForm";
 import OrderManagementDashboard from "./components/OrderManagementDashboard/OrderManagementDashboard";
+
+
 
  
 
@@ -47,6 +50,7 @@ function App() {
                 <Route path="/TeaOrderForm" element={<TeaOrderForm />} />
                 <Route path="/Payment" element={<PaymentForm />} />
                 <Route path="/Orderdash" element={<OrderManagementDashboard />} />
+               
      
 
 
