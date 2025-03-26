@@ -322,8 +322,8 @@ const EmployeeDashboard = () => {
                     borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
                 }}>
                     <i className="fas fa-cogs" style={{ fontSize: '40px', marginBottom: '10px' }}></i>
-                    <h1 style={{ margin: '5px 0', fontSize: '20px' }}>Employee</h1>
-                    <h2 style={{ margin: '5px 0', fontSize: '16px', fontWeight: 'normal' }}>Dashboard</h2>
+                    <h1 style={{ margin: '5px 0', fontSize: '35px' }}>Employee</h1>
+                    <h2 style={{ margin: '5px 0', fontSize: '25px', fontWeight: 'normal' }}>Dashboard</h2>
                 </div>
                 <nav style={{ marginTop: '20px' }}>
                     <a href="#" style={{
@@ -333,7 +333,9 @@ const EmployeeDashboard = () => {
                         textDecoration: 'none',
                         borderLeft: '4px solid transparent',
                         backgroundColor: 'rgba(255, 255, 255, 0.28)'
-                    }}>
+                    }} 
+                    
+                    >
                         <i className="fas fa-users" style={{ marginRight: '10px' }}></i>
                         <span>Employee Task</span>
                     </a>
@@ -343,10 +345,27 @@ const EmployeeDashboard = () => {
                         color: 'white',
                         textDecoration: 'none',
                         borderLeft: '4px solid transparent'
-                    }}>
+                    }}
+                    onClick={() => navigate('/NotificationDashboard')}
+                    >
                         <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
                         <span>Notification</span>
                     </a>
+
+                    <a href="#" style={{
+                        display: 'block',
+                        padding: '15px 20px',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderLeft: '4px solid transparent',
+                       
+                    }}
+                    onClick={() => navigate('/AttendanceDashboard')}
+                    >
+                        <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
+                        <span>Employee Attendance</span>
+                    </a>
+
                     <a
                         href="#"
                         style={{
