@@ -29,7 +29,7 @@ const TeaOrderForm = () => {
     Delivery_Address: '',
     Contact_Number: '',
     Email_Address: '',
-    Select_Tea_Type: 'green',
+    Select_Tea_Type: 'Green Tea',
     Quantity: 1,
     Price: '',
   });
@@ -222,7 +222,16 @@ const TeaOrderForm = () => {
         setShowSuccessPopup(true);
         
         setTimeout(() => {
-          navigate('/payment', { state: { orderData: response.data.orders } });
+          navigate('/CheckoutForm', { 
+            state: { 
+              orderData: {
+                ...response.data.orders,
+                Price: formData.Price,
+                Quantity: formData.Quantity,
+                TeaType: formData.Select_Tea_Type
+              }
+            } 
+          });
         }, 3000);
       } else {
         throw new Error('Failed to submit order');
@@ -237,7 +246,16 @@ const TeaOrderForm = () => {
   const closePopup = () => {
     setShowSuccessPopup(false);
     if (orderData) {
-      navigate('/payment', { state: { orderData } });
+      navigate('/CheckoutForm', { 
+        state: { 
+          orderData: {
+            ...orderData,
+            Price: formData.Price,
+            Quantity: formData.Quantity,
+            TeaType: formData.Select_Tea_Type
+          }
+        } 
+      });
     }
   };
 
@@ -304,7 +322,6 @@ const TeaOrderForm = () => {
               onChange={handleChange}
               className="form-select"
             >
-              <option value="">Select Tea Type</option>
               <option value="Green Tea">Green Tea</option>
               <option value="Black Tea">Black Tea</option>
               <option value="Oolong Tea">Oolong Tea</option>
