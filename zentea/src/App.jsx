@@ -14,6 +14,8 @@ import EmployeeTaskView  from "./components/Employee/EmployeeTaskView/EmployeeTa
 import AddEmployeeForm  from "./components/Admin/AddEmployeeForm/AddEmployeeForm";
 import EmployeeDetailsTable  from "./components/Employee/EmployeeDetailsTable/EmployeeDetailsTable";
 import IT22090508_QRcode_Scanner_Page from "./components/QRCodeScanner/QRCodeScanner";
+import AttendanceDashboard from "./components/Employee/AttendanceDashboard/AttendanceDashboard";
+import NotificationDashboard from "./components/Employee/NotificationDashboard/NotificationDashboard";
 
 // Kavishka Dilshan
 
@@ -45,6 +47,9 @@ function App() {
       <Route path="/EmployeeDetailsTable" element={<EmployeeDetailsTable/>} />
 
       <Route path="/QRCodeScanner" element={<IT22090508_QRcode_Scanner_Page/>} />
+
+      <Route path="/AttendanceDashboard" element={<AttendanceDashboard/>} />
+      <Route path="/NotificationDashboard" element={<NotificationDashboard/>} />
 
 
                 <Route path="/TeaOrderForm" element={<TeaOrderForm />} />
