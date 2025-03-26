@@ -53,9 +53,11 @@ const EmployeeTaskView = () => {
     return (
         <div style={{
             fontFamily: 'Arial, sans-serif',
-            backgroundColor: '#f4f4f9',
+            backgroundColor: 'white',
             minHeight: '100vh',
-            padding: '20px'
+            width:'1255px',
+            padding: '20px',
+            margin:'100px',
         }}>
             {/* Search Bar */}
             <div style={{
