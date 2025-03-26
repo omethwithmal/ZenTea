@@ -1,581 +1,281 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
-const PaymentForm = () => {
-  
-  const [formData, setFormData] = useState({
-    name: "",
-    contact: "",
-    email: "",
-    address: "",
-    cardNumber: "",
-    cvv: "",
-    expirationMonth: "",
-    expirationYear: "",
-    paymentMethod: "",
-    amount: "",
-  });
-  const [successMessage, setSuccessMessage] = useState(false);
-  const [loading, setLoading] = useState(false);
+const CheckoutForm = () => {
+  const location = useLocation();
+  const [selectedMethod, setSelectedMethod] = useState("Credit Card");
+  const [cardNumber, setCardNumber] = useState("");
+  const [amount, setAmount] = useState(0);
+  const [showPopup, setShowPopup] = useState(false); // Popup state
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  useEffect(() => {
+    if (location.state?.orderData?.Price) {
+      // Directly use the LKR amount without conversion
+      setAmount(parseFloat(location.state.orderData.Price).toFixed(2));
+    }
+  }, [location.state]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const handlePayment = () => {
+    // Show the popup when "Pay Now" is clicked
+    setShowPopup(true);
 
-    // Simulate payment processing
-    setTimeout(() => {
-      setLoading(false);
-      setSuccessMessage(true);
-
-      // Reset form
-      setFormData({
-        name: "",
-        contact: "",
-        email: "",
-        address: "",
-        cardNumber: "",
-        cvv: "",
-        expirationMonth: "",
-        expirationYear: "",
-        paymentMethod: "",
-        amount: "",
-      });
-
-      // Hide success message after 3 seconds
-      setTimeout(() => {
-        setSuccessMessage(false);
-      }, 3000);
-    }, 2000);
+    // Optionally, you can hide the popup after a few seconds
+    setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
   };
 
   return (
-    <div
-      style={{
-        marginLeft:"350px",
-        fontFamily: "'Poppins', sans-serif",
-        backgroundColor: "#f9f9f9",
-        padding: "40px", // Increased padding for larger form size
-        maxWidth: "800px", // Increased form width
-        margin: "0 auto",
-        borderRadius: "12px",
-        boxShadow: "0 6px 12px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      <h2
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
-          fontSize: "28px", // Larger title font size
-          fontWeight: "600",
-          color: "#333",
-          marginBottom: "30px", // Increased spacing below title
-        }}
-      >
-        <i className="fa-solid fa-credit-card" style={{ color: "#007bff" }}></i>
-        Secure Payment
-      </h2>
-
-      {/* Success Message */}
-      <div
-        style={{
-          display: successMessage ? "flex" : "none",
-          alignItems: "center",
-          gap: "12px",
-          color: "#28a745",
-          fontSize: "20px", // Larger success message font size
-          fontWeight: "500",
-          marginBottom: "30px",
-        }}
-      >
-        <i className="fa-solid fa-check-circle"></i>
-        Payment Successful!
+    <div className="checkout-container" style={styles.container}>
+      <div className="checkout-header" style={styles.header}>
+        <div className="checkout-title" style={styles.checkout}>
+          <span>Checkout</span>
+          <span className="total-amount" style={styles.total}>Total: Rs. {amount}</span>
+        </div>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px", // Increased spacing between form elements
-        }}
-      >
-        {/* Full Name */}
-        <div style={{ position: "relative" }}>
-          <label
-            htmlFor="name"
+      <h2 className="payment-method-title" style={styles.title}>My payment method</h2>
+
+      <div className="amount-section" style={styles.form}>
+        <label className="amount-label" style={styles.label}>Amount (LKR)</label>
+        <input 
+          className="amount-input" 
+          type="number" 
+          value={amount} 
+          readOnly
+          style={{ 
+            ...styles.input,
+            backgroundColor: '#f5f5f5',
+            cursor: 'not-allowed'
+          }} 
+        />
+      </div>
+
+      <div className="payment-methods" style={styles.paymentMethods}>
+        {["Credit Card", "Paypal", "Bitcoin"].map((method) => (
+          <div
+            key={method}
+            className={`payment-method ${selectedMethod === method ? 'active' : ''}`}
             style={{
-              fontSize: "18px", // Larger label font size
-              fontWeight: "500",
-              color: "#555",
-              marginBottom: "10px", // Increased spacing below label
+              ...styles.method,
+              ...(selectedMethod === method ? styles.active : {}),
             }}
+            onClick={() => setSelectedMethod(method)}
           >
-            Full Name
+            {method === "Credit Card" ? "💳" : method === "Paypal" ? "💰" : "₿"} {method}
+          </div>
+        ))}
+      </div>
+
+      <div className="payment-form" style={styles.form}>
+        {selectedMethod === "Credit Card" && (
+          <>
+            <label className="card-number-label" style={styles.label}>Card number</label>
+            <input 
+              className="card-number-input" 
+              type="text" 
+              value={cardNumber} 
+              onChange={(e) => setCardNumber(e.target.value)} 
+              style={styles.input} 
+              placeholder="Enter card number"
+            />
+
+            <label className="card-name-label" style={styles.label}>Name on Card</label>
+            <input className="card-name-input" type="text" placeholder="Enter name" style={styles.input} />
+
+            <div className="card-details-row" style={styles.row}>
+              <div>
+                <label className="cvv-label" style={styles.label}>CVV CODE</label>
+                <input className="cvv-input" type="password" style={styles.inputSmall} placeholder="***" />
+              </div>
+              <div>
+                <label className="expiry-label" style={styles.label}>Expiration date</label>
+                <input className="expiry-input" type="text" placeholder="MM/YY" style={styles.inputSmall} />
+              </div>
+            </div>
+          </>
+        )}
+
+        {selectedMethod === "Paypal" && (
+          <div className="paypal-message">
+            <p>You will be redirected to PayPal to complete your payment</p>
+          </div>
+        )}
+
+        {selectedMethod === "Bitcoin" && (
+          <div className="bitcoin-message">
+            <p>Please send Rs. {amount} worth of Bitcoin to the following address:</p>
+            <p style={{fontFamily: 'monospace', wordBreak: 'break-all'}}>
+              3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5
+            </p>
+          </div>
+        )}
+
+        <div className="terms-checkbox" style={styles.checkboxContainer}>
+          <input className="terms-input" type="checkbox" id="terms" />
+          <label className="terms-label" htmlFor="terms">
+            I have read & agree to <span className="terms-link" style={styles.link}>Terms & Conditions</span>
           </label>
-          <i
-            className="fa-solid fa-address-card"
-            style={{
-              position: "absolute",
-              top: "45px",
-              left: "50px",
-              color: "#aaa",
-            }}
-          ></i>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            style={{
-              width: "100%",
-              padding: "15px 45px", // Increased input padding
-              fontSize: "16px", // Larger input font size
-              border: "1px solid #ddd",
-              borderRadius: "6px",
-              outline: "none",
-            }}
-          />
         </div>
 
-        {/* Contact Number & Email */}
-        <div
-          style={{
-            display: "flex",
-            gap: "20px",
-          }}
-        >
-          <div style={{ flex: 1, position: "relative" }}>
-            <label
-              htmlFor="contact"
-              style={{
-                fontSize: "18px", // Larger label font size
-                fontWeight: "500",
-                color: "#555",
-                marginBottom: "10px", // Increased spacing below label
-              }}
-            >
-              Contact Number
-            </label>
-            <i
-              className="fa-solid fa-phone"
-              style={{
-                position: "absolute",
-                top: "45px",
-                left: "15px",
-                color: "#aaa",
-              }}
-            ></i>
-            <input
-              type="tel"
-              id="contact"
-              name="contact"
-              value={formData.contact}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "15px 45px", // Increased input padding
-                fontSize: "16px", // Larger input font size
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                outline: "none",
-              }}
-            />
-          </div>
-          <div style={{ flex: 1, position: "relative" }}>
-            <label
-              htmlFor="email"
-              style={{
-                fontSize: "18px", // Larger label font size
-                fontWeight: "500",
-                color: "#555",
-                marginBottom: "10px", // Increased spacing below label
-              }}
-            >
-              Email Address
-            </label>
-            <i
-              className="fa-solid fa-envelope"
-              style={{
-                position: "absolute",
-                top: "45px",
-                left: "15px",
-                color: "#aaa",
-              }}
-            ></i>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "15px 45px", // Increased input padding
-                fontSize: "16px", // Larger input font size
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                outline: "none",
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Delivery Address */}
-        <div style={{ position: "relative" }}>
-          <label
-            htmlFor="address"
-            style={{
-              fontSize: "18px", // Larger label font size
-              fontWeight: "500",
-              color: "#555",
-              marginBottom: "10px", // Increased spacing below label
-            }}
-          >
-            Delivery Address
-          </label>
-          <i
-            className="fa-solid fa-address-card"
-            style={{
-              position: "absolute",
-              top: "45px",
-              left: "15px",
-              color: "#aaa",
-            }}
-          ></i>
-          <textarea
-            id="address"
-            name="address"
-            rows="3"
-            value={formData.address}
-            onChange={handleChange}
-            required
-            style={{
-              width: "100%",
-              padding: "15px 45px", // Increased input padding
-              fontSize: "16px", // Larger input font size
-              border: "1px solid #ddd",
-              borderRadius: "6px",
-              outline: "none",
-            }}
-          ></textarea>
-        </div>
-
-        {/* Card Number & CVV */}
-        <div
-          style={{
-            display: "flex",
-            gap: "20px",
-          }}
-        >
-          <div style={{ flex: 2, position: "relative" }}>
-            <label
-              htmlFor="cardNumber"
-              style={{
-                fontSize: "18px", // Larger label font size
-                fontWeight: "500",
-                color: "#555",
-                marginBottom: "10px", // Increased spacing below label
-              }}
-            >
-              Card Number
-            </label>
-            <i
-              className="fa-solid fa-credit-card"
-              style={{
-                position: "absolute",
-                top: "45px",
-                left: "15px",
-                color: "#aaa",
-              }}
-            ></i>
-            <input
-              type="text"
-              id="cardNumber"
-              name="cardNumber"
-              value={formData.cardNumber}
-              onChange={handleChange}
-              pattern="\d{16}"
-              placeholder="1234 5678 9012 3456"
-              required
-              style={{
-                width: "100%",
-                padding: "15px 45px", // Increased input padding
-                fontSize: "16px", // Larger input font size
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                outline: "none",
-              }}
-            />
-          </div>
-          <div style={{ flex: 1, position: "relative" }}>
-            <label
-              htmlFor="cvv"
-              style={{
-                fontSize: "18px", // Larger label font size
-                fontWeight: "500",
-                color: "#555",
-                marginBottom: "10px", // Increased spacing below label
-              }}
-            >
-              CVV
-            </label>
-            <i
-              className="fa-solid fa-lock"
-              style={{
-                position: "absolute",
-                top: "45px",
-                left: "15px",
-                color: "#aaa",
-              }}
-            ></i>
-            <input
-              type="text"
-              id="cvv"
-              name="cvv"
-              value={formData.cvv}
-              onChange={handleChange}
-              pattern="\d{3}"
-              placeholder="123"
-              required
-              style={{
-                width: "100%",
-                padding: "15px 45px", // Increased input padding
-                fontSize: "16px", // Larger input font size
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                outline: "none",
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Expiration Month, Year & Payment Method */}
-        <div
-          style={{
-            display: "flex",
-            gap: "20px",
-          }}
-        >
-          <div style={{ flex: 1, position: "relative" }}>
-            <label
-              htmlFor="expirationMonth"
-              style={{
-                fontSize: "18px", // Larger label font size
-                fontWeight: "500",
-                color: "#555",
-                marginBottom: "10px", // Increased spacing below label
-              }}
-            >
-              Expiration Month
-            </label>
-            <i
-              className="fa-solid fa-calendar"
-              style={{
-                position: "absolute",
-                top: "45px",
-                left: "15px",
-                color: "#aaa",
-              }}
-            ></i>
-            <select
-              id="expirationMonth"
-              name="expirationMonth"
-              value={formData.expirationMonth}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "15px 45px", // Increased input padding
-                fontSize: "16px", // Larger input font size
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                outline: "none",
-              }}
-            >
-              <option value="">Month</option>
-              {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map((month) => (
-                <option key={month} value={month}>
-                  {month}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div style={{ flex: 1, position: "relative" }}>
-            <label
-              htmlFor="expirationYear"
-              style={{
-                fontSize: "18px", // Larger label font size
-                fontWeight: "500",
-                color: "#555",
-                marginBottom: "10px", // Increased spacing below label
-              }}
-            >
-              Expiration Year
-            </label>
-            <i
-              className="fa-solid fa-calendar"
-              style={{
-                position: "absolute",
-                top: "45px",
-                left: "15px",
-                color: "#aaa",
-              }}
-            ></i>
-            <select
-              id="expirationYear"
-              name="expirationYear"
-              value={formData.expirationYear}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "15px 45px", // Increased input padding
-                fontSize: "16px", // Larger input font size
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                outline: "none",
-              }}
-            >
-              <option value="">Year</option>
-              {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div style={{ flex: 1, position: "relative" }}>
-            <label
-              htmlFor="paymentMethod"
-              style={{
-                fontSize: "18px", // Larger label font size
-                fontWeight: "500",
-                color: "#555",
-                marginBottom: "10px", // Increased spacing below label
-              }}
-            >
-              Payment Method
-            </label>
-            <i
-              className="fa-solid fa-credit-card"
-              style={{
-                position: "absolute",
-                top: "45px",
-                left: "15px",
-                color: "#aaa",
-              }}
-            ></i>
-            <select
-              id="paymentMethod"
-              name="paymentMethod"
-              value={formData.paymentMethod}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "15px 45px", // Increased input padding
-                fontSize: "16px", // Larger input font size
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                outline: "none",
-              }}
-            >
-              <option value="">Select Method</option>
-              <option value="visa">Visa</option>
-              <option value="mastercard">Mastercard</option>
-              <option value="paypal">PayPal</option>
-              <option value="amex">American Express</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Amount */}
-        <div style={{ position: "relative" }}>
-          <label
-            htmlFor="amount"
-            style={{
-              fontSize: "18px", // Larger label font size
-              fontWeight: "500",
-              color: "#555",
-              marginBottom: "10px", // Increased spacing below label
-            }}
-          >
-            Amount
-          </label>
-          <i
-            className="fa-solid fa-dollar-sign"
-            style={{
-              position: "absolute",
-              top: "45px",
-              left: "15px",
-              color: "#aaa",
-            }}
-          ></i>
-          <input
-            type="number"
-            id="amount"
-            name="amount"
-            value={formData.amount}
-            onChange={handleChange}
-            min="1"
-            step="0.01"
-            placeholder="0.00"
-            required
-            style={{
-              width: "100%",
-              padding: "15px 45px", // Increased input padding
-              fontSize: "16px", // Larger input font size
-              border: "1px solid #ddd",
-              borderRadius: "6px",
-              outline: "none",
-            }}
-          />
-        </div>
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "12px",
-            padding: "15px",
-            fontSize: "18px", // Larger button font size
-            fontWeight: "600",
-            color: "#fff",
-            backgroundColor: loading ? "#ccc" : "#007bff",
-            border: "none",
-            borderRadius: "6px",
-            cursor: loading ? "not-allowed" : "pointer",
-            transition: "background-color 0.3s ease",
-          }}
-        >
-          {loading ? (
-            <>
-              <i className="fa-solid fa-spinner spin"></i>
-              Processing Payment...
-            </>
-          ) : (
-            <>
-              Pay Now
-              <i className="fa-solid fa-credit-card"></i>
-            </>
-          )}
+        <button className="submit-order-btn" style={styles.button} onClick={handlePayment}>
+          {selectedMethod === "Credit Card" ? "Pay Now" : 
+           selectedMethod === "Paypal" ? "Proceed to PayPal" : "I've Sent Bitcoin"}
         </button>
-      </form>
+      </div>
+
+      {/* Payment Successful Popup */}
+      {showPopup && (
+        <div className="popup" style={styles.popup}>
+          <div style={styles.popupContent}>
+            <h2>Payment Successful!</h2>
+            <p>Your payment has been completed successfully.</p>
+            <button onClick={() => setShowPopup(false)} style={styles.popupCloseButton}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default PaymentForm;
+const styles = {
+  container: {
+    width: "1550px",
+    margin: "auto",
+    fontFamily: "Arial, sans-serif",
+    backgroundColor: "#fff",
+    padding: "20px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "100vh",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "10px",
+    borderBottom: "1px solid #ccc",
+    width: "100%",
+  },
+  checkout: {
+    fontWeight: "bold",
+    fontSize: "20px",
+  },
+  total: {
+    backgroundColor: "#222",
+    color: "#fff",
+    padding: "5px 10px",
+    borderRadius: "5px",
+    marginLeft: "10px",
+  },
+  title: {
+    textAlign: "center",
+    margin: "20px 0",
+    fontSize: "24px",
+  },
+  paymentMethods: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "10px",
+    cursor: "pointer",
+    marginBottom: "20px",
+  },
+  method: {
+    padding: "10px 15px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    cursor: "pointer",
+    transition: "all 0.3s",
+  },
+  active: {
+    backgroundColor: "#E6F7FF",
+    borderColor: "#009EEB",
+    transform: "scale(1.05)",
+  },
+  form: {
+    marginTop: "20px",
+    width: "100%",
+    maxWidth: "350px",
+  },
+  label: {
+    display: "block",
+    fontSize: "12px",
+    margin: "5px 0",
+    fontWeight: "bold",
+  },
+  input: {
+    width: "100%",
+    padding: "10px",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    marginBottom: "15px",
+    fontSize: "14px",
+  },
+  row: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: "10px",
+  },
+  inputSmall: {
+    width: "100%",
+    padding: "10px",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    fontSize: "14px",
+  },
+  checkboxContainer: {
+    margin: "20px 0",
+    display: "flex",
+    alignItems: "center",
+    gap: "5px",
+  },
+  link: {
+    color: "#FF5733",
+    cursor: "pointer",
+    textDecoration: "underline",
+  },
+  button: {
+    width: "100%",
+    padding: "12px",
+    backgroundColor: "#FF5733",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontSize: "16px",
+    fontWeight: "bold",
+    transition: "all 0.3s",
+  },
+  popup: {
+    position: "fixed",
+    top: "0",
+    left: "0",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  popupContent: {
+    backgroundColor: "#fff",
+    padding: "30px",
+    borderRadius: "8px",
+    textAlign: "center",
+    width: "300px",
+  },
+  popupCloseButton: {
+    backgroundColor: "#FF5733",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    padding: "10px 20px",
+    cursor: "pointer",
+    fontSize: "16px",
+  },
+};
+
+export default CheckoutForm;
