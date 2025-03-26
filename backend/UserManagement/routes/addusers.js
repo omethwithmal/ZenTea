@@ -1,69 +1,85 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/adduser"); // import task model
+const User = require("../models/adduser");
 
-// add user
-router.post("/add",async(req,res)=>{
-    const{ firstName, lastName, employeeId, birthDate, contactNumber, email, homeAddress, nationalId, startDate, jobTitle, department } = req.body;
+// Add a new employee
+router.post("/add", async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    employeeID,
+    birthday,
+    contactNumber,
+    email,
+    homeAddress,
+    nationalID,
+    startDate,
+    jobTitle,
+    department,
+    basicSalary,
+  } = req.body;
 
-    if(!firstName || !lastName || !employeeId || !birthDate || !contactNumber || !email || !homeAddress || !nationalId  || !startDate || !jobTitle || !department){
-        return res.status(400).json({ error:"required"});
-    }
-
-    try{
-        const newUser = new User({firstName,lastName,employeeId,birthDate,contactNumber,email,homeAddress,nationalId,startDate,jobTitle,department});
-        await newUser.save();
-        res.json({ message : "Employee added Successfully"});
-    } catch (err){
-        res.status(500).json({ error:"Failed to add Employee", details: err.message});
-    } 
+  try {
+    const newUser = new User({
+      firstName,
+      lastName,
+      employeeID,
+      birthday,
+      contactNumber,
+      email,
+      homeAddress,
+      nationalID,
+      startDate,
+      jobTitle,
+      department,
+      basicSalary,
+    });
+    await newUser.save();
+    res.json({ message: "Employee added successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to add employee", details: err.message });
+  }
 });
 
-
-//view employee
-
-router.get("/display",async(req,res)=>{
-
-    try{
-        const users = await User.find();
-        res.json(users);
-    } catch (err){
-        res.status(500).json({ error: "Employee failed to  view", details: err.message});
-    }
-
+// View all employees
+router.get("/display", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch employees", details: err.message });
+  }
 });
 
-// update employee
+// Update an employee
+router.put("/update/:id", async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
 
-router.put("/update/:employeeId",async(req,res)=>{
-    const{ firstName, lastName, employeeId, birthDate, contactNumber, email, homeAddress, nationalId, startDate, jobTitle, department} = req.body;
-
-    try {
-        const updateUser = await User.findByIdAndUpdate(req.params.employeeId, {firstName, lastName, employeeId, birthDate, contactNumber, email, homeAddress, nationalId, startDate, jobTitle, department}, {new: true});
-        if(!updateUser){
-            return res.status(404).json({ error:"Employee not found"});
-        }
-
-        res.json({ message: "Employee Update successfully",User: updateUser});
-    } catch (err){
-        res.status(500).json({ error:"Fail Employee Update",details: err.message});
+  try {
+    const updatedUser = await User.findByIdAndUpdate(id, updates, { new: true });
+    if (!updatedUser) {
+      return res.status(404).json({ error: "Employee not found" });
     }
+    res.json({ message: "Employee updated successfully!", user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update employee", details: err.message });
+  }
 });
 
-//delete employee
+// Delete an employee
+router.delete("/delete/:id", async (req, res) => {
+  const { id } = req.params;
 
-router.delete("/delete/:employeeId", async (req, res) => {
-    try {
-        const deletedUser = await User.findByIdAndDelete(req.params.employeeId);
-        if (!deletedUser) {
-            return res.status(404).json({ error: "Employee not found" });
-        }
-        res.json({ message: "Employee deleted successfully" });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to delete detet", details: err.message });
+  try {
+    const deletedUser = await User.findByIdAndDelete(id);
+    if (!deletedUser) {
+      return res.status(404).json({ error: "Employee not found" });
     }
+    res.json({ message: "Employee deleted successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete employee", details: err.message });
+  }
 });
 
-
-
-module.exports = router; 
+module.exports = router;

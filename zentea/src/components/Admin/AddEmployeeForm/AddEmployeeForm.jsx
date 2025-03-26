@@ -1,315 +1,460 @@
-import React, { useState } from 'react';
-import './AddEmployeeForm.css'; // Import the CSS file
-import { useNavigate } from 'react-router-dom';
-
+import React, { useState } from "react";
+import axios from "axios";
 
 const AddEmployeeForm = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    employeeID: "",
+    birthday: "",
+    contactNumber: "",
+    email: "",
+    homeAddress: "",
+    nationalID: "",
+    startDate: "",
+    jobTitle: "",
+    department: "",
+    basicSalary: "",
+  });
 
-    const navigate = useNavigate();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8070/user/add", formData);
+      alert(response.data.message || "Employee added successfully!");
+    } catch (error) {
+      alert(error.response?.data?.error || "Failed to add employee");
+    }
+  };
 
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        employeeId: '',
-        birthDate: '',
-        contactNumber: '',
-        email: '',
-        homeAddress: '',
-        nationalId: '',
-        startDate: '',
-        jobTitle: '',
-        department: '',
-        profilePicture: null,
-    });
+  return (
+    <div
+      style={{
+        maxWidth: "800px",
+        margin: "50px auto",
+        padding: "30px",
+        backgroundColor: "#f9f9f9",
+        borderRadius: "12px",
+        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <h2
+        style={{
+          textAlign: "center",
+          marginBottom: "20px",
+          color: "#333",
+          fontWeight: "bold",
+        }}
+      >
+        Add Employee
+      </h2>
+      <form onSubmit={handleSubmit}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: "20px",
+          }}
+        >
+          {/* First Name */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                color: "#555",
+                fontWeight: "500",
+              }}
+            >
+              First Name
+            </label>
+            <input
+              type="text"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                fontSize: "14px",
+              }}
+            />
+          </div>
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
+          {/* Last Name */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                color: "#555",
+                fontWeight: "500",
+              }}
+            >
+              Last Name
+            </label>
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                fontSize: "14px",
+              }}
+            />
+          </div>
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const previewUrl = URL.createObjectURL(file);
-            setFormData((prev) => ({ ...prev, profilePicture: file, previewUrl }));
-        }
-    };
+          {/* Employee ID */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                color: "#555",
+                fontWeight: "500",
+              }}
+            >
+              Employee ID
+            </label>
+            <input
+              type="text"
+              name="employeeID"
+              value={formData.employeeID}
+              onChange={handleChange}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                fontSize: "14px",
+              }}
+            />
+          </div>
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Form submitted:', formData);
-        if (formData.previewUrl) {
-            URL.revokeObjectURL(formData.previewUrl); // Clean up memory
-        }
-        // Add your form submission logic here
-    };
+          {/* Birthday */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                color: "#555",
+                fontWeight: "500",
+              }}
+            >
+              Birthday
+            </label>
+            <input
+              type="date"
+              name="birthday"
+              value={formData.birthday}
+              onChange={handleChange}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                fontSize: "14px",
+              }}
+            />
+          </div>
 
-    const handleCancel = () => {
-        if (formData.previewUrl) {
-            URL.revokeObjectURL(formData.previewUrl); // Clean up memory
-        }
-        setFormData({
-            firstName: '',
-            lastName: '',
-            employeeId: '',
-            birthDate: '',
-            contactNumber: '',
-            email: '',
-            homeAddress: '',
-            nationalId: '',
-            startDate: '',
-            jobTitle: '',
-            department: '',
-            profilePicture: null,
-            previewUrl: null,
-        });
-    };
+          {/* Contact Number */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                color: "#555",
+                fontWeight: "500",
+              }}
+            >
+              Contact Number
+            </label>
+            <input
+              type="tel"
+              name="contactNumber"
+              value={formData.contactNumber}
+              onChange={handleChange}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                fontSize: "14px",
+              }}
+            />
+          </div>
 
-    return (
-        <div className="IT22090508-AddEmployeeForm-dashboard">
-            {/* Sidebar */}
-            <aside className="IT22090508-admindashbord-sidebar">
-                <div className="IT22090508-admindashbord-logo">
-                    <i className="fas fa-cogs"></i>
-                    <h1>Admin</h1>
-                    <h2>Dashboard</h2>
-                </div>
-                <nav>
-                    <a href="#" className="IT22090508-admindashbord-nav-link "
-                    onClick={() =>navigate('/ManagementDashboard')}>
-                        <i className="fas fa-user-shield"></i>
-                        <span>Admin</span>
-                    </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link active">
-                        <i className="fas fa-user-plus"></i>
-                        <span>➕ Add User</span>
-                    </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link">
-                        <i className="fas fa-bell"></i>
-                        <span>🔔Notification</span>
-                    </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link"
-                    onClick={() =>navigate('/EmployeeDashboard')}
-                    >
-                        <i className="fas fa-users"></i>
-                        
-                        <span>👤Employee</span>
-                    </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link">
-                        <i className="fas fa-wallet"></i>
-                        <span>💰Financial</span>
-                    </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link">
-                        <i className="fas fa-truck"></i>
-                        <span>🚚 Orders</span>
-                    </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link">
-                        <i className="fas fa-boxes"></i>
-                        <span>📦Inventory</span>
-                    </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link">
-                        <i className="fas fa-tools"></i>
-                        <span>🛠 Equipment</span>
-                    </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link">
-                        <i className="fas fa-cog"></i>
-                        <span>⚙ Settings</span>
-                    </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link">
-                        <i className="fas fa-sign-out-alt"></i>
-                        <span>↩ Log Out</span>
-                    </a>
-                </nav>
-            </aside>
+          {/* Email */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                color: "#555",
+                fontWeight: "500",
+              }}
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                fontSize: "14px",
+              }}
+            />
+          </div>
 
-            {/* Main Content */}
-            <main className="IT22090508-AddEmployeeForm-content">
-                <div className="IT22090508-AddEmployeeForm-card">
-                    <h2 className="IT22090508-AddEmployeeForm-title">Add New User</h2>
-                    <form onSubmit={handleSubmit} className="IT22090508-AddEmployeeForm-form">
-                        <div className="IT22090508-AddEmployeeForm-grid">
-                            <div className="IT22090508-AddEmployeeForm-field">
-                                <label>First Name</label>
-                                <input
-                                    type="text"
-                                    name="firstName"
-                                    value={formData.firstName}
-                                    onChange={handleChange}
-                                    placeholder="Enter first name"
-                                    required
-                                />
-                            </div>
-                            <div className="IT22090508-AddEmployeeForm-field">
-                                <label>Last Name</label>
-                                <input
-                                    type="text"
-                                    name="lastName"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                    placeholder="Enter last name"
-                                    required
-                                />
-                            </div>
-                            <div className="IT22090508-AddEmployeeForm-field">
-                                <label>Employee ID</label>
-                                <input
-                                    type="text"
-                                    name="employeeId"
-                                    value={formData.employeeId}
-                                    onChange={handleChange}
-                                    placeholder="Enter employee ID"
-                                    required
-                                />
-                            </div>
-                            <div className="IT22090508-AddEmployeeForm-field">
-                                <label>Birth Date</label>
-                                <input
-                                    type="date"
-                                    name="birthDate"
-                                    value={formData.birthDate}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                            <div className="IT22090508-AddEmployeeForm-field">
-                                <label>Contact Number</label>
-                                <input
-                                    type="tel"
-                                    name="contactNumber"
-                                    value={formData.contactNumber}
-                                    onChange={handleChange}
-                                    placeholder="Enter contact number"
-                                    required
-                                />
-                            </div>
-                            <div className="IT22090508-AddEmployeeForm-field">
-                                <label>Email Address</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="Enter email address"
-                                    required
-                                />
-                            </div>
-                            <div className="IT22090508-AddEmployeeForm-field full-width">
-                                <label>Home Address</label>
-                                <textarea
-                                    name="homeAddress"
-                                    value={formData.homeAddress}
-                                    onChange={handleChange}
-                                    placeholder="Enter home address"
-                                    required
-                                />
-                            </div>
-                            <div className="IT22090508-AddEmployeeForm-field">
-                                <label>National ID Card Number</label>
-                                <input
-                                    type="text"
-                                    name="nationalId"
-                                    value={formData.nationalId}
-                                    onChange={handleChange}
-                                    placeholder="Enter national ID"
-                                    required
-                                />
-                            </div>
-                            <div className="IT22090508-AddEmployeeForm-field">
-                                <label>Start Date</label>
-                                <input
-                                    type="date"
-                                    name="startDate"
-                                    value={formData.startDate}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                            <div className="IT22090508-AddEmployeeForm-field">
-                                <label>Job Title</label>
-                                <input
-                                    type="text"
-                                    name="jobTitle"
-                                    value={formData.jobTitle}
-                                    onChange={handleChange}
-                                    placeholder="Enter job title"
-                                    required
-                                />
-                            </div>
-                            <div className="IT22090508-AddEmployeeForm-field">
-                                <label>Department</label>
-                                <select
-                                    name="department"
-                                    value={formData.department}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    <option value="">Select Department</option>
-                                    <option value="Plantation">Plantation Department</option>
-                                    <option value="Production">Production & Processing Department</option>
-                                    <option value="Quality">Quality Control Department</option>
-                                    <option value="Finance">Finance Department</option>
-                                    <option value="Development">Development Department</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div className="IT22090508-AddEmployeeForm-profile-section">
-                            <div className="IT22090508-AddEmployeeForm-profile-picture">
-                                <label>Profile Picture</label>
-                                <div className="IT22090508-AddEmployeeForm-upload-area">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleFileChange}
-                                        id="profile-upload"
-                                        hidden
-                                    />
-                                    <label htmlFor="profile-upload" className="IT22090508-AddEmployeeForm-upload-label">
-                                        {formData.profilePicture ? (
-                                            <span>{formData.profilePicture.name}</span>
-                                        ) : (
-                                            <span>Click to upload profile picture</span>
-                                        )}
-                                    </label>
-                                </div>
-                            </div>
-                            <div className="IT22090508-AddEmployeeForm-preview-section">
-                                <label>Preview</label>
-                                <div className="IT22090508-AddEmployeeForm-preview-container">
-                                    {formData.previewUrl ? (
-                                        <img
-                                            src={formData.previewUrl}
-                                            alt="Profile preview"
-                                            className="IT22090508-AddEmployeeForm-preview-image"
-                                        />
-                                    ) : (
-                                        <div className="IT22090508-AddEmployeeForm-preview-placeholder">
-                                            No image selected
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="IT22090508-AddEmployeeForm-buttons">
-                            <button
-                                type="button"
-                                className="IT22090508-AddEmployeeForm-cancel"
-                                onClick={handleCancel}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                className="IT22090508-AddEmployeeForm-save"
-                            >
-                                Save
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </main>
+          {/* Home Address */}
+          <div style={{ gridColumn: "span 2" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                color: "#555",
+                fontWeight: "500",
+              }}
+            >
+              Home Address
+            </label>
+            <textarea
+              name="homeAddress"
+              value={formData.homeAddress}
+              onChange={handleChange}
+              rows="3"
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                fontSize: "14px",
+                resize: "none",
+              }}
+            ></textarea>
+          </div>
+
+          {/* National ID */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                color: "#555",
+                fontWeight: "500",
+              }}
+            >
+              National ID
+            </label>
+            <input
+              type="text"
+              name="nationalID"
+              value={formData.nationalID}
+              onChange={handleChange}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                fontSize: "14px",
+              }}
+            />
+          </div>
+
+          {/* Start Date */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                color: "#555",
+                fontWeight: "500",
+              }}
+            >
+              Start Date
+            </label>
+            <input
+              type="date"
+              name="startDate"
+              value={formData.startDate}
+              onChange={handleChange}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                fontSize: "14px",
+              }}
+            />
+          </div>
+
+          {/* Job Title */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                color: "#555",
+                fontWeight: "500",
+              }}
+            >
+              Job Title
+            </label>
+            <input
+              type="text"
+              name="jobTitle"
+              value={formData.jobTitle}
+              onChange={handleChange}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                fontSize: "14px",
+              }}
+            />
+          </div>
+
+          {/* Department */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                color: "#555",
+                fontWeight: "500",
+              }}
+            >
+              Department
+            </label>
+            <select
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                fontSize: "14px",
+              }}
+            >
+              <option value="">Select Department</option>
+              <option value="HR">Human Resources</option>
+              <option value="IT">Information Technology</option>
+              <option value="Finance">Finance</option>
+              <option value="Marketing">Marketing</option>
+            </select>
+          </div>
+
+          {/* Basic Salary */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                color: "#555",
+                fontWeight: "500",
+              }}
+            >
+              Basic Salary
+            </label>
+            <input
+              type="number"
+              name="basicSalary"
+              value={formData.basicSalary}
+              onChange={handleChange}
+              required
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                fontSize: "14px",
+              }}
+            />
+          </div>
         </div>
-    );
+
+        {/* Actions */}
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "center",
+            gap: "15px",
+          }}
+        >
+          <button
+            type="submit"
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#28a745",
+              color: "#fff",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "16px",
+              transition: "background-color 0.3s ease",
+            }}
+            onMouseOver={(e) => (e.target.style.backgroundColor = "#218838")}
+            onMouseOut={(e) => (e.target.style.backgroundColor = "#28a745")}
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={() => setFormData({})}
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#dc3545",
+              color: "#fff",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "16px",
+              transition: "background-color 0.3s ease",
+            }}
+            onMouseOver={(e) => (e.target.style.backgroundColor = "#c82333")}
+            onMouseOut={(e) => (e.target.style.backgroundColor = "#dc3545")}
+          >
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 export default AddEmployeeForm;
