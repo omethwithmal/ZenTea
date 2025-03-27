@@ -1,5 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; 
+
+
+// ometh
 import Home from "./components/Home/Home";
 import Footer from "./components/Footer/Footer";
 import LoginPage from "./components/Login/Login";
