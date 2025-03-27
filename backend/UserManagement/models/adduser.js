@@ -58,7 +58,7 @@ const userSchema = new mongoose.Schema({
   department: {
     type: String,
     required: true,
-    enum: ["HR", "IT", "Finance", "Marketing"],
+    enum: ["Plantation Department", " Production & Processing", "Quality Control Department", "Finance Department"," Development Department"],
   },
   basicSalary: {
     type: Number,

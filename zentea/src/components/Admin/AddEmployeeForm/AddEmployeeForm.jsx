@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 const AddEmployeeForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -14,21 +16,38 @@ const AddEmployeeForm = () => {
     startDate: "",
     jobTitle: "",
     department: "",
-    basicSalary: "",
+    basicSalary: "", // Salary in LKR
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+
+    // Format the basicSalary field with commas for better readability
+    if (name === "basicSalary") {
+      const formattedValue = value.replace(/[^0-9]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: formattedValue,
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await axios.post("http://localhost:8070/user/add", formData);
+      // Remove commas from basicSalary before sending to the backend
+      const formattedFormData = {
+        ...formData,
+        basicSalary: formData.basicSalary.replace(/,/g, ""),
+      };
+
+      const response = await axios.post("http://localhost:8070/user/add", formattedFormData);
       alert(response.data.message || "Employee added successfully!");
     } catch (error) {
       alert(error.response?.data?.error || "Failed to add employee");
@@ -38,8 +57,9 @@ const AddEmployeeForm = () => {
   return (
     <div
       style={{
-        maxWidth: "800px",
-        margin: "50px auto",
+        width: "700px",
+        margin: "100px",
+        marginLeft: "400px",
         padding: "30px",
         backgroundColor: "#f9f9f9",
         borderRadius: "12px",
@@ -50,7 +70,7 @@ const AddEmployeeForm = () => {
         style={{
           textAlign: "center",
           marginBottom: "20px",
-          color: "#333",
+          color: "#0ec400",
           fontWeight: "bold",
         }}
       >
@@ -88,10 +108,11 @@ const AddEmployeeForm = () => {
                 border: "1px solid #ccc",
                 borderRadius: "6px",
                 fontSize: "14px",
+                backgroundColor: "#e8e8e8",
+                color: "black",
               }}
             />
           </div>
-
           {/* Last Name */}
           <div>
             <label
@@ -116,10 +137,11 @@ const AddEmployeeForm = () => {
                 border: "1px solid #ccc",
                 borderRadius: "6px",
                 fontSize: "14px",
+                backgroundColor: "#e8e8e8",
+                color: "black",
               }}
             />
           </div>
-
           {/* Employee ID */}
           <div>
             <label
@@ -144,10 +166,11 @@ const AddEmployeeForm = () => {
                 border: "1px solid #ccc",
                 borderRadius: "6px",
                 fontSize: "14px",
+                backgroundColor: "#e8e8e8",
+                color: "black",
               }}
             />
           </div>
-
           {/* Birthday */}
           <div>
             <label
@@ -172,10 +195,11 @@ const AddEmployeeForm = () => {
                 border: "1px solid #ccc",
                 borderRadius: "6px",
                 fontSize: "14px",
+                backgroundColor: "#e8e8e8",
+                color: "black",
               }}
             />
           </div>
-
           {/* Contact Number */}
           <div>
             <label
@@ -200,10 +224,11 @@ const AddEmployeeForm = () => {
                 border: "1px solid #ccc",
                 borderRadius: "6px",
                 fontSize: "14px",
+                backgroundColor: "#e8e8e8",
+                color: "black",
               }}
             />
           </div>
-
           {/* Email */}
           <div>
             <label
@@ -228,10 +253,11 @@ const AddEmployeeForm = () => {
                 border: "1px solid #ccc",
                 borderRadius: "6px",
                 fontSize: "14px",
+                backgroundColor: "#e8e8e8",
+                color: "black",
               }}
             />
           </div>
-
           {/* Home Address */}
           <div style={{ gridColumn: "span 2" }}>
             <label
@@ -257,10 +283,11 @@ const AddEmployeeForm = () => {
                 borderRadius: "6px",
                 fontSize: "14px",
                 resize: "none",
+                backgroundColor: "#e8e8e8",
+                color: "black",
               }}
             ></textarea>
           </div>
-
           {/* National ID */}
           <div>
             <label
@@ -285,10 +312,11 @@ const AddEmployeeForm = () => {
                 border: "1px solid #ccc",
                 borderRadius: "6px",
                 fontSize: "14px",
+                backgroundColor: "#e8e8e8",
+                color: "black",
               }}
             />
           </div>
-
           {/* Start Date */}
           <div>
             <label
@@ -313,10 +341,11 @@ const AddEmployeeForm = () => {
                 border: "1px solid #ccc",
                 borderRadius: "6px",
                 fontSize: "14px",
+                backgroundColor: "#e8e8e8",
+                color: "black",
               }}
             />
           </div>
-
           {/* Job Title */}
           <div>
             <label
@@ -341,10 +370,11 @@ const AddEmployeeForm = () => {
                 border: "1px solid #ccc",
                 borderRadius: "6px",
                 fontSize: "14px",
+                backgroundColor: "#e8e8e8",
+                color: "black",
               }}
             />
           </div>
-
           {/* Department */}
           <div>
             <label
@@ -368,16 +398,18 @@ const AddEmployeeForm = () => {
                 border: "1px solid #ccc",
                 borderRadius: "6px",
                 fontSize: "14px",
+                backgroundColor: "#e8e8e8",
+                color: "black",
               }}
             >
               <option value="">Select Department</option>
-              <option value="HR">Human Resources</option>
-              <option value="IT">Information Technology</option>
-              <option value="Finance">Finance</option>
-              <option value="Marketing">Marketing</option>
+              <option value="HR">Plantation Department</option>
+              <option value="IT">Production & Processing Department</option>
+              <option value="Finance">Quality Control Department</option>
+              <option value="Marketing">Finance Department</option>
+              <option value="Development">Development Department</option>
             </select>
           </div>
-
           {/* Basic Salary */}
           <div>
             <label
@@ -388,25 +420,27 @@ const AddEmployeeForm = () => {
                 fontWeight: "500",
               }}
             >
-              Basic Salary
+              Basic Salary (LKR)
             </label>
             <input
-              type="number"
+              type="text"
               name="basicSalary"
               value={formData.basicSalary}
               onChange={handleChange}
               required
+              placeholder="Enter salary in LKR (e.g., 100,000)"
               style={{
                 width: "100%",
                 padding: "10px",
                 border: "1px solid #ccc",
                 borderRadius: "6px",
                 fontSize: "14px",
+                backgroundColor: "#e8e8e8",
+                color: "black",
               }}
             />
           </div>
         </div>
-
         {/* Actions */}
         <div
           style={{
@@ -420,7 +454,7 @@ const AddEmployeeForm = () => {
             type="submit"
             style={{
               padding: "10px 20px",
-              backgroundColor: "#28a745",
+              background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
               color: "#fff",
               border: "none",
               borderRadius: "6px",
@@ -438,7 +472,7 @@ const AddEmployeeForm = () => {
             onClick={() => setFormData({})}
             style={{
               padding: "10px 20px",
-              backgroundColor: "#dc3545",
+              background: 'linear-gradient(45deg, hsl(4, 100.00%, 37.10%) 0%,rgb(255, 0, 0) 100%)',
               color: "#fff",
               border: "none",
               borderRadius: "6px",
