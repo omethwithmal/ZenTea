@@ -15,11 +15,11 @@ import {
   faCoins,
   faChartBar,
   faCog,
-  faSearch
+  faSearch,
+  faShare // Added Share Icon
 } from '@fortawesome/free-solid-svg-icons';
 import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
-
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
@@ -47,7 +47,6 @@ const OrderManagementDashboard = () => {
                 setLoading(false);
             }
         };
-
         fetchOrders();
     }, []);
 
@@ -63,29 +62,23 @@ const OrderManagementDashboard = () => {
     // Handle PDF report download
     const handleDownloadPDFReport = () => {
         const doc = new jsPDF();
-        
         // Add title
         doc.setFontSize(20);
         doc.text('Order Management Report', 105, 15, { align: 'center' });
-        
         // Add date
         doc.setFontSize(12);
         doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, 25, { align: 'center' });
-        
         // Add summary statistics
         doc.setFontSize(14);
         doc.text('Summary Statistics', 14, 40);
-        
         doc.setFontSize(12);
         doc.text(`Total Orders: ${orders.length}`, 14, 50);
         doc.text(`Pending Orders: ${orders.filter(o => o.status === 'Pending').length}`, 14, 60);
         doc.text(`Completed Orders: ${orders.filter(o => o.status === 'Completed').length}`, 14, 70);
         doc.text(`Delayed Orders: ${orders.filter(o => o.status === 'Delayed').length}`, 14, 80);
-        
         // Add order table
         doc.setFontSize(14);
         doc.text('Order Details', 14, 100);
-        
         // Prepare data for the table
         const tableData = filteredOrders.map(order => [
             order.Full_Name,
@@ -97,7 +90,6 @@ const OrderManagementDashboard = () => {
             order.Price,
             order.status
         ]);
-        
         // Add the table using autoTable
         autoTable(doc, {
             head: [['Name', 'Address', 'Contact', 'Email', 'Tea Type', 'Quantity', 'Price', 'Status']],
@@ -106,7 +98,6 @@ const OrderManagementDashboard = () => {
             styles: { fontSize: 8 },
             headStyles: { fillColor: [52, 152, 219] }
         });
-        
         // Save the PDF
         doc.save('order_management_report.pdf');
     };
@@ -131,7 +122,6 @@ const OrderManagementDashboard = () => {
                 },
                 body: JSON.stringify(editingOrder)
             });
-            
             if (response.ok) {
                 // Update the order in state
                 const updatedOrders = orders.map(order => 
@@ -167,7 +157,6 @@ const OrderManagementDashboard = () => {
                 const response = await fetch(`http://localhost:8070/order/deleteOrder/${orderId}`, {
                     method: 'DELETE'
                 });
-                
                 if (response.ok) {
                     // Remove the order from state
                     const updatedOrders = orders.filter(order => order._id !== orderId);
@@ -183,6 +172,13 @@ const OrderManagementDashboard = () => {
                 alert("Error deleting order");
             }
         }
+    };
+
+    // WhatsApp Share Functionality
+    const handleShare = (order) => {
+        const message = `Order Details:\n\nName: ${order.Full_Name}\nAddress: ${order.Delivery_Address}\nContact: ${order.Contact_Number}\nEmail: ${order.Email_Address}\nTea Type: ${order.Select_Tea_Type}\nQuantity: ${order.Quantity}\nPrice: $${order.Price}\nStatus: ${order.status}`;
+        const encodedMessage = encodeURIComponent(message);
+        window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
     };
 
     // Data for the Doughnut Chart (Order Status)
@@ -297,7 +293,6 @@ const OrderManagementDashboard = () => {
                         borderLeft: '4px solid transparent',
                         backgroundColor: 'rgba(255, 255, 255, 0.28)'
                     }} 
-                    
                     >
                         <i className="fas fa-users" style={{ marginRight: '10px' }}></i>
                         <span>Dashboard</span>
@@ -314,21 +309,18 @@ const OrderManagementDashboard = () => {
                         <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
                         <span>Orders</span>
                     </a>
-
                     <a href="#" style={{
                         display: 'block',
                         padding: '15px 20px',
                         color: 'white',
                         textDecoration: 'none',
                         borderLeft: '4px solid transparent',
-                       
                     }}
                     onClick={() => navigate('/AttendanceDashboard')}
                     >
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Customers</span>
                     </a>
-
                     <a
                         href="#"
                         style={{
@@ -364,19 +356,14 @@ const OrderManagementDashboard = () => {
                         <span>Settings</span>
                     </a>
                 </nav>
-            </aside>
-
-
+            </aside>
             {/* Main Content */}
             <main style={{
                 flex: 1,
                 padding: "30px",
                 background: "#f4f4f4",
                 overflowY: "auto",
-                marginLeft:"170px",
-        
-
-                
+                marginLeft:"1px",
             }}>
                 <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px"}}>
                     <div>
@@ -403,7 +390,6 @@ const OrderManagementDashboard = () => {
                         </div>
                     </div>
                 </header>
-
                 {/* Dashboard Cards */}
                 <section style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px", marginBottom: "20px" }}>
                     <div style={{
@@ -451,10 +437,8 @@ const OrderManagementDashboard = () => {
                         <p style={{ fontSize: "20px", fontWeight: "bold" }}>{orders.filter(o => o.status === 'Delayed').length}</p>
                     </div>
                 </section>
-
                 {/* Charts Section */}
                 <section style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "20px", marginBottom: "20px" }}>
-                   
                     <div style={{ background: "#fff", padding: "20px", borderRadius: "5px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
                         <h3 style={{ marginBottom: "15px", textAlign: "center" }}>Tea Type Distribution</h3>
                         <Pie data={teaTypeData} options={{ responsive: true, plugins: { legend: { position: "top" } } }} />
@@ -464,7 +448,6 @@ const OrderManagementDashboard = () => {
                         <Bar data={priceAnalysisData} options={{ responsive: true, plugins: { legend: { position: "top" } } }} />
                     </div>
                 </section>
-
                 {/* Search Bar */}
                 <div style={{ marginBottom: "20px", display: "flex", justifyContent: "flex-end" }}>
                     <div style={{ position: "relative", width: "300px" }}>
@@ -494,7 +477,6 @@ const OrderManagementDashboard = () => {
                         />
                     </div>
                 </div>
-
                 {/* Order Table */}
                 <section style={{ background: "#fff", padding: "20px", borderRadius: "5px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
@@ -513,7 +495,6 @@ const OrderManagementDashboard = () => {
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "center" }}>Tea Type</th>
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "center" }}>Quantity</th>
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "center" }}>Price</th>
-                               
                                 <th style={{ padding: "10px", background: "#f4f4f4", textAlign: "center" }}>Actions</th>
                             </tr>
                         </thead>
@@ -528,8 +509,7 @@ const OrderManagementDashboard = () => {
                                         <td style={{ padding: "10px", borderBottom: "1px solid #ddd", textAlign: "center"  }}>{order.Select_Tea_Type}</td>
                                         <td style={{ padding: "10px", borderBottom: "1px solid #ddd", textAlign: "center"  }}>{order.Quantity}</td>
                                         <td style={{ padding: "10px", borderBottom: "1px solid #ddd", textAlign: "center"  }}>{order.Price}</td>
-                                      
-                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>
+                                        <td style={{ padding: "10px", borderBottom: "1px solid #ddd", textAlign: "center" }}>
                                             <button 
                                                 onClick={() => handleUpdate(order._id)}
                                                 style={{
@@ -551,11 +531,25 @@ const OrderManagementDashboard = () => {
                                                     border: "none",
                                                     color: "#e74c3c",
                                                     cursor: "pointer",
+                                                    marginRight: "15px",
                                                     fontSize: "16px"
                                                 }}
                                                 title="Delete Order"
                                             >
                                                 <FontAwesomeIcon icon={faTrashAlt} />
+                                            </button>
+                                            <button 
+                                                onClick={() => handleShare(order)}
+                                                style={{
+                                                    background: "none",
+                                                    border: "none",
+                                                    color: "#2ecc71",
+                                                    cursor: "pointer",
+                                                    fontSize: "16px"
+                                                }}
+                                                title="Share Order via WhatsApp"
+                                            >
+                                                <FontAwesomeIcon icon={faShare} />
                                             </button>
                                         </td>
                                     </tr>
@@ -570,7 +564,6 @@ const OrderManagementDashboard = () => {
                         </tbody>
                     </table>
                 </section>
-
                 {/* Edit Order Modal */}
                 {showEditModal && editingOrder && (
                     <div style={{
@@ -604,7 +597,6 @@ const OrderManagementDashboard = () => {
                                         style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
                                     />
                                 </div>
-                                
                                 <div style={{ marginBottom: '15px' }}>
                                     <label style={{ display: 'block', marginBottom: '5px' }}>Delivery Address</label>
                                     <input
@@ -615,7 +607,6 @@ const OrderManagementDashboard = () => {
                                         style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
                                     />
                                 </div>
-                                
                                 <div style={{ marginBottom: '15px' }}>
                                     <label style={{ display: 'block', marginBottom: '5px' }}>Contact Number</label>
                                     <input
@@ -626,7 +617,6 @@ const OrderManagementDashboard = () => {
                                         style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
                                     />
                                 </div>
-                                
                                 <div style={{ marginBottom: '15px' }}>
                                     <label style={{ display: 'block', marginBottom: '5px' }}>Email Address</label>
                                     <input
@@ -637,7 +627,6 @@ const OrderManagementDashboard = () => {
                                         style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
                                     />
                                 </div>
-                                
                                 <div style={{ marginBottom: '15px' }}>
                                     <label style={{ display: 'block', marginBottom: '5px' }}>Tea Type</label>
                                     <select
@@ -653,7 +642,6 @@ const OrderManagementDashboard = () => {
                                         <option value="White Tea">White Tea</option>
                                     </select>
                                 </div>
-                                
                                 <div style={{ marginBottom: '15px' }}>
                                     <label style={{ display: 'block', marginBottom: '5px' }}>Quantity</label>
                                     <input
@@ -664,7 +652,6 @@ const OrderManagementDashboard = () => {
                                         style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
                                     />
                                 </div>
-                                
                                 <div style={{ marginBottom: '15px' }}>
                                     <label style={{ display: 'block', marginBottom: '5px' }}>Price</label>
                                     <input
@@ -675,7 +662,6 @@ const OrderManagementDashboard = () => {
                                         style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
                                     />
                                 </div>
-                                
                                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
                                     <button
                                         type="button"

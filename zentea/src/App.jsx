@@ -38,7 +38,7 @@ function App() {
       <Route path="/attendanceForm" element={<AttendanceForm />} />
       <Route path="/employeeprofile" element={<EmployeeProfile/>} />
       <Route path="/Sidebar" element={<Sidebar/>} />
-     
+                 
       <Route path="/ManagementDashboard" element={<ManagementDashboard/>} />
 
       <Route path="/EmployeeDashboard" element={<EmployeeDashboard/>} />
