@@ -52,7 +52,7 @@ const FinancialDashboard = () => {
           {[ 
             { icon: 'fa-users', text: 'Financial', active: true },
             { icon: 'fa-wallet', text: 'Notification' },
-            { icon: 'fa-truck', text: 'Financialdetails', path: '/FinancialDetails' },
+            { icon: 'fa-truck', text: 'Financialdetails', path: '/Financial Details' },
             { icon: 'fa-boxes', text: 'Settings' },
             { icon: 'fa-tools', text: 'Log Out' }
           ].map((item, index) => (
