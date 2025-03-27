@@ -35,6 +35,9 @@ app.use("/attendance", attendanceRouter);
 const orderRouter = require("./OrderManagement/Routes/OrderRoutes");
 app.use("/order", orderRouter);
 
+const esalaryRouter = require("./EmployeeSalary/routes/esalarys");
+app.use("/esalarys", esalaryRouter);
+
 // Default Route
 app.get("/", (req, res) => {
     res.send("Welcome to the ZenTea Task Management API ");
