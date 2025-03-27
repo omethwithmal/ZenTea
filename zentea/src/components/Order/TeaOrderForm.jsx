@@ -30,9 +30,10 @@ const TeaOrderForm = () => {
     Delivery_Address: '',
     Contact_Number: '',
     Email_Address: '',
-    Select_Tea_Type: 'Green Tea',
+    Select_Tea_Type: '',
     Quantity: 1,
     Price: '',
+    basePrice: ''
   });
 
   const [errors, setErrors] = useState({
@@ -40,51 +41,34 @@ const TeaOrderForm = () => {
     Delivery_Address: '',
     Contact_Number: '',
     Email_Address: '',
-    Price: '',
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
+  // Initialize form with product data from navigation state
   useEffect(() => {
     if (location.state) {
-      const { selectedTea, selectedPrice } = location.state;
+      const { teaType, price, basePrice } = location.state;
       setFormData(prev => ({
         ...prev,
-        Select_Tea_Type: selectedTea || 'Green Tea',
-        Price: selectedPrice || ''
+        Select_Tea_Type: teaType || '',
+        Price: price || '',
+        basePrice: basePrice || price || ''
       }));
     }
   }, [location.state]);
 
-  const formatPrice = (value) => {
-    if (!value) return '';
-    
-    const numValue = value.replace(/[^0-9.]/g, '');
-    if (!numValue) return '';
-    if (/\.\d{2}$/.test(numValue)) return numValue;
-    if (/\.\d$/.test(numValue)) return `${numValue}0`;
-    if (/^\d+$/.test(numValue)) return `${numValue}.00`;
-    return numValue;
-  };
-
-  const handlePriceBlur = (e) => {
-    const { value } = e.target;
-    const formattedPrice = formatPrice(value);
-    
-    if (formattedPrice !== value) {
+  // Update price when quantity changes
+  useEffect(() => {
+    if (formData.basePrice && formData.Quantity) {
+      const calculatedPrice = (parseFloat(formData.basePrice) * formData.Quantity).toFixed(2);
       setFormData(prev => ({
         ...prev,
-        Price: formattedPrice
-      }));
-      
-      const error = validateField('Price', formattedPrice);
-      setErrors(prev => ({
-        ...prev,
-        Price: error
+        Price: calculatedPrice
       }));
     }
-  };
+  }, [formData.Quantity, formData.basePrice]);
 
   const validateField = (name, value) => {
     let error = '';
@@ -120,17 +104,6 @@ const TeaOrderForm = () => {
           error = 'Please enter a valid email address';
         }
         break;
-      case 'Price':
-        if (!value.trim()) {
-          error = 'Price is required';
-        } else if (!/^\d+(\.\d{1,2})?$/.test(value)) {
-          error = 'Price should be a valid positive number';
-        } else if (parseFloat(value) <= 0) {
-          error = 'Price must be greater than 0';
-        } else if (value.includes('-')) {
-          error = 'Price cannot be negative';
-        }
-        break;
       default:
         break;
     }
@@ -143,19 +116,10 @@ const TeaOrderForm = () => {
     let isValid = true;
     
     Object.keys(formData).forEach(key => {
-      if (key !== 'Select_Tea_Type' && key !== 'Quantity') {
+      if (key !== 'Select_Tea_Type' && key !== 'Quantity' && key !== 'basePrice' && key !== 'Price') {
         const error = validateField(key, formData[key]);
         newErrors[key] = error;
         if (error) isValid = false;
-      }
-    });
-    
-    Object.keys(formData).forEach(key => {
-      if (key !== 'Select_Tea_Type' && key !== 'Quantity') {
-        if (!formData[key].trim()) {
-          newErrors[key] = `${key.replace('_', ' ')} is required`;
-          isValid = false;
-        }
       }
     });
     
@@ -171,16 +135,6 @@ const TeaOrderForm = () => {
       processedValue = value.replace(/[0-9]/g, '');
     } else if (name === 'Contact_Number') {
       processedValue = value.replace(/\D/g, '').substring(0, 10);
-    } else if (name === 'Price') {
-      processedValue = value.replace(/[^0-9.]/g, '');
-      const decimalCount = processedValue.split('.').length - 1;
-      if (decimalCount > 1) {
-        processedValue = processedValue.substring(0, processedValue.lastIndexOf('.'));
-      }
-      const decimalIndex = processedValue.indexOf('.');
-      if (decimalIndex !== -1) {
-        processedValue = processedValue.substring(0, decimalIndex + 3);
-      }
     }
     
     const error = validateField(name, processedValue);
@@ -197,22 +151,14 @@ const TeaOrderForm = () => {
   };
 
   const handleQuantityChange = (action) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      Quantity: action === 'increment' ? prevData.Quantity + 1 : Math.max(1, prevData.Quantity - 1),
+    setFormData(prev => ({
+      ...prev,
+      Quantity: action === 'increment' ? prev.Quantity + 1 : Math.max(1, prev.Quantity - 1),
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (formData.Price.trim()) {
-      const formattedPrice = formatPrice(formData.Price);
-      setFormData(prev => ({
-        ...prev,
-        Price: formattedPrice
-      }));
-    }
     
     const isValid = validateForm();
     
@@ -326,22 +272,16 @@ const TeaOrderForm = () => {
             />
             {errors.Email_Address && <span className="error-text">{errors.Email_Address}</span>}
           </div>
-          
+
           <div className="form-group">
-            <select 
+            <input 
+              type="text" 
               name="Select_Tea_Type" 
+              placeholder="Tea Type" 
               value={formData.Select_Tea_Type} 
-              onChange={handleChange}
-              className="form-select"
-            >
-              <option value="Green Tea">Green Tea</option>
-              <option value="Black Tea">Black Tea</option>
-              <option value="Oolong Tea">Oolong Tea</option>
-              <option value="White Tea">White Tea</option>
-              <option value="Matcha Tea">Matcha Tea</option>
-              <option value="Chamomile Tea">Chamomile Tea</option>
-              <option value="Earl Grey Tea">Earl Grey Tea</option>
-            </select>
+              readOnly
+              className="form-input"
+            />
           </div>
           
           <div className="form-group quantity-group">
@@ -370,12 +310,10 @@ const TeaOrderForm = () => {
               type="text" 
               name="Price" 
               placeholder="Price (LKR)" 
-              value={formData.Price} 
-              onChange={handleChange}
-              onBlur={handlePriceBlur}
-              className={`form-input ${errors.Price ? 'input-error' : ''}`}
+              value={`Rs.${formData.Price}`} 
+              readOnly
+              className="form-input"
             />
-            {errors.Price && <span className="error-text">{errors.Price}</span>}
           </div>
           
           <button 
@@ -400,9 +338,11 @@ const styles = `
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    width: 1600px;
+    margin-left: 450px;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     padding: 20px;
+    width: 600px;
+  
   }
 
   .tea-order-card {
@@ -413,10 +353,6 @@ const styles = `
     width: 100%;
     max-width: 500px;
     transition: all 0.3s ease;
-  }
-
-  .tea-order-card:hover {
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
   }
 
   .tea-order-title {
@@ -438,7 +374,7 @@ const styles = `
     gap: 5px;
   }
 
-  .form-input, .form-select {
+  .form-input {
     padding: 12px 15px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -446,7 +382,7 @@ const styles = `
     transition: all 0.3s;
   }
 
-  .form-input:focus, .form-select:focus {
+  .form-input:focus {
     border-color: #3498db;
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
     outline: none;
@@ -487,7 +423,6 @@ const styles = `
 
   .quantity-btn:hover {
     background-color: #2980b9;
-    transform: scale(1.05);
   }
 
   .quantity-value {
@@ -512,13 +447,11 @@ const styles = `
 
   .submit-btn:hover {
     background-color: #27ae60;
-    transform: translateY(-2px);
   }
 
   .submit-btn:disabled {
     background-color: #95a5a6;
     cursor: not-allowed;
-    transform: none;
   }
 
   .error-message {
@@ -528,12 +461,6 @@ const styles = `
     border-radius: 5px;
     margin-bottom: 20px;
     text-align: center;
-  }
-
-  label {
-    font-weight: 500;
-    color: #34495e;
-    font-size: 14px;
   }
 
   /* Popup styles */
@@ -558,18 +485,6 @@ const styles = `
     max-width: 400px;
     width: 90%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    animation: popupFadeIn 0.3s ease-out;
-  }
-
-  @keyframes popupFadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   .popup-icon {
@@ -609,12 +524,6 @@ const styles = `
     border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
-    transition: all 0.3s;
-  }
-
-  .popup-button:hover {
-    background-color: #2980b9;
-    transform: translateY(-2px);
   }
 `;
 

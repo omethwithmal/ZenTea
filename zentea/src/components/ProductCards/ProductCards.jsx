@@ -28,10 +28,11 @@ const ProductCards = () => {
   ];
 
   const handleBuyNow = (product) => {
-    navigate('/tea-order', {
+    navigate('/TeaOrderForm', {
       state: {
         teaType: product.title,
-        price: product.price
+        price: product.price,
+        basePrice: product.price
       }
     });
   };
