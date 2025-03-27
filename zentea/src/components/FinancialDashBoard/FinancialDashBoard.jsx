@@ -27,18 +27,18 @@ const FinancialDashboard = () => {
       minHeight: '100vh',
       background: 'rgb(255, 0, 0)',
       fontFamily: "'Poppins', sans-serif",
-       marginLeft: "250px"
+       marginLeft: "500px"
       
     }}>
       {/* Sidebar */}
       <aside style={{
-        background: 'linear-gradient(135deg, hsl(186, 10.00%, 39.20%) 0%,rgb(30, 70, 87) 100%)',
+        background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
         padding: '30px',
         color: 'rgb(255, 255, 255)',
         width: '280px',
         position: 'fixed',
         height: '100vh',
-        marginLeft: '-610px',
+        marginLeft: '-500px',
       }}>
         <div style={{
           marginBottom: '30px',
@@ -50,9 +50,9 @@ const FinancialDashboard = () => {
         </div>
         <nav>
           {[ 
-            { icon: 'fa-users', text: 'Employee', active: true },
+            { icon: 'fa-users', text: 'Financial', active: true },
             { icon: 'fa-wallet', text: 'Notification' },
-            { icon: 'fa-truck', text: 'Employee details', path: '/EmployeeDetails' },
+            { icon: 'fa-truck', text: 'Financialdetails', path: '/FinancialDetails' },
             { icon: 'fa-boxes', text: 'Settings' },
             { icon: 'fa-tools', text: 'Log Out' }
           ].map((item, index) => (
@@ -87,8 +87,8 @@ const FinancialDashboard = () => {
 
       {/* Main Content */}
       <main style={{
-        marginLeft: '-80px',
-        padding: '40px',
+        marginLeft: '-150px',
+        padding: '25px',
         background: 'rgb(255, 255, 255)',
         flex: 1
       }}>
