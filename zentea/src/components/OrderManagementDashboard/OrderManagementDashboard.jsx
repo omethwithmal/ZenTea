@@ -276,7 +276,8 @@ const OrderManagementDashboard = () => {
                 background: "#5a5f51",
                 color: "#fff",
                 padding: "20px",
-                boxSizing: "border-box"
+                boxSizing: "border-box",
+                marginLeft: "160px"
             }}>
                 <div style={{ marginBottom: "20px" }}>
                     <FontAwesomeIcon icon={faBoxOpen} style={{ fontSize: "24px" }} />
