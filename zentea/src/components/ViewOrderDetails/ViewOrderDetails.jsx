@@ -1,147 +1,290 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 const ViewOrderDetails = () => {
-  const orders = [
-    {
-      id: 1,
-      customerName: "Alice Johnson",
-      date: "2025-03-27",
-      items: [
-        { itemName: "Green Tea", unitPrice: 10, quantity: 5 },
-        { itemName: "Black Tea", unitPrice: 12, quantity: 2 },
-      ],
-    },
-    {
-      id: 2,
-      customerName: "Bob Smith",
-      date: "2025-03-26",
-      items: [{ itemName: "Herbal Tea", unitPrice: 15, quantity: 3 }],
-    },
-  ];
+    const [orders, setOrders] = useState([]);
+    const [filteredOrders, setFilteredOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
+    const navigate = useNavigate();
 
-  const [amounts, setAmounts] = useState({});
+    // Fetch orders from backend
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await fetch('http://localhost:8070/order');
+                const data = await response.json();
+                if (data.orders) {
+                    setOrders(data.orders);
+                    setFilteredOrders(data.orders);
+                }
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+                setLoading(false);
+            }
+        };
+        fetchOrders();
+    }, []);
 
-  const calculateAmount = (orderId, itemIndex, unitPrice, quantity) => {
-    setAmounts((prev) => ({
-      ...prev,
-      [`${orderId}-${itemIndex}`]: unitPrice * quantity,
-    }));
-  };
+    // Handle search functionality
+    useEffect(() => {
+        const results = orders.filter(order =>
+            Object.values(order).some(val =>
+                String(val).toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+        setFilteredOrders(results);
+    }, [searchTerm, orders]);
 
-  return (
-    <div style={styles.container}>
-      <h2 style={styles.heading}>View Order Details</h2>
-      <table style={styles.table}>
-        <thead>
-          <tr style={styles.headerRow}>
-            <th style={styles.th}>Customer Name</th>
-            <th style={styles.th}>Date</th>
-            <th style={styles.th}>Item</th>
-            <th style={styles.th}>Unit Price</th>
-            <th style={styles.th}>Quantity</th>
-            <th style={styles.th}>Amount</th>
-            <th style={styles.th}>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) =>
-            order.items.map((item, index) => (
-              <tr key={`${order.id}-${index}`} style={styles.row}>
-                <td style={styles.td}>{index === 0 ? order.customerName : ""}</td>
-                <td style={styles.td}>{index === 0 ? order.date : ""}</td>
-                <td style={styles.td}>{item.itemName}</td>
-                <td style={styles.td}>Rs. {item.unitPrice}</td>
-                <td style={styles.td}>{item.quantity}</td>
-                <td style={styles.td} className="fade-in">
-                  {amounts[`${order.id}-${index}`] !== undefined ? (
-                    <span style={styles.amount}>Rs. {amounts[`${order.id}-${index}`]}</span>
-                  ) : (
-                    "-----"
-                  )}
-                </td>
-                <td style={styles.td}>
-                  <button
-                    style={styles.button}
-                    onClick={() => calculateAmount(order.id, index, item.unitPrice, item.quantity)}
-                  >
-                    Calculate
-                  </button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
-};
+    const handleGoBack = () => {
+        navigate(-1); // Go back to previous page
+    };
 
-const styles = {
-  container: {
-    padding: "20px",
-    fontFamily: "'Poppins', sans-serif",
-    background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-     marginLeft: "350px"
-  },
-  heading: {
-    textAlign: "center",
-    fontSize: "26px",
-    color: "#333",
-    fontWeight: "600",
-    marginBottom: "20px",
-    textShadow: "1px 1px 3px rgba(0,0,0,0.2)",
-  },
-  table: {
-    width: "90%",
-    maxWidth: "1000px",
-    borderCollapse: "collapse",
-    background: "rgba(255, 255, 255, 0.8)",
-    backdropFilter: "blur(10px)",
-    borderRadius: "12px",
-    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-    overflow: "hidden",
-  },
-  headerRow: {
-    backgroundColor: "#4A90E2",
-    color: "#fff",
-    borderBottom: "2px solid #ddd",
-  },
-  th: {
-    padding: "12px",
-    textAlign: "left",
-    fontSize: "14px",
-    fontWeight: "bold",
-  },
-  row: {
-    backgroundColor: "#fff",
-    transition: "all 0.3s ease-in-out",
-  },
-  td: {
-    padding: "12px",
-    borderBottom: "1px solid #ddd",
-    fontSize: "14px",
-    color: "#333",
-  },
-  amount: {
-    fontWeight: "bold",
-    color: "#28A745",
-    transition: "opacity 0.5s ease-in-out",
-  },
-  button: {
-    padding: "8px 12px",
-    background: "linear-gradient(135deg, #FF512F, #DD2476)",
-    color: "white",
-    border: "none",
-    cursor: "pointer",
-    borderRadius: "6px",
-    fontSize: "14px",
-    fontWeight: "bold",
-    transition: "transform 0.2s, box-shadow 0.2s",
-  },
+    if (loading) {
+        return (
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh',
+                fontSize: '18px',
+                fontFamily: 'Arial, sans-serif',
+                backgroundColor: '#f8f9fa'
+            }}>
+                Loading orders...
+            </div>
+        );
+    }
+
+    return (
+        <div style={{
+            fontFamily: 'Arial, sans-serif',
+            maxWidth: '1200px',
+            margin: '0 auto',
+            padding: '20px',
+            backgroundColor: '#f8f9fa',
+            minHeight: '100vh',
+            marginLeft: '350px',
+
+        }}>
+            {/* Header with Back Button */}
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '25px',
+                paddingBottom: '15px',
+                borderBottom: '2px solid #e0e0e0'
+            }}>
+                <button 
+                    onClick={handleGoBack}
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '8px 15px',
+                        backgroundColor: '#6c757d',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        transition: 'background-color 0.3s'
+                    }}
+                    onMouseOver={(e) => e.target.style.backgroundColor = '#5a6268'}
+                    onMouseOut={(e) => e.target.style.backgroundColor = '#6c757d'}
+                >
+                    <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: '8px' }} />
+                    Back
+                </button>
+                
+                <h1 style={{
+                    fontSize: '28px',
+                    fontWeight: '600',
+                    color: '#343a40',
+                    margin: 0,
+                    textAlign: 'center',
+                    flex: 1
+                }}>
+                    Recent Orders
+                </h1>
+            </div>
+
+            {/* Search Bar */}
+            <div style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginBottom: '20px'
+            }}>
+                <div style={{
+                    position: 'relative',
+                    width: '350px'
+                }}>
+                    <input
+                        type="text"
+                        placeholder="Search orders..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                            width: '100%',
+                            padding: '12px 15px 12px 40px',
+                            borderRadius: '6px',
+                            border: '1px solid #ced4da',
+                            fontSize: '15px',
+                            boxSizing: 'border-box',
+                            outline: 'none',
+                            transition: 'all 0.3s',
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+                        }}
+                    />
+                    <FontAwesomeIcon 
+                        icon={faSearch} 
+                        style={{
+                            position: 'absolute',
+                            left: '15px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            color: '#6c757d',
+                            fontSize: '16px'
+                        }} 
+                    />
+                </div>
+            </div>
+
+            {/* Orders Table */}
+            <div style={{
+                backgroundColor: '#fff',
+                borderRadius: '8px',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                overflow: 'hidden',
+                marginBottom: '20px'
+            }}>
+                <table style={{
+                    width: '100%',
+                    borderCollapse: 'collapse',
+                    fontSize: '15px'
+                }}>
+                    <thead>
+                        <tr style={{
+                            backgroundColor: '#28a745',
+                            color: 'white'
+                        }}>
+                            <th style={{
+                                padding: '15px',
+                                textAlign: 'left',
+                                fontWeight: '600'
+                            }}>Full Name</th>
+                            <th style={{
+                                padding: '15px',
+                                textAlign: 'left',
+                                fontWeight: '600'
+                            }}>Delivery Address</th>
+                            <th style={{
+                                padding: '15px',
+                                textAlign: 'left',
+                                fontWeight: '600'
+                            }}>Contact</th>
+                            <th style={{
+                                padding: '15px',
+                                textAlign: 'left',
+                                fontWeight: '600'
+                            }}>Email</th>
+                            <th style={{
+                                padding: '15px',
+                                textAlign: 'left',
+                                fontWeight: '600'
+                            }}>Tea Type</th>
+                            <th style={{
+                                padding: '15px',
+                                textAlign: 'left',
+                                fontWeight: '600'
+                            }}>Quantity</th>
+                            <th style={{
+                                padding: '15px',
+                                textAlign: 'left',
+                                fontWeight: '600'
+                            }}>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredOrders.length > 0 ? (
+                            filteredOrders.map((order, index) => (
+                                <tr key={order._id} style={{
+                                    borderBottom: '1px solid #e9ecef',
+                                    backgroundColor: index % 2 === 0 ? '#f8f9fa' : 'white',
+                                    transition: 'background 0.2s'
+                                }}>
+                                    <td style={{
+                                        padding: '15px',
+                                        color: '#495057',
+                                        fontWeight: '500'
+                                    }}>{order.Full_Name}</td>
+                                    <td style={{
+                                        padding: '15px',
+                                        color: '#495057'
+                                    }}>{order.Delivery_Address}</td>
+                                    <td style={{
+                                        padding: '15px',
+                                        color: '#495057'
+                                    }}>{order.Contact_Number}</td>
+                                    <td style={{
+                                        padding: '15px',
+                                        color: '#495057'
+                                    }}>{order.Email_Address}</td>
+                                    <td style={{
+                                        padding: '15px',
+                                        color: '#495057'
+                                    }}>{order.Select_Tea_Type}</td>
+                                    <td style={{
+                                        padding: '15px',
+                                        color: '#495057',
+                                        textAlign: 'center'
+                                    }}>{order.Quantity}</td>
+                                    <td style={{
+                                        padding: '15px',
+                                        color: '#28a745',
+                                        fontWeight: '600'
+                                    }}>${order.Price}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="7" style={{
+                                    padding: '25px',
+                                    textAlign: 'center',
+                                    color: '#6c757d',
+                                    fontStyle: 'italic',
+                                    backgroundColor: '#f8f9fa'
+                                }}>
+                                    No orders found matching your search criteria
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Results Count */}
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '10px 15px',
+                backgroundColor: '#e9ecef',
+                borderRadius: '5px',
+                fontSize: '14px',
+                color: '#495057'
+            }}>
+                <div>
+                    Showing <strong>{filteredOrders.length}</strong> of <strong>{orders.length}</strong> orders
+                </div>
+                <div style={{ fontStyle: 'italic' }}>
+                    {new Date().toLocaleDateString()}
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default ViewOrderDetails;

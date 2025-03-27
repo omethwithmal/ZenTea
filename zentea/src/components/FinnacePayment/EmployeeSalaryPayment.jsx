@@ -1,14 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const EmployeeSalaryPayment = () => {
+  const location = useLocation();
+  const { state } = location;
+  const employeeData = state?.employee || {};
+
   const [formData, setFormData] = useState({
-    employeeName: '',
-    employeeId: '',
+    employeeName: employeeData.firstName || '',
+    employeeId: employeeData.employeeID || '',
     accountNumber: '',
-    basicSalary: '',
+    basicSalary: employeeData.basicSalary || '',
     otHours: '',
     paymentDate: '',
   });
+
+  // Update form data when employeeData changes
+  useEffect(() => {
+    if (employeeData) {
+      setFormData(prev => ({
+        ...prev,
+        employeeName: employeeData.firstName || '',
+        employeeId: employeeData.employeeID || '',
+        basicSalary: employeeData.basicSalary || ''
+      }));
+    }
+  }, [employeeData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,14 +45,14 @@ const EmployeeSalaryPayment = () => {
     <div
       style={{
         fontFamily: 'Arial, sans-serif',
-        Width: '700px',
+        width: '700px',
         margin: '50px auto',
-        marginLeft:'550px',
         padding: '20px',
         border: '1px solid #ccc',
         borderRadius: '8px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-        backgroundColor:'#f4f4f4'
+        backgroundColor: '#f4f4f4',
+        marginLeft: '400px',
       }}
     >
       <h2
@@ -55,7 +72,6 @@ const EmployeeSalaryPayment = () => {
               display: 'block',
               fontWeight: 'bold',
               marginBottom: '5px',
-             
             }}
           >
             Employee Name:
@@ -65,15 +81,15 @@ const EmployeeSalaryPayment = () => {
             name="employeeName"
             value={formData.employeeName}
             onChange={handleChange}
-            placeholder="Enter Employee Name"
             required
+            readOnly
             style={{
               width: '100%',
               padding: '8px',
               border: '1px solid #ccc',
               borderRadius: '4px',
-              backgroundColor:"#f4f4f4",
-              color:'black'
+              backgroundColor: "#e9e9e9",
+              color: 'black'
             }}
           />
         </div>
@@ -94,15 +110,15 @@ const EmployeeSalaryPayment = () => {
             name="employeeId"
             value={formData.employeeId}
             onChange={handleChange}
-            placeholder="Enter Employee ID"
             required
+            readOnly
             style={{
               width: '100%',
               padding: '8px',
               border: '1px solid #ccc',
               borderRadius: '4px',
-                backgroundColor:"#f4f4f4",
-              color:'black'
+              backgroundColor: "#e9e9e9",
+              color: 'black'
             }}
           />
         </div>
@@ -130,8 +146,8 @@ const EmployeeSalaryPayment = () => {
               padding: '8px',
               border: '1px solid #ccc',
               borderRadius: '4px',
-                backgroundColor:"#f4f4f4",
-              color:'black'
+              backgroundColor: "#f4f4f4",
+              color: 'black'
             }}
           />
         </div>
@@ -152,15 +168,15 @@ const EmployeeSalaryPayment = () => {
             name="basicSalary"
             value={formData.basicSalary}
             onChange={handleChange}
-            placeholder="Enter Basic Salary"
             required
+            readOnly
             style={{
               width: '100%',
               padding: '8px',
               border: '1px solid #ccc',
               borderRadius: '4px',
-                backgroundColor:"#f4f4f4",
-              color:'black'
+              backgroundColor: "#e9e9e9",
+              color: 'black'
             }}
           />
         </div>
@@ -188,8 +204,8 @@ const EmployeeSalaryPayment = () => {
               padding: '8px',
               border: '1px solid #ccc',
               borderRadius: '4px',
-                backgroundColor:"#f4f4f4",
-              color:'black'
+              backgroundColor: "#f4f4f4",
+              color: 'black'
             }}
           />
         </div>
@@ -216,8 +232,8 @@ const EmployeeSalaryPayment = () => {
               padding: '8px',
               border: '1px solid #ccc',
               borderRadius: '4px',
-                backgroundColor:"#f4f4f4",
-              color:'black'
+              backgroundColor: "#f4f4f4",
+              color: 'black'
             }}
           />
         </div>
@@ -228,7 +244,6 @@ const EmployeeSalaryPayment = () => {
           style={{
             width: '100%',
             padding: '10px',
-            backgroundColor: '#28a745',
             color: '#fff',
             border: 'none',
             borderRadius: '4px',
