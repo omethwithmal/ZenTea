@@ -363,7 +363,7 @@ const OrderManagementDashboard = () => {
                 padding: "30px",
                 background: "#f4f4f4",
                 overflowY: "auto",
-                marginLeft:"1px",
+                marginLeft:"80px",
             }}>
                 <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px"}}>
                     <div>
