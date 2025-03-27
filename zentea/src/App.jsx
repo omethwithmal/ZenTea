@@ -16,6 +16,7 @@ import EmployeeDetailsTable  from "./components/Employee/EmployeeDetailsTable/Em
 import IT22090508_QRcode_Scanner_Page from "./components/QRCodeScanner/QRCodeScanner";
 import AttendanceDashboard from "./components/Employee/AttendanceDashboard/AttendanceDashboard";
 import NotificationDashboard from "./components/Employee/NotificationDashboard/NotificationDashboard";
+import EmployeeSalaryPayment from "./components/FinnacePayment/EmployeeSalaryPayment";
 
 // Kavishka Dilshan
 
@@ -61,6 +62,7 @@ function App() {
 
       <Route path="/AttendanceDashboard" element={<AttendanceDashboard/>} />
       <Route path="/NotificationDashboard" element={<NotificationDashboard/>} />
+      <Route path="/EmployeeSalaryPayment" element={<EmployeeSalaryPayment/>} />
 
 
                 <Route path="/TeaOrderForm" element={<TeaOrderForm />} />
