@@ -25,6 +25,17 @@ import OrderManagementDashboard from "./components/OrderManagementDashboard/Orde
 import CustomerOrderDashboard from "./components/CustomerOrderDashBoard/CustomerOrderDashBoard";
 
 
+// Dieepa
+
+import FinancialDashboard from "../src/components/FinancialDashBoard/FinancialDashBoard";
+import EmployeeSalary from "../src/components/Salary/EmployeeSalary";
+import ViewOrderDetails from "../src/components/ViewOrderDetails/ViewOrderDetails";
+import MaintenanceRevenue from "../src/components/MaintenanceRevebue/MaintenanceReveue";
+
+import SummaryTable from "../src/components/SummaryTable/SummaryTable";
+
+
+
  
 
 function App() {
@@ -56,6 +67,14 @@ function App() {
                 <Route path="/CheckoutForm" element={<CheckoutForm />} />
                 <Route path="/Orderdash" element={<OrderManagementDashboard />} />
                 <Route path="/CustomerDash" element={<CustomerOrderDashboard />} />
+
+
+                <Route path="/FinancialDashboard" element={<FinancialDashboard />} />
+                <Route path="/EmployeeSalary" element={<EmployeeSalary />} />
+                <Route path="/ViewOrderDetails" element={<ViewOrderDetails/>} />
+                <Route path="/MaintenanceRevenue" element={<MaintenanceRevenue/>} />
+                <Route path="/SummaryTable"  element={<SummaryTable/>}/>
+
                
      
 
