@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const SuccessPopup = ({ onClose }) => {
   return (
@@ -21,6 +21,7 @@ const SuccessPopup = ({ onClose }) => {
 
 const TeaOrderForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [orderData, setOrderData] = useState(null);
 
@@ -44,6 +45,17 @@ const TeaOrderForm = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+
+  useEffect(() => {
+    if (location.state) {
+      const { selectedTea, selectedPrice } = location.state;
+      setFormData(prev => ({
+        ...prev,
+        Select_Tea_Type: selectedTea || 'Green Tea',
+        Price: selectedPrice || ''
+      }));
+    }
+  }, [location.state]);
 
   const formatPrice = (value) => {
     if (!value) return '';
@@ -326,6 +338,9 @@ const TeaOrderForm = () => {
               <option value="Black Tea">Black Tea</option>
               <option value="Oolong Tea">Oolong Tea</option>
               <option value="White Tea">White Tea</option>
+              <option value="Matcha Tea">Matcha Tea</option>
+              <option value="Chamomile Tea">Chamomile Tea</option>
+              <option value="Earl Grey Tea">Earl Grey Tea</option>
             </select>
           </div>
           
