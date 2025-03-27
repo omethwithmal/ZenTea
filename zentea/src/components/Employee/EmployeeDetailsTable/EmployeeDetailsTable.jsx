@@ -66,8 +66,9 @@ const EmployeeDetailsTable = () => {
   return (
     <div
       style={{
-        maxWidth: "1200px",
+        maxWidth: "1300px",
         margin: "50px auto",
+        marginLeft:"100px",
         padding: "30px",
         backgroundColor: "#f9f9f9",
         borderRadius: "12px",
@@ -78,7 +79,7 @@ const EmployeeDetailsTable = () => {
         style={{
           textAlign: "center",
           marginBottom: "20px",
-          color: "#333",
+          color: "#0fcf00",
           fontWeight: "bold",
         }}
       >
@@ -95,7 +96,7 @@ const EmployeeDetailsTable = () => {
         <thead>
           <tr
             style={{
-              backgroundColor: "#007bff",
+              background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
               color: "#fff",
               fontWeight: "bold",
             }}
@@ -164,16 +165,16 @@ const EmployeeDetailsTable = () => {
                 <button
                   style={{
                     padding: "8px 12px",
-                    backgroundColor: "#ffc107",
-                    color: "#fff",
+                    backgroundColor: "white",
+                    color: "green",
                     border: "none",
                     borderRadius: "4px",
                     cursor: "pointer",
                     marginRight: "5px",
                     transition: "background-color 0.3s ease",
                   }}
-                  onMouseOver={(e) => (e.target.style.backgroundColor = "#e0a800")}
-                  onMouseOut={(e) => (e.target.style.backgroundColor = "#ffc107")}
+                  onMouseOver={(e) => (e.target.style.backgroundColor = "white")}
+                  onMouseOut={(e) => (e.target.style.backgroundColor = "white")}
                   onClick={() => openUpdateModal(employee)}
                 >
                   Update
@@ -181,15 +182,15 @@ const EmployeeDetailsTable = () => {
                 <button
                   style={{
                     padding: "8px 12px",
-                    backgroundColor: "#dc3545",
-                    color: "#fff",
+                    backgroundColor: "white",
+                    color: "red",
                     border: "none",
                     borderRadius: "4px",
                     cursor: "pointer",
                     transition: "background-color 0.3s ease",
                   }}
-                  onMouseOver={(e) => (e.target.style.backgroundColor = "#c82333")}
-                  onMouseOut={(e) => (e.target.style.backgroundColor = "#dc3545")}
+                  onMouseOver={(e) => (e.target.style.backgroundColor = "white")}
+                  onMouseOut={(e) => (e.target.style.backgroundColor = "white")}
                   onClick={() => handleDelete(employee._id)}
                 >
                   Delete
@@ -199,16 +200,16 @@ const EmployeeDetailsTable = () => {
                 <button
                   style={{
                     padding: "8px 12px",
-                    backgroundColor: "#0d6efd",
-                    color: "#fff",
+                    backgroundColor: "white",
+                    color: "blue",
                     border: "none",
                     borderRadius: "4px",
                     cursor: "pointer",
                     marginRight: "5px",
                     transition: "background-color 0.3s ease",
                   }}
-                  onMouseOver={(e) => (e.target.style.backgroundColor = "#0b5ed7")}
-                  onMouseOut={(e) => (e.target.style.backgroundColor = "#0d6efd")}
+                  onMouseOver={(e) => (e.target.style.backgroundColor = "white")}
+                  onMouseOut={(e) => (e.target.style.backgroundColor = "white")}
                   onClick={() => navigate(`/employeeprofile/${employee._id}`)} // Navigate to profile page
                 >
                   Profile
@@ -238,17 +239,19 @@ const EmployeeDetailsTable = () => {
         >
           <div
             style={{
-              backgroundColor: "#fff",
+              position: "fixed",
+              backgroundColor: "white",
               padding: "30px",
               borderRadius: "12px",
-              width: "800px",
+              width: "700px",
+              height:"900px",
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
             }}
           >
             <h3
               style={{
                 textAlign: "center",
-                marginBottom: "20px",
+                marginBottom: "10px",
                 color: "#333",
                 fontWeight: "bold",
               }}
@@ -292,6 +295,8 @@ const EmployeeDetailsTable = () => {
                       border: "1px solid #ccc",
                       borderRadius: "6px",
                       fontSize: "14px",
+                       backgroundColor:"#e8e8e8",
+                       color:"black"
                     }}
                   />
                 </div>
@@ -325,6 +330,8 @@ const EmployeeDetailsTable = () => {
                       border: "1px solid #ccc",
                       borderRadius: "6px",
                       fontSize: "14px",
+                       backgroundColor:"#e8e8e8",
+                       color:"black"
                     }}
                   />
                 </div>
@@ -358,6 +365,8 @@ const EmployeeDetailsTable = () => {
                       border: "1px solid #ccc",
                       borderRadius: "6px",
                       fontSize: "14px",
+                       backgroundColor:"#e8e8e8",
+                       color:"black"
                     }}
                   />
                 </div>
@@ -391,6 +400,8 @@ const EmployeeDetailsTable = () => {
                       border: "1px solid #ccc",
                       borderRadius: "6px",
                       fontSize: "14px",
+                       backgroundColor:"#e8e8e8",
+                       color:"black"
                     }}
                   />
                 </div>
@@ -424,6 +435,8 @@ const EmployeeDetailsTable = () => {
                       border: "1px solid #ccc",
                       borderRadius: "6px",
                       fontSize: "14px",
+                       backgroundColor:"#e8e8e8",
+                       color:"black"
                     }}
                   />
                 </div>
@@ -457,6 +470,8 @@ const EmployeeDetailsTable = () => {
                       border: "1px solid #ccc",
                       borderRadius: "6px",
                       fontSize: "14px",
+                       backgroundColor:"#e8e8e8",
+                       color:"black"
                     }}
                   />
                 </div>
@@ -491,6 +506,8 @@ const EmployeeDetailsTable = () => {
                       borderRadius: "6px",
                       fontSize: "14px",
                       resize: "none",
+                       backgroundColor:"#e8e8e8",
+                       color:"black"
                     }}
                   ></textarea>
                 </div>
@@ -524,6 +541,8 @@ const EmployeeDetailsTable = () => {
                       border: "1px solid #ccc",
                       borderRadius: "6px",
                       fontSize: "14px",
+                       backgroundColor:"#e8e8e8",
+                       color:"black"
                     }}
                   />
                 </div>
@@ -557,6 +576,8 @@ const EmployeeDetailsTable = () => {
                       border: "1px solid #ccc",
                       borderRadius: "6px",
                       fontSize: "14px",
+                       backgroundColor:"#e8e8e8",
+                       color:"black"
                     }}
                   />
                 </div>
@@ -590,6 +611,8 @@ const EmployeeDetailsTable = () => {
                       border: "1px solid #ccc",
                       borderRadius: "6px",
                       fontSize: "14px",
+                       backgroundColor:"#e8e8e8",
+                       color:"black"
                     }}
                   />
                 </div>
@@ -622,13 +645,16 @@ const EmployeeDetailsTable = () => {
                       border: "1px solid #ccc",
                       borderRadius: "6px",
                       fontSize: "14px",
+                       backgroundColor:"#e8e8e8",
+                       color:"black"
                     }}
                   >
                     <option value="">Select Department</option>
-                    <option value="HR">Human Resources</option>
-                    <option value="IT">Information Technology</option>
-                    <option value="Finance">Finance</option>
-                    <option value="Marketing">Marketing</option>
+                    <option value="HR">Plantation Department</option>
+                    <option value="IT">Production & Processing</option>
+                    <option value="Finance">Quality Control Department </option>
+                    <option value="Marketing">Finance Department</option>
+                    <option value="Marketing">Development Department</option>
                   </select>
                 </div>
 
@@ -661,6 +687,8 @@ const EmployeeDetailsTable = () => {
                       border: "1px solid #ccc",
                       borderRadius: "6px",
                       fontSize: "14px",
+                      backgroundColor:"#e8e8e8",
+                       color:"black"
                     }}
                   />
                 </div>
@@ -685,6 +713,7 @@ const EmployeeDetailsTable = () => {
                     borderRadius: "6px",
                     cursor: "pointer",
                     fontSize: "16px",
+                    background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
                     transition: "background-color 0.3s ease",
                   }}
                   onMouseOver={(e) => (e.target.style.backgroundColor = "#218838")}
@@ -703,6 +732,7 @@ const EmployeeDetailsTable = () => {
                     borderRadius: "6px",
                     cursor: "pointer",
                     fontSize: "16px",
+                    background: 'linear-gradient(45deg, hsl(4, 100.00%, 37.10%) 0%,rgb(255, 0, 0) 100%)',
                     transition: "background-color 0.3s ease",
                   }}
                   onMouseOver={(e) => (e.target.style.backgroundColor = "#5a6268")}
