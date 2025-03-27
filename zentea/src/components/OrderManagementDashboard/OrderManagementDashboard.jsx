@@ -272,54 +272,100 @@ const OrderManagementDashboard = () => {
         <div style={{ display: "flex", height: "100vh", fontFamily: "Arial, sans-serif" }}>
             {/* Sidebar */}
             <aside style={{
-                width: "250px",
-                background: "#5a5f51",
-                color: "#fff",
-                padding: "20px",
-                boxSizing: "border-box",
-                marginLeft: "160px"
+                width: '250px',
+                backgroundColor: '#2c3e50',
+                color: 'white',
+                padding: '20px 0',
+                minHeight: '100vh',
+                background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)'
             }}>
-                <div style={{ marginBottom: "20px" }}>
-                    <FontAwesomeIcon icon={faBoxOpen} style={{ fontSize: "24px" }} />
-                    <h1 style={{ fontSize: "20px", margin: "10px 0" }}>Order</h1>
-                    <h2 style={{ fontSize: "20px" }}>Dashboard</h2>
+                <div style={{
+                    textAlign: 'center',
+                    padding: '20px 0',
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+                }}>
+                    <i className="fas fa-cogs" style={{ fontSize: '40px', marginBottom: '10px' }}></i>
+                    <h1 style={{ margin: '5px 0', fontSize: '35px' }}>Order</h1>
+                    <h2 style={{ margin: '5px 0', fontSize: '25px', fontWeight: 'normal' }}>Dashboard</h2>
                 </div>
-                <nav>
+                <nav style={{ marginTop: '20px' }}>
                     <a href="#" style={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#fff",
-                        textDecoration: "none",
-                        padding: "10px",
-                        background: "#24f408",
-                        borderRadius: "5px",
-                        marginBottom: "10px"
-                    }}>
-                        <FontAwesomeIcon icon={faTachometerAlt} style={{ marginRight: "10px" }} />
+                        display: 'block',
+                        padding: '15px 20px',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderLeft: '4px solid transparent',
+                        backgroundColor: 'rgba(255, 255, 255, 0.28)'
+                    }} 
+                    
+                    >
+                        <i className="fas fa-users" style={{ marginRight: '10px' }}></i>
                         <span>Dashboard</span>
                     </a>
-                    <a href="#" style={{ display: "flex", alignItems: "center", color: "#fff", textDecoration: "none", padding: "10px", marginBottom: "10px" }}>
-                        <FontAwesomeIcon icon={faTruck} style={{ marginRight: "10px" }} />
+                    <a href="#" style={{
+                        display: 'block',
+                        padding: '15px 20px',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderLeft: '4px solid transparent'
+                    }}
+                    onClick={() => navigate('/NotificationDashboard')}
+                    >
+                        <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
                         <span>Orders</span>
                     </a>
-                    <a href="#" style={{ display: "flex", alignItems: "center", color: "#fff", textDecoration: "none", padding: "10px", marginBottom: "10px" }}>
-                        <FontAwesomeIcon icon={faUsers} style={{ marginRight: "10px" }} />
+
+                    <a href="#" style={{
+                        display: 'block',
+                        padding: '15px 20px',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderLeft: '4px solid transparent',
+                       
+                    }}
+                    onClick={() => navigate('/AttendanceDashboard')}
+                    >
+                        <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Customers</span>
                     </a>
-                    <a href="#" style={{ display: "flex", alignItems: "center", color: "#fff", textDecoration: "none", padding: "10px", marginBottom: "10px" }}>
-                        <FontAwesomeIcon icon={faCoins} style={{ marginRight: "10px" }} />
+
+                    <a
+                        href="#"
+                        style={{
+                            display: 'block',
+                            padding: '15px 20px',
+                            color: 'white',
+                            textDecoration: 'none',
+                            borderLeft: '4px solid transparent'
+                        }}
+                        onClick={() => navigate('/EmployeeDetailsTable')}
+                    >
+                        <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Payments</span>
                     </a>
-                    <a href="#" style={{ display: "flex", alignItems: "center", color: "#fff", textDecoration: "none", padding: "10px", marginBottom: "10px" }}>
-                        <FontAwesomeIcon icon={faChartBar} style={{ marginRight: "10px" }} />
+                    <a href="#" style={{
+                        display: 'block',
+                        padding: '15px 20px',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderLeft: '4px solid transparent'
+                    }}>
+                        <i className="fas fa-boxes" style={{ marginRight: '10px' }}></i>
                         <span>Analytics</span>
                     </a>
-                    <a href="#" style={{ display: "flex", alignItems: "center", color: "#fff", textDecoration: "none", padding: "10px" }}>
-                        <FontAwesomeIcon icon={faCog} style={{ marginRight: "10px" }} />
+                    <a href="#" style={{
+                        display: 'block',
+                        padding: '15px 20px',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderLeft: '4px solid transparent'
+                    }}>
+                        <i className="fas fa-tools" style={{ marginRight: '10px' }}></i>
                         <span>Settings</span>
                     </a>
                 </nav>
-            </aside>
+            </aside>
+
 
             {/* Main Content */}
             <main style={{
@@ -327,7 +373,9 @@ const OrderManagementDashboard = () => {
                 padding: "30px",
                 background: "#f4f4f4",
                 overflowY: "auto",
-                marginLeft:"50px",
+                marginLeft:"170px",
+        
+
                 
             }}>
                 <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px"}}>
