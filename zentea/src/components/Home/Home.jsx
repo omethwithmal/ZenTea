@@ -19,7 +19,7 @@ function Home() {
         <ul className="IT22090508-Home-navbar-links">
           <li className="IT22090508-Home-active"><a href="#">Home</a></li>
           <li><a href="#">About Us</a></li>
-          <li><a href="#"> Products</a></li>
+          <li><a href="cart"> Products</a></li>
           <li><a href="#">Contact Us</a></li>
           <li><a href="#">Profile</a></li>
           <li className="IT22090508-Home-ctn"><a href="#">Log In</a></li>
