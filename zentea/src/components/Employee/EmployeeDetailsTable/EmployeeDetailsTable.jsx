@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 const EmployeeDetailsTable = () => {
+  const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -210,7 +212,8 @@ const EmployeeDetailsTable = () => {
                   }}
                   onMouseOver={(e) => (e.target.style.backgroundColor = "white")}
                   onMouseOut={(e) => (e.target.style.backgroundColor = "white")}
-                  onClick={() => navigate(`/employeeprofile/${employee._id}`)} // Navigate to profile page
+                 // Navigate to profile page
+                  onClick={() => navigate('/employeeprofile')}
                 >
                   Profile
                 </button>
