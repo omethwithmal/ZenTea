@@ -1,233 +1,358 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUsers, faWallet, faTruck, faBoxes, faTools, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 
 const FinancialDashboard = () => {
   const navigate = useNavigate();
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [fixedOutcome] = useState(78230);
+  const [profit, setProfit] = useState(0);
 
-  // Function to generate PDF with the necessary content
+  // Fetch orders and calculate financials
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch('http://localhost:8070/order');
+        const data = await response.json();
+        if (data.orders) {
+          setOrders(data.orders);
+          
+          // Calculate total income (price × quantity for each order)
+          const calculatedIncome = data.orders.reduce((sum, order) => {
+            const price = parseFloat(order.Price) || 0;
+            const quantity = parseInt(order.Quantity) || 1;
+            return sum + (price * quantity);
+          }, 0);
+          
+          setTotalIncome(calculatedIncome);
+          setProfit(calculatedIncome - fixedOutcome);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        setLoading(false);
+      }
+    };
+    fetchOrders();
+  }, [fixedOutcome]);
+
+  // Generate PDF report
   const generatePDF = () => {
     const doc = new jsPDF();
-    const content = document.querySelector(".dashboard"); // Get the entire dashboard content
-
-    doc.html(content, {
-      callback: function (doc) {
-        doc.save('Financial_Dashboard.pdf');
-      },
-      x: 10,
-      y: 10,
-      width: 180, // You can adjust the width as needed
-    });
+    
+    // Title
+    doc.setFontSize(20);
+    doc.text('Financial Dashboard Report', 105, 20, { align: 'center' });
+    
+    // Date
+    doc.setFontSize(12);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, 30, { align: 'center' });
+    
+    // Financial Summary
+    doc.setFontSize(14);
+    doc.text('Financial Summary', 14, 45);
+    
+    // Data
+    doc.setFontSize(12);
+    doc.text(`Total Orders: ${orders.length}`, 14, 55);
+    doc.text(`Total Income: Rs ${totalIncome.toFixed(2)}`, 14, 65);
+    doc.text(`Fixed Costs: Rs ${fixedOutcome.toFixed(2)}`, 14, 75);
+    doc.text(`Net Profit: Rs ${profit.toFixed(2)}`, 14, 85);
+    
+    // Save PDF
+    doc.save('financial_report.pdf');
   };
 
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        fontSize: '18px',
+        fontFamily: "'Poppins', sans-serif",
+        background: '#f8f9fa'
+      }}>
+        Loading financial data...
+      </div>
+    );
+  }
+
   return (
-    <div className="dashboard" style={{
+    <div style={{
       display: 'flex',
-      width: '200px',
       minHeight: '100vh',
-      background: 'rgb(255, 0, 0)',
       fontFamily: "'Poppins', sans-serif",
-       marginLeft: "500px"
-      
+      backgroundColor: '#f8f9fa'
     }}>
-      {/* Sidebar */}
-      <aside style={{
-        background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
-        padding: '30px',
-        color: 'rgb(255, 255, 255)',
-        width: '280px',
+      {/* Sidebar Navigation */}
+      <div style={{
+        width: '250px',
+        backgroundColor: '#2c3e50',
+        color: 'white',
+        padding: '20px',
         position: 'fixed',
         height: '100vh',
-        marginLeft: '-500px',
+        boxShadow: '2px 0 5px rgba(0,0,0,0.1)'
       }}>
         <div style={{
-          marginBottom: '30px',
-          textAlign: 'center'
+          textAlign: 'center',
+          padding: '20px 0',
+          borderBottom: '1px solid rgba(255,255,255,0.1)'
         }}>
-          <i className="fas fa-cogs" style={{ fontSize: '48px', marginBottom: '10px' }}></i>
-          <h1 style={{ margin: 0, fontWeight: 600, letterSpacing: '1px', fontSize: '40px' }}>Financial</h1>
-          <h2 style={{ margin: 0, fontWeight: 600, letterSpacing: '1px' }}>Dashboard</h2>
+          <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '600' }}>Financial</h1>
+          <h2 style={{ margin: '5px 0 0', fontSize: '18px', fontWeight: '400' }}>Dashboard</h2>
         </div>
-        <nav>
-          {[ 
-            { icon: 'fa-users', text: 'Financial', active: true },
-            { icon: 'fa-wallet', text: 'Notification' },
-            { icon: 'fa-truck', text: 'Financialdetails', path: '/Financial Details' },
-            { icon: 'fa-boxes', text: 'Settings' },
-            { icon: 'fa-tools', text: 'Log Out' }
+        
+        <nav style={{ marginTop: '30px' }}>
+          {[
+            { icon: faUsers, text: 'Dashboard', active: true },
+            { icon: faWallet, text: 'Transactions' },
+            { icon: faTruck, text: 'Expenses', onClick: () => navigate('/FinancialDetails') },
+            { icon: faBoxes, text: 'Reports' },
+            { icon: faTools, text: 'Settings' }
           ].map((item, index) => (
-            
-            <a
+            <div
               key={index}
-              href="#"
-              onClick={item.path ? () => navigate(item.path) : undefined}
+              onClick={item.onClick || (() => {})}
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                padding: '15px 20px',
-                margin: '10px 0',
-                borderRadius: '8px',
-                color: 'rgba(255, 255, 255, 0.8)',
-                transition: 'all 0.3s ease',
-                textDecoration: 'none',
-                fontWeight: 'bold',
-                background: item.active ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+                padding: '12px 15px',
+                margin: '8px 0',
+                borderRadius: '5px',
+                backgroundColor: item.active ? 'rgba(255,255,255,0.1)' : 'transparent',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
                 ':hover': {
-                  background: 'rgba(255, 255, 255, 0.2)',
-                  color: 'white'
+                  backgroundColor: 'rgba(255,255,255,0.1)'
                 }
               }}
             >
-              <i className={`fas ${item.icon}`} style={{ marginRight: '15px' }}></i>
+              <FontAwesomeIcon icon={item.icon} style={{ marginRight: '10px' }} />
               <span>{item.text}</span>
-            </a>
+            </div>
           ))}
         </nav>
-      </aside>
+      </div>
 
-      {/* Main Content */}
-      <main style={{
-        marginLeft: '-150px',
-        padding: '25px',
-        background: 'rgb(255, 255, 255)',
-        flex: 1
+      {/* Main Content Area */}
+      <div style={{
+        marginLeft: '250px',
+        padding: '30px',
+        flex: 1,
+        maxWidth: 'calc(100% - 250px)'
       }}>
-        {/* Generate PDF Button */}
-        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+        {/* Header with PDF Button */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '30px'
+        }}>
+          <h1 style={{
+            fontSize: '28px',
+            fontWeight: '600',
+            color: '#2c3e50',
+            margin: 0
+          }}>Financial Overview</h1>
+          
           <button
             onClick={generatePDF}
             style={{
-              padding: '15px 25px',
-              background: 'linear-gradient(135deg, #4CAF50, #8BC34A)',
+              padding: '10px 20px',
+              backgroundColor: '#e74c3c',
               color: 'white',
               border: 'none',
-              borderRadius: '12px',
-              fontSize: '18px',
-              fontWeight: 600,
+              borderRadius: '5px',
               cursor: 'pointer',
-              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '14px',
+              transition: 'all 0.3s',
+              ':hover': {
+                backgroundColor: '#c0392b',
+                transform: 'translateY(-2px)'
+              }
             }}
           >
-            Generate PDF
+            <FontAwesomeIcon icon={faFilePdf} style={{ marginRight: '8px' }} />
+            Generate Report
           </button>
         </div>
 
-        <h1 style={{
-          fontSize: '36px',
-          color: '#1a1a1a',
-          marginBottom: '30px',
-          fontWeight: 700,
-          textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>Financial Dashboard</h1>
-
-        {/* Widgets Section */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '150px',
-          marginBottom: '40px'
-        }}>
-          {[ 
-            { title: 'Income', value: 'Rs125,430', color: '#4CAF50' },
-            { title: 'Outcome', value: 'RS 78,230', color: '#F44336' },
-            { title: 'Profit', value: 'RS 47,200', color: '#2196F3' }
-          ].map((widget, index) => (
-            <div key={index} style={{
-              background: 'white',
-              padding: '25px',
-              borderRadius: '15px',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-              transition: 'transform 0.3s ease',
-              ':hover': { transform: 'translateY(-5px)' }
-            }}>
-              <h3 style={{ color: '#666', margin: 0, fontSize: '18px' }}>{widget.title}</h3>
-              <p style={{
-                fontSize: '32px',
-                fontWeight: 600,
-                color: widget.color,
-                margin: '10px 0 0'
-              }}>{widget.value}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Calculation Section */}
-        <section style={{
-          background: 'white',
-          padding: '30px',
-          borderRadius: '15px',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-          marginBottom: '40px'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2 style={{ fontSize: '24px', color: '#1a1a1a', margin: 0 }}>Calculations</h2>
-            <button
-              onClick={() => navigate('/calculation')}
-              style={{
-                padding: '12px 25px',
-                background: 'linear-gradient(135deg, #2196F3, #21CBF3)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '25px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                ':hover': { transform: 'scale(1.05)', boxShadow: '0 4px 15px rgba(33,150,243,0.4)' }
-              }}
-            >
-              Calculation Page
-            </button>
-          </div>
-          <div style={{ marginTop: '20px' }}>
-            <input
-              type="date"
-              defaultValue="2025-03-24"
-              style={{
-                padding: '10px',
-                borderRadius: '8px',
-                border: '1px solid #ddd',
-                fontSize: '16px'
-              }}
-            />
-          </div>
-        </section>
-
-        {/* Navigation Buttons */}
+        {/* Financial Metrics Cards */}
         <div style={{
           display: 'flex',
-          gap: '20px'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '20px',
+          marginBottom: '30px'
         }}>
-          {[ 
-            { text: 'View Employee Salary', path: '/EmployeeSalary' },
-            { text: 'Order Revenue', path: '/ViewOrderDetails' },
-            { text: 'Maintenance Revenue', path: '/MaintenanceRevenue' }
-          ].map((btn, index) => (
+          {/* Income Card */}
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            padding: '20px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+            transition: 'transform 0.3s',
+            ':hover': {
+              transform: 'translateY(-5px)'
+            }
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '15px'
+            }}>
+              <h3 style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: '#7f8c8d',
+                margin: 0
+              }}>Total Income</h3>
+              <div style={{
+                backgroundColor: '#2ecc71',
+                color: 'white',
+                borderRadius: '12px',
+                padding: '4px 10px',
+                fontSize: '12px',
+                fontWeight: '600'
+              }}>
+                {orders.length} orders
+              </div>
+            </div>
+            <p style={{
+              fontSize: '28px',
+              fontWeight: '700',
+              color: '#2ecc71',
+              margin: '5px 0'
+            }}>
+              Rs {totalIncome.toLocaleString('en-IN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })}
+            </p>
+            <p style={{
+              fontSize: '14px',
+              color: '#95a5a6',
+              margin: 0
+            }}>From all completed orders</p>
+          </div>
+
+          {/* Expenses Card */}
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            padding: '20px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+            transition: 'transform 0.3s',
+            ':hover': {
+              transform: 'translateY(-5px)'
+            }
+          }}>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: '600',
+              color: '#7f8c8d',
+              margin: '0 0 15px 0'
+            }}>Fixed Expenses</h3>
+            <p style={{
+              fontSize: '28px',
+              fontWeight: '700',
+              color: '#e74c3c',
+              margin: '5px 0'
+            }}>
+              Rs {fixedOutcome.toLocaleString('en-IN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })}
+            </p>
+            <p style={{
+              fontSize: '14px',
+              color: '#95a5a6',
+              margin: 0
+            }}>Monthly operational costs</p>
+          </div>
+
+          {/* Profit Card */}
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            padding: '20px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+            transition: 'transform 0.3s',
+            ':hover': {
+              transform: 'translateY(-5px)'
+            }
+          }}>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: '600',
+              color: '#7f8c8d',
+              margin: '0 0 15px 0'
+            }}>Net Profit</h3>
+            <p style={{
+              fontSize: '28px',
+              fontWeight: '700',
+              color: '#3498db',
+              margin: '5px 0'
+            }}>
+              Rs {profit.toLocaleString('en-IN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })}
+            </p>
+            <p style={{
+              fontSize: '14px',
+              color: '#95a5a6',
+              margin: 0
+            }}>Income minus expenses</p>
+          </div>
+        </div>
+
+        {/* Quick Navigation Buttons */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '15px',
+          marginTop: '30px'
+        }}>
+          {[
+            { text: 'Employee Salaries', path: '/EmployeeSalary' },
+            { text: 'Order Details', path: '/ViewOrderDetails' },
+            { text: 'Maintenance', path: '/MaintenanceRevenue' }
+          ].map((item, index) => (
             <button
               key={index}
-              onClick={() => navigate(btn.path)}
+              onClick={() => navigate(item.path)}
               style={{
-                flex: 1,
-                padding: '15px',
-                background: 'linear-gradient(135deg, #6D4AFF, #8A65FF)',
+                padding: '12px',
+                backgroundColor: '#3498db',
                 color: 'white',
                 border: 'none',
-                borderRadius: '12px',
-                fontSize: '16px',
-                fontWeight: 600,
+                borderRadius: '6px',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 2px 10px rgba(109,74,255,0.2)',
+                fontSize: '15px',
+                fontWeight: '500',
+                transition: 'all 0.3s',
                 ':hover': {
+                  backgroundColor: '#2980b9',
                   transform: 'translateY(-3px)',
-                  boxShadow: '0 5px 15px rgba(109,74,255,0.4)'
+                  boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
                 }
               }}
             >
-              {btn.text}
+              {item.text}
             </button>
           ))}
         </div>
-      </main>
+      </div>
     </div>
   );
 };
