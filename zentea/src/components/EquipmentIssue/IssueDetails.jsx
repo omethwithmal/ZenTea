@@ -13,7 +13,7 @@ const IssueDetails = () => {
   useEffect(() => {
     const fetchIssues = async () => {
       try {
-        const response = await fetch('http://localhost:5000/issues');
+        const response = await fetch('http://localhost:8070/issues');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -48,7 +48,7 @@ const IssueDetails = () => {
   const handleDelete = async (issueId) => {
     if (window.confirm('Are you sure you want to delete this issue?')) {
       try {
-        const response = await fetch(`http://localhost:5000/issues/deleteIssue/${issueId}`, {
+        const response = await fetch(`http://localhost:8070/issues/deleteIssue/${issueId}`, {
           method: 'DELETE',
         });
         

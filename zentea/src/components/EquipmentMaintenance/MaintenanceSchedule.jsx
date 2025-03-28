@@ -14,7 +14,7 @@ const MaintenanceSchedule = () => {
     useEffect(() => {
         const fetchMaintenance = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/maintenances');
+                const response = await axios.get('http://localhost:8070/maintenances');
                 setMaintenanceList(response.data.maintenance);
                 setLoading(false);
             } catch (err) {
@@ -37,7 +37,7 @@ const MaintenanceSchedule = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this maintenance record?')) {
             try {
-                await axios.delete(`http://localhost:5000/maintenances/deleteMaintenance/${id}`);
+                await axios.delete(`http://localhost:8070/maintenances/deleteMaintenance/${id}`);
                 setMaintenanceList(maintenanceList.filter(item => item._id !== id));
                 console.log('Maintenance record deleted:', id);
             } catch (err) {

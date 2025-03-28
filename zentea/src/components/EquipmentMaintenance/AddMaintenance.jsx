@@ -25,7 +25,7 @@ const AddMaintenance = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/maintenances/addMaintenance', formData);
+            const response = await axios.post('http://localhost:8070/maintenances/addMaintenance', formData);
             if (response.data.maintenance) {
                 navigate('/MaintenanceSchedule');
             }
