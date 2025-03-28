@@ -93,6 +93,7 @@ function App() {
       <Route path="/IssueDetails" element={<IssueDetails />} />
       <Route path="/AddIssue" element={<AddIssue />} />
       <Route path="/UpdateIssue" element={<UpdateIssue />} />
+      <Route path="/issues/update/:id" element={<UpdateIssue />} />
      
 
 

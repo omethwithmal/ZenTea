@@ -19,7 +19,7 @@ const UpdateMaintenance = () => {
     useEffect(() => {
         const fetchMaintenance = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/maintenances/${id}`);
+                const response = await axios.get(`http://localhost:8070/maintenances/${id}`);
                 setFormData(response.data.maintenance);
             } catch (err) {
                 console.error('Error fetching maintenance:', err);
@@ -38,7 +38,7 @@ const UpdateMaintenance = () => {
         e.preventDefault();
         try {
             const response = await axios.put(
-                `http://localhost:5000/maintenances/updateMaintenance/${id}`,
+                `http://localhost:8070/maintenances/updateMaintenance/${id}`,
                 formData
             );
             if (response.data.maintenance) {

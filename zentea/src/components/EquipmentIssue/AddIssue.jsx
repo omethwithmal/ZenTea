@@ -28,7 +28,7 @@ const AddIssue = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:5000/issues/addIssue', {
+      const response = await fetch('http://localhost:8070/issues/addIssue', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -16,7 +16,7 @@ const UpdateIssue = () => {
   useEffect(() => {
     const fetchIssue = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/issues/${id}`);
+        const response = await fetch(`http://localhost:8070/issues/${id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch issue');
         }
@@ -42,7 +42,7 @@ const UpdateIssue = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5000/issues/updateIssue/${id}`, {
+      const response = await fetch(`http://localhost:8070/issues/updateIssue/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
