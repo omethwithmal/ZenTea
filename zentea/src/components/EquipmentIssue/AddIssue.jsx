@@ -54,17 +54,20 @@ const AddIssue = () => {
 
   // Styles (same as before)
   const containerStyle = {
-    maxWidth: '800px',
+    marginLeft:'400px',
+    Width: '3000px',
     margin: '0 auto',
     padding: '2rem',
     fontFamily: "'Inter', sans-serif",
+    backgroundColor:'#F5F7F8'
   };
 
   const cardStyle = {
-    backgroundColor: 'white',
+    backgroundColor: '#D8D9DA',
+    width:"600px",
     borderRadius: '12px',
     padding: '2rem',
-    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+    boxShadow: '0 4px 20px rgb(242, 242, 242)',
   };
 
   const titleStyle = {
