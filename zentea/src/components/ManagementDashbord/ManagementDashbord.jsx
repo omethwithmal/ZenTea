@@ -26,7 +26,7 @@ const ManagementDashboard = () => {
                      onClick={() =>navigate('/AddEmployeeForm')}
                     >
                         <i className="fas fa-user-shield"></i>
-                        <span>➕ Add user</span>
+                        <span>➕ Add Employee</span>
                         
                     </a>
                     <a href="#" className="IT22090508-admindashbord-nav-link ">
@@ -41,19 +41,27 @@ const ManagementDashboard = () => {
                         <i className="fas fa-users"></i>
                         <span>👤Employee </span>
                     </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link ">
+                    <a href="#" className="IT22090508-admindashbord-nav-link "
+                     onClick={() =>navigate('/FinancialDashboard')}
+                    >
                         <i className="fas fa-wallet"></i>
                         <span>💰Financial </span>
                     </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link">
+                    <a href="#" className="IT22090508-admindashbord-nav-link"
+                    onClick={() =>navigate('/Orderdash')}
+                    >
                         <i className="fas fa-truck"></i>
                         <span>🚚 Orders</span>
                     </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link">
+                    <a href="#" className="IT22090508-admindashbord-nav-link"
+                    
+                    >
                         <i className="fas fa-boxes"></i>
                         <span>📦Inventory</span>
                     </a>
-                    <a href="#" className="IT22090508-admindashbord-nav-link">
+                    <a href="#" className="IT22090508-admindashbord-nav-link"
+                    onClick={() =>navigate('/MaintenanceSchedule')}
+                    >
                         <i className="fas fa-tools"></i>
                         <span>🛠 Equipment</span>
                     </a>
@@ -63,7 +71,9 @@ const ManagementDashboard = () => {
                         
                     </a>
 
-                    <a href="#" className="IT22090508-admindashbord-nav-link ">
+                    <a href="#" className="IT22090508-admindashbord-nav-link "
+                     onClick={() =>navigate('/')}
+                    >
                         <i className="fas fa-user-shield"></i>
                         <span>↩ Log Out</span>
                         

@@ -396,7 +396,9 @@ const EmployeeDashboard = () => {
                         color: 'white',
                         textDecoration: 'none',
                         borderLeft: '4px solid transparent'
-                    }}>
+                    }}
+                    onClick={() =>navigate('/')}
+                    >
                         <i className="fas fa-tools" style={{ marginRight: '10px' }}></i>
                         <span>Log Out</span>
                     </a>

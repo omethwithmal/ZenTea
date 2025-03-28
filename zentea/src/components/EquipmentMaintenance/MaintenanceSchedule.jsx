@@ -271,7 +271,7 @@ const MaintenanceSchedule = () => {
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Issue Details</span>
                     </a>
-                    <a href="#" style={navLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/NotificationDashboard'); }}>
+                    <a href="#" style={navLinkStyle} >
                         <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
                         <span>Notification</span>
                     </a>
@@ -279,7 +279,7 @@ const MaintenanceSchedule = () => {
                         <i className="fas fa-boxes" style={{ marginRight: '10px' }}></i>
                         <span>Settings</span>
                     </a>
-                    <a href="#" style={navLinkStyle}>
+                    <a href="#" style={navLinkStyle}onClick={(e) => { e.preventDefault(); navigate('/'); }}>
                         <i className="fas fa-tools" style={{ marginRight: '10px' }}></i>
                         <span>Log Out</span>
                     </a>
