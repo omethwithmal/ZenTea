@@ -38,7 +38,9 @@ const AddMaintenance = () => {
     return (
         <div style={{
             maxWidth: '600px',
+           
             margin: '40px auto',
+            marginLeft:"550px",
             padding: '30px',
             background: '#f9f9f9',
             borderRadius: '16px',
@@ -47,6 +49,7 @@ const AddMaintenance = () => {
         }}>
             <h2 style={{
                 textAlign: 'center',
+                
                 fontSize: '1.8rem',
                 fontWeight: '700',
                 color: '#333',

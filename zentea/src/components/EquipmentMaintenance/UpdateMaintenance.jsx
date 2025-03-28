@@ -53,6 +53,8 @@ const UpdateMaintenance = () => {
     return (
         <div style={{
             maxWidth: '600px',
+            marginLeft:'500px',
+            width:"400px",
             margin: '40px auto',
             padding: '30px',
             background: '#f9f9f9',
