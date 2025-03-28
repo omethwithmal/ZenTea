@@ -40,6 +40,9 @@ import SummaryTable from "../src/components/SummaryTable/SummaryTable";
 import IssueDetails from "./components/EquipmentIssue/IssueDetails";
 import AddIssue from "./components/EquipmentIssue/AddIssue";
 import UpdateIssue from "./components/EquipmentIssue/UpdateIssue";
+import MaintenanceSchedule from "./components/EquipmentMaintenance/MaintenanceSchedule";
+import AddMaintenance from "./components/EquipmentMaintenance/AddMaintenance";
+import UpdateMaintenance from "./components/EquipmentMaintenance/UpdateMaintenance";
 
 
 
@@ -82,6 +85,10 @@ function App() {
                 <Route path="/ViewOrderDetails" element={<ViewOrderDetails/>} />
                 <Route path="/MaintenanceRevenue" element={<MaintenanceRevenue/>} />
                 <Route path="/SummaryTable"  element={<SummaryTable/>}/>
+
+      <Route path="/MaintenanceSchedule" element={<MaintenanceSchedule />} />
+      <Route path="/AddMaintenance" element={<AddMaintenance />} />
+      <Route path="/updateMaintenance/:id" element={<UpdateMaintenance />} />
 
       <Route path="/IssueDetails" element={<IssueDetails />} />
       <Route path="/AddIssue" element={<AddIssue />} />
