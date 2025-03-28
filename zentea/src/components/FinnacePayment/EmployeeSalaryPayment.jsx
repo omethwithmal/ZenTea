@@ -1,28 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const EmployeeSalaryPayment = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { state } = location;
   const employeeData = state?.employee || {};
 
   const [formData, setFormData] = useState({
-    employeeName: employeeData.firstName || '',
-    employeeId: employeeData.employeeID || '',
+    employeename: employeeData.firstName || '',
+    employeeID: employeeData.employeeID || '',
     accountNumber: '',
-    finalSalary: employeeData.finalSalary || '',
+    basicSalary: employeeData.finalSalary || '',
     otHours: employeeData.otHours || '',
-    paymentDate: '',
+    date: new Date().toISOString().split('T')[0], // Default to today's date
   });
+
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   // Update form data when employeeData changes
   useEffect(() => {
     if (employeeData) {
       setFormData(prev => ({
         ...prev,
-        employeeName: employeeData.firstName || '',
-        employeeId: employeeData.employeeID || '',
-        finalSalary: employeeData.finalSalary || '',
+        employeename: employeeData.firstName || '',
+        employeeID: employeeData.employeeID || '',
+        basicSalary: employeeData.finalSalary || '',
         otHours: employeeData.otHours || ''
       }));
     }
@@ -30,16 +35,44 @@ const EmployeeSalaryPayment = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Payment Details Submitted:', formData);
-    alert('Payment Successful!');
+    setError('');
+    setSuccess('');
+
+    try {
+      // Validate form data
+      if (!formData.accountNumber || !formData.otHours) {
+        throw new Error('Account number and OT hours are required');
+      }
+
+      // Send data to backend
+      const response = await axios.post('http://localhost:8070/esalarys/add', formData);
+      
+      if (response.data.message) {
+        setSuccess('Salary payment recorded successfully!');
+        // Reset form after successful submission
+        setFormData(prev => ({
+          ...prev,
+          accountNumber: '',
+          otHours: '',
+          date: new Date().toISOString().split('T')[0]
+        }));
+        // Optionally navigate to another page after delay
+        setTimeout(() => {
+          navigate('/FinancialDashboard'); // Adjust this to your desired route
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Error submitting salary payment:', err);
+      setError(err.response?.data?.error || err.message || 'Failed to record salary payment');
+    }
   };
 
   return (
@@ -65,6 +98,33 @@ const EmployeeSalaryPayment = () => {
       >
         Employee Salary Payment
       </h2>
+      
+      {error && (
+        <div style={{
+          color: 'red',
+          padding: '10px',
+          marginBottom: '15px',
+          border: '1px solid red',
+          borderRadius: '4px',
+          backgroundColor: '#ffebee'
+        }}>
+          {error}
+        </div>
+      )}
+      
+      {success && (
+        <div style={{
+          color: 'green',
+          padding: '10px',
+          marginBottom: '15px',
+          border: '1px solid green',
+          borderRadius: '4px',
+          backgroundColor: '#e8f5e9'
+        }}>
+          {success}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
         {/* Employee Name */}
         <div style={{ marginBottom: '15px' }}>
@@ -79,8 +139,8 @@ const EmployeeSalaryPayment = () => {
           </label>
           <input
             type="text"
-            name="employeeName"
-            value={formData.employeeName}
+            name="employeename"
+            value={formData.employeename}
             onChange={handleChange}
             required
             readOnly
@@ -108,8 +168,8 @@ const EmployeeSalaryPayment = () => {
           </label>
           <input
             type="text"
-            name="employeeId"
-            value={formData.employeeId}
+            name="employeeID"
+            value={formData.employeeID}
             onChange={handleChange}
             required
             readOnly
@@ -153,7 +213,7 @@ const EmployeeSalaryPayment = () => {
           />
         </div>
 
-        {/* Final Salary */}
+        {/* Basic Salary */}
         <div style={{ marginBottom: '15px' }}>
           <label
             style={{
@@ -162,12 +222,12 @@ const EmployeeSalaryPayment = () => {
               marginBottom: '5px',
             }}
           >
-            Final Salary:
+            Basic Salary:
           </label>
           <input
             type="number"
-            name="finalSalary"
-            value={formData.finalSalary}
+            name="basicSalary"
+            value={formData.basicSalary}
             onChange={handleChange}
             required
             readOnly
@@ -224,8 +284,8 @@ const EmployeeSalaryPayment = () => {
           </label>
           <input
             type="date"
-            name="paymentDate"
-            value={formData.paymentDate}
+            name="date"
+            value={formData.date}
             onChange={handleChange}
             required
             style={{
