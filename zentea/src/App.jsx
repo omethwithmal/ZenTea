@@ -23,6 +23,11 @@ import OrderManagementDashboard from "./components/OrderManagementDashboard/Orde
 import CustomerOrderDashboard from "./components/CustomerOrderDashBoard/CustomerOrderDashBoard";
 
 
+import IssueDetails from "./components/EquipmentIssue/IssueDetails";
+import AddIssue from "./components/EquipmentIssue/AddIssue";
+import UpdateIssue from "./components/EquipmentIssue/UpdateIssue";
+
+
  
 
 function App() {
@@ -52,7 +57,9 @@ function App() {
                 <Route path="/Orderdash" element={<OrderManagementDashboard />} />
                 <Route path="/CustomerDash" element={<CustomerOrderDashboard />} />
                
-     
+      <Route path="/IssueDetails" element={<IssueDetails />} />
+      <Route path="/AddIssue" element={<AddIssue />} />
+      <Route path="/UpdateIssue" element={<UpdateIssue />} />
 
 
 
