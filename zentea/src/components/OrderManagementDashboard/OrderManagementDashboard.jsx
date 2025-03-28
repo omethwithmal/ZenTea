@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from "chart.js";
 import { Doughnut, Bar, Pie } from "react-chartjs-2";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,6 +25,9 @@ import autoTable from 'jspdf-autotable';
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 const OrderManagementDashboard = () => {
+
+    const navigate = useNavigate();
+
     const [orders, setOrders] = useState([]);
     const [filteredOrders, setFilteredOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -304,7 +308,7 @@ const OrderManagementDashboard = () => {
                         textDecoration: 'none',
                         borderLeft: '4px solid transparent'
                     }}
-                    onClick={() => navigate('/NotificationDashboard')}
+
                     >
                         <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
                         <span>Orders</span>
@@ -316,7 +320,7 @@ const OrderManagementDashboard = () => {
                         textDecoration: 'none',
                         borderLeft: '4px solid transparent',
                     }}
-                    onClick={() => navigate('/AttendanceDashboard')}
+                   
                     >
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Customers</span>
@@ -330,7 +334,7 @@ const OrderManagementDashboard = () => {
                             textDecoration: 'none',
                             borderLeft: '4px solid transparent'
                         }}
-                        onClick={() => navigate('/EmployeeDetailsTable')}
+                        
                     >
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Payments</span>
@@ -351,9 +355,11 @@ const OrderManagementDashboard = () => {
                         color: 'white',
                         textDecoration: 'none',
                         borderLeft: '4px solid transparent'
-                    }}>
+                    }}
+                    onClick={() =>navigate('/')}
+                    >
                         <i className="fas fa-tools" style={{ marginRight: '10px' }}></i>
-                        <span>Settings</span>
+                        <span>Log out</span>
                     </a>
                 </nav>
             </aside>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import Footer from "../Footer/Footer";
 import img1 from '../../assets/section2_1.jpg';
@@ -6,6 +7,8 @@ import img2 from '../../assets/section2_2.jpg';
 import img3 from '../../assets/About.jpg';
 
 function Home() {
+ const navigate = useNavigate();
+
   return (
     <div>
       {/* Snowflakes */}
@@ -22,8 +25,12 @@ function Home() {
           <li><a href="cart"> Products</a></li>
           <li><a href="#">Contact Us</a></li>
           <li><a href="#">Profile</a></li>
-          <li className="IT22090508-Home-ctn"><a href="#">Log In</a></li>
-          <li className="IT22090508-Home-ctn"><a href="#">Sign Up</a></li>
+          <li className="IT22090508-Home-ctn">
+          <button onClick={() => navigate("/login")}>Log In</button>
+        </li>
+        <li className="IT22090508-Home-ctn">
+          <button onClick={() => navigate("/signup")}>Sign Up</button>
+        </li>
         </ul>
       </nav>
 
