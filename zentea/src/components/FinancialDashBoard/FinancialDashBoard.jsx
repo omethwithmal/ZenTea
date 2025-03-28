@@ -112,9 +112,8 @@ const FinancialDashboard = () => {
         <nav style={{ marginTop: '30px' }}>
           {[
             { icon: faUsers, text: 'Dashboard', active: true },
-            { icon: faWallet, text: 'Transactions' },
-            { icon: faTruck, text: 'Expenses', onClick: () => navigate('/FinancialDetails') },
-            { icon: faBoxes, text: 'Reports' },
+            { icon: faWallet, text: 'Notification' },
+        
             { icon: faTools, text: 'Settings' }
           ].map((item, index) => (
             <div

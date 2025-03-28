@@ -10,8 +10,8 @@ const EmployeeSalaryPayment = () => {
     employeeName: employeeData.firstName || '',
     employeeId: employeeData.employeeID || '',
     accountNumber: '',
-    basicSalary: employeeData.basicSalary || '',
-    otHours: '',
+    finalSalary: employeeData.finalSalary || '',
+    otHours: employeeData.otHours || '',
     paymentDate: '',
   });
 
@@ -22,7 +22,8 @@ const EmployeeSalaryPayment = () => {
         ...prev,
         employeeName: employeeData.firstName || '',
         employeeId: employeeData.employeeID || '',
-        basicSalary: employeeData.basicSalary || ''
+        finalSalary: employeeData.finalSalary || '',
+        otHours: employeeData.otHours || ''
       }));
     }
   }, [employeeData]);
@@ -152,7 +153,7 @@ const EmployeeSalaryPayment = () => {
           />
         </div>
 
-        {/* Basic Salary */}
+        {/* Final Salary */}
         <div style={{ marginBottom: '15px' }}>
           <label
             style={{
@@ -161,12 +162,12 @@ const EmployeeSalaryPayment = () => {
               marginBottom: '5px',
             }}
           >
-            Basic Salary:
+            Final Salary:
           </label>
           <input
             type="number"
-            name="basicSalary"
-            value={formData.basicSalary}
+            name="finalSalary"
+            value={formData.finalSalary}
             onChange={handleChange}
             required
             readOnly
