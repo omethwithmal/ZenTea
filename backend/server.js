@@ -44,6 +44,8 @@ app.use("/maintenances", router1);
 const router2 = require("./EquipmentMaintenanceManagement/Routes/IssueRoutes");
 app.use("/issues", router2);
 
+const loginSignRoutes = require("./LoginSignup/router");
+app.use("/login", loginSignRoutes);
 
 // Default Route
 app.get("/", (req, res) => {
