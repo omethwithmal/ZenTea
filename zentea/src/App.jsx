@@ -45,6 +45,8 @@ import UpdateIssue from "./components/EquipmentIssue/UpdateIssue";
 import MaintenanceSchedule from "./components/EquipmentMaintenance/MaintenanceSchedule";
 import AddMaintenance from "./components/EquipmentMaintenance/AddMaintenance";
 import UpdateMaintenance from "./components/EquipmentMaintenance/UpdateMaintenance";
+import Navbar from "./components/Employee_Home/naveBar";
+import HomePage from "./components/Employee_Home/EmployeeHome";
 
 
 
@@ -74,6 +76,9 @@ function App() {
       <Route path="/AttendanceDashboard" element={<AttendanceDashboard/>} />
       <Route path="/NotificationDashboard" element={<NotificationDashboard/>} />
       <Route path="/EmployeeSalaryPayment" element={<EmployeeSalaryPayment/>} />
+      <Route path="/Navbar" element={<Navbar/>} />
+      <Route path="/HomePage" element={<HomePage/>} />
+
 
 
                 <Route path="/TeaOrderForm" element={<TeaOrderForm />} />
