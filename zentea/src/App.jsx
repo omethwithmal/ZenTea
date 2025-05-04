@@ -46,6 +46,8 @@ import EmployeeSalaryTable from "../src/components/FinnacePayment/EmployeSalaryt
 
 
 import SummaryTable from "../src/components/SummaryTable/SummaryTable";
+import EquipmentDashboard from "./components/EquipmentDetails/EquipmentDashboard";
+import AddEquipment from "./components/EquipmentDetails/AddEquipment";
 import IssueDetails from "./components/EquipmentIssue/IssueDetails";
 import AddIssue from "./components/EquipmentIssue/AddIssue";
 import UpdateIssue from "./components/EquipmentIssue/UpdateIssue";
@@ -112,6 +114,11 @@ function App() {
                 <Route path="/MaintenanceRevenue" element={<MaintenanceRevenue/>} />
                 <Route path="/SummaryTable"  element={<SummaryTable/>}/>
                 <Route path="/EmployeeSalaryTable" element={<EmployeeSalaryTable/>}/>
+
+
+
+      <Route path="/EquipmentDashboard" element={<EquipmentDashboard />} />
+      <Route path="/AddEquipment" element={<AddEquipment />} />
 
       <Route path="/MaintenanceSchedule" element={<MaintenanceSchedule />} />
       <Route path="/AddMaintenance" element={<AddMaintenance />} />
