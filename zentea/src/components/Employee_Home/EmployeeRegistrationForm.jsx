@@ -22,9 +22,9 @@ function EmployeeRegistrationForm() {
     birthday: '',
     contactNumber: '',
     email: '',
+    nationalId: '',
     startDate: '',
   });
-
   const [showPopup, setShowPopup] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -48,6 +48,11 @@ function EmployeeRegistrationForm() {
 
   const validateEmail = (value) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(value);
+  };
+
+  const validateNationalId = (value) => {
+    const regex = /^[0-9Vv]*$/;
     return regex.test(value);
   };
 
@@ -108,18 +113,26 @@ function EmployeeRegistrationForm() {
         ...errors,
         email: validateEmail(value) || value === '' ? '' : 'Invalid email format',
       });
+    } else if (name === 'nationalId') {
+      setErrors({
+        ...errors,
+        nationalId: validateNationalId(value) ? '' : 'Only numbers and "V" or "v" are allowed',
+      });
     }
   };
 
   const handleKeyPress = (e, type) => {
+    const char = String.fromCharCode(e.charCode);
     if (type === 'name') {
-      const char = String.fromCharCode(e.charCode);
       if (!/^[a-zA-Z\s]*$/.test(char)) {
         e.preventDefault();
       }
     } else if (type === 'number') {
-      const char = String.fromCharCode(e.charCode);
       if (!/^\d$/.test(char)) {
+        e.preventDefault();
+      }
+    } else if (type === 'nationalId') {
+      if (!/^[0-9Vv]$/.test(char)) {
         e.preventDefault();
       }
     }
@@ -132,6 +145,7 @@ function EmployeeRegistrationForm() {
       validateBirthdayAge(formData.birthday) &&
       validateContactNumber(formData.contactNumber) &&
       validateEmail(formData.email) &&
+      validateNationalId(formData.nationalId) &&
       validateDate(formData.startDate)
     );
   };
@@ -150,6 +164,7 @@ function EmployeeRegistrationForm() {
           : 'Invalid date format (mm/dd/yyyy)',
         contactNumber: validateContactNumber(formData.contactNumber) ? '' : 'Must be exactly 10 digits',
         email: validateEmail(formData.email) ? '' : 'Invalid email format',
+        nationalId: validateNationalId(formData.nationalId) ? '' : 'Only numbers and "V" or "v" are allowed',
         startDate: validateDate(formData.startDate) ? '' : 'Invalid date format (mm/dd/yyyy)',
       });
     }
@@ -175,6 +190,7 @@ function EmployeeRegistrationForm() {
       birthday: '',
       contactNumber: '',
       email: '',
+      nationalId: '',
       startDate: '',
     });
   };
@@ -371,16 +387,18 @@ function EmployeeRegistrationForm() {
                   name="nationalId"
                   value={formData.nationalId}
                   onChange={handleInputChange}
-                  style={styles.input}
+                  onKeyPress={(e) => handleKeyPress(e, 'nationalId')}
+                  style={{ ...styles.input, border: errors.nationalId ? '2px solid #c62828' : '1px solid #e8edea' }}
                   onFocus={(e) => {
-                    e.target.style.border = '2px solid #2a5c42';
-                    e.target.style.boxShadow = '0 0 6px rgba(42, 92, 66, 0.3)';
+                    e.target.style.border = errors.nationalId ? '2px solid #c62828' : '2px solid #2a5c42';
+                    e.target.style.boxShadow = errors.nationalId ? '0 0 6px rgba(198, 40, 40, 0.3)' : '0 0 6px rgba(42, 92, 66, 0.3)';
                   }}
                   onBlur={(e) => {
-                    e.target.style.border = '1px solid #e8edea';
+                    e.target.style.border = errors.nationalId ? '2px solid #c62828' : '1px solid #e8edea';
                     e.target.style.boxShadow = 'none';
                   }}
                 />
+                {errors.nationalId && <span style={styles.errorText}>{errors.nationalId}</span>}
               </div>
             </div>
           </div>
