@@ -53,6 +53,8 @@ import MaintenanceSchedule from "./components/EquipmentMaintenance/MaintenanceSc
 import AddMaintenance from "./components/EquipmentMaintenance/AddMaintenance";
 import UpdateMaintenance from "./components/EquipmentMaintenance/UpdateMaintenance";
 
+import EmployeeRegistrationForm from "./components/Employee_Home/EmployeeRegistrationForm";
+
 
 
 
@@ -86,6 +88,8 @@ function App() {
       <Route path="/Navbar" element={<Navbar/>} />
       <Route path="/HomePage" element={<HomePage/>} />
       <Route path="/EmpSignUp" element={<EmpSignUp/>} />
+
+      <Route path="/EmployeeRegistrationForm" element={<EmployeeRegistrationForm/>} />
 
 
 

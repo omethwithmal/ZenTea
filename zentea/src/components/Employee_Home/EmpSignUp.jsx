@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 const EmpSignUp = () => {
   const [isSignUp, setIsSignUp] = useState(false);
 
@@ -9,6 +10,9 @@ const EmpSignUp = () => {
 
   return (
     <div style={styles.container}>
+
+      
+    
       <div style={styles.formWrapper}>
         {/* Toggle Buttons */}
         <div style={styles.toggleContainer}>
