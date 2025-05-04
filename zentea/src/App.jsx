@@ -35,8 +35,8 @@ import FinancialDashboard from "../src/components/FinancialDashBoard/FinancialDa
 import EmployeeSalary from "../src/components/Salary/EmployeeSalary";
 import ViewOrderDetails from "../src/components/ViewOrderDetails/ViewOrderDetails";
 import MaintenanceRevenue from "../src/components/MaintenanceRevebue/MaintenanceReveue";
-import SummaryTable from "../src/components/SummaryTable/SummaryTable";
 
+import SummaryTable from "../src/components/SummaryTable/SummaryTable";
 import EquipmentDashboard from "./components/EquipmentDetails/EquipmentDashboard";
 import AddEquipment from "./components/EquipmentDetails/AddEquipment";
 import IssueDetails from "./components/EquipmentIssue/IssueDetails";
