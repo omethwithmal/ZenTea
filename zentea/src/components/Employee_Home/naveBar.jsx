@@ -204,7 +204,7 @@ const Navbar = () => {
 
             <div style={styles.dropdownMenu}>
               <button
-                onClick={() => navigateTo("/profile")}
+                onClick={() => navigateTo("/ZenTeaEmployeeProfile")}
                 style={styles.dropdownItem}
                 onMouseOver={(e) => (e.target.style.backgroundColor = styles.dropdownItemHover.backgroundColor)}
                 onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
@@ -212,7 +212,7 @@ const Navbar = () => {
                 Profile
               </button>
               <button
-                onClick={() => navigateTo("/logout")}
+                onClick={() => navigateTo("/EmpSignUp")}
                 style={{ ...styles.dropdownItem, ...styles.logout }}
                 onMouseOver={(e) => (e.target.style.backgroundColor = styles.logoutHover.backgroundColor)}
                 onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
