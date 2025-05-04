@@ -44,6 +44,7 @@ import MaintenanceSchedule from "./components/EquipmentMaintenance/MaintenanceSc
 import AddMaintenance from "./components/EquipmentMaintenance/AddMaintenance";
 import UpdateMaintenance from "./components/EquipmentMaintenance/UpdateMaintenance";
 import EquipmentDashboard from "./components/EquipmentDetails/EquipmentDashboard";
+import AddEquipment from "./components/EquipmentDetails/AddEquipment";
 
 
  
@@ -89,6 +90,7 @@ function App() {
 
 
       <Route path="/EquipmentDashboard" element={<EquipmentDashboard />} />
+      <Route path="/AddEquipment" element={<AddEquipment />} />
 
       <Route path="/MaintenanceSchedule" element={<MaintenanceSchedule />} />
       <Route path="/AddMaintenance" element={<AddMaintenance />} />
