@@ -37,15 +37,12 @@ import ViewOrderDetails from "../src/components/ViewOrderDetails/ViewOrderDetail
 import MaintenanceRevenue from "../src/components/MaintenanceRevebue/MaintenanceReveue";
 
 import SummaryTable from "../src/components/SummaryTable/SummaryTable";
-
-
 import IssueDetails from "./components/EquipmentIssue/IssueDetails";
 import AddIssue from "./components/EquipmentIssue/AddIssue";
 import UpdateIssue from "./components/EquipmentIssue/UpdateIssue";
 import MaintenanceSchedule from "./components/EquipmentMaintenance/MaintenanceSchedule";
 import AddMaintenance from "./components/EquipmentMaintenance/AddMaintenance";
 import UpdateMaintenance from "./components/EquipmentMaintenance/UpdateMaintenance";
-
 import EquipmentDashboard from "./components/EquipmentDetails/EquipmentDashboard";
 
 
