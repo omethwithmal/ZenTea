@@ -54,6 +54,7 @@ import AddMaintenance from "./components/EquipmentMaintenance/AddMaintenance";
 import UpdateMaintenance from "./components/EquipmentMaintenance/UpdateMaintenance";
 
 import EmployeeRegistrationForm from "./components/Employee_Home/EmployeeRegistrationForm";
+import ZenTeaEmployeeProfile from "./components/Employee_Home/ZenTeaEmployeeProfile";
 
 
 
@@ -90,6 +91,7 @@ function App() {
       <Route path="/EmpSignUp" element={<EmpSignUp/>} />
 
       <Route path="/EmployeeRegistrationForm" element={<EmployeeRegistrationForm/>} />
+      <Route path="/ZenTeaEmployeeProfile" element={<ZenTeaEmployeeProfile/>} />
 
 
 
