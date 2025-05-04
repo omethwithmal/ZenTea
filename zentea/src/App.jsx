@@ -43,6 +43,7 @@ import UpdateIssue from "./components/EquipmentIssue/UpdateIssue";
 import MaintenanceSchedule from "./components/EquipmentMaintenance/MaintenanceSchedule";
 import AddMaintenance from "./components/EquipmentMaintenance/AddMaintenance";
 import UpdateMaintenance from "./components/EquipmentMaintenance/UpdateMaintenance";
+
 import EquipmentDashboard from "./components/EquipmentDetails/EquipmentDashboard";
 
 
