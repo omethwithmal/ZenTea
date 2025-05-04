@@ -20,6 +20,13 @@ import IT22090508_QRcode_Scanner_Page from "./components/QRCodeScanner/QRCodeSca
 import AttendanceDashboard from "./components/Employee/AttendanceDashboard/AttendanceDashboard";
 import NotificationDashboard from "./components/Employee/NotificationDashboard/NotificationDashboard";
 import EmployeeSalaryPayment from "./components/FinnacePayment/EmployeeSalaryPayment";
+import EmpSignUp from "./components/Employee_Home/EmpSignUp";
+import Navbar from "./components/Employee_Home/naveBar";
+import HomePage from "./components/Employee_Home/EmployeeHome";
+
+
+
+
 
 // Kavishka Dilshan
 
@@ -45,8 +52,8 @@ import UpdateIssue from "./components/EquipmentIssue/UpdateIssue";
 import MaintenanceSchedule from "./components/EquipmentMaintenance/MaintenanceSchedule";
 import AddMaintenance from "./components/EquipmentMaintenance/AddMaintenance";
 import UpdateMaintenance from "./components/EquipmentMaintenance/UpdateMaintenance";
-import Navbar from "./components/Employee_Home/naveBar";
-import HomePage from "./components/Employee_Home/EmployeeHome";
+
+
 
 
 
@@ -78,6 +85,12 @@ function App() {
       <Route path="/EmployeeSalaryPayment" element={<EmployeeSalaryPayment/>} />
       <Route path="/Navbar" element={<Navbar/>} />
       <Route path="/HomePage" element={<HomePage/>} />
+      <Route path="/EmpSignUp" element={<EmpSignUp/>} />
+
+
+
+  
+     
 
 
 

@@ -14,7 +14,7 @@ const Navbar = () => {
   // Inline CSS Styles
   const styles = {
     navbar: {
-        width:"1510px",
+        width:"1512px",
       position: "fixed", // Changed from "sticky" to "fixed"
       top: 0,
       zIndex: 50,
@@ -178,7 +178,7 @@ const Navbar = () => {
           {/* Auth Buttons */}
           <div style={styles.authButtons}>
             <button
-              onClick={() => navigateTo("/login")}
+              onClick={() => navigateTo("/EmpSignUp")}
               style={styles.loginButton}
               onMouseOver={(e) => (e.target.style.backgroundColor = styles.loginButtonHover.backgroundColor)}
               onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
@@ -186,7 +186,7 @@ const Navbar = () => {
               Log In
             </button>
             <button
-              onClick={() => navigateTo("/signup")}
+              onClick={() => navigateTo("/EmpSignUp")}
               style={styles.signupButton}
               onMouseOver={(e) => (e.target.style.backgroundColor = styles.signupButtonHover.backgroundColor)}
               onMouseOut={(e) => (e.target.style.backgroundColor = styles.signupButton.backgroundColor)}
