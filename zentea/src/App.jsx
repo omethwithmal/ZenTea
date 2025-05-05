@@ -58,6 +58,7 @@ import UpdateMaintenance from "./components/EquipmentMaintenance/UpdateMaintenan
 import EmployeeRegistrationForm from "./components/Employee_Home/EmployeeRegistrationForm";
 import ZenTeaEmployeeProfile from "./components/Employee_Home/ZenTeaEmployeeProfile";
 import EmployeeDetailsCart from "./components/Employee/EmployeeDetailsTable/EmployeeDetailsCart";
+import ZenTeaEmployeeTable from "./components/Employee/EmployeeDetailsTable/ZenTeaEmployeeTable";
 
 
 
@@ -96,7 +97,7 @@ function App() {
       <Route path="/EmployeeRegistrationForm" element={<EmployeeRegistrationForm/>} />
       <Route path="/ZenTeaEmployeeProfile" element={<ZenTeaEmployeeProfile/>} />
       <Route path="/EmployeeDetailsCart" element={<EmployeeDetailsCart/>} />
-
+      <Route path="/ZenTeaEmployeeTable" element={<ZenTeaEmployeeTable/>} />
 
 
   
