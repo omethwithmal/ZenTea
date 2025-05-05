@@ -18,7 +18,7 @@ const EmployeeDetailsCart = () => {
 
   // Handle click on Employee-Added Cart
   const handleEmployeeCartClick = () => {
-    navigate('/EmployeeDetailsTable', {
+    navigate('/ZenTeaEmployeeTable', {
       state: { type: 'employee', employees: employeeUsers },
     });
   };

@@ -324,7 +324,7 @@ const styles = {
     borderCollapse: 'collapse',
   },
   th: {
-    background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
+    background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%,rgb(53, 211, 0) 100%)',
     color: '#ffffff',
     fontSize: '1rem',
     fontWeight: 'bold',

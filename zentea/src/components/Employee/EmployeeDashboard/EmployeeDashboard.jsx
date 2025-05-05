@@ -375,7 +375,7 @@ const EmployeeDashboard = () => {
                             textDecoration: 'none',
                             borderLeft: '4px solid transparent'
                         }}
-                        onClick={() => navigate('/EmployeeDetailsTable')}
+                        onClick={() => navigate('/EmployeeDetailsCart')}
                     >
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Employee details</span>
