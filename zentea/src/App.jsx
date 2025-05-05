@@ -42,7 +42,7 @@ import FinancialDashboard from "../src/components/FinancialDashBoard/FinancialDa
 import EmployeeSalary from "../src/components/Salary/EmployeeSalary";
 import ViewOrderDetails from "../src/components/ViewOrderDetails/ViewOrderDetails";
 import MaintenanceRevenue from "../src/components/MaintenanceRevebue/MaintenanceReveue";
-import EmployeeSalaryTable from "../src/components/FinnacePayment/EmployeSalarytable";
+import EmployeeSalaryTable from "../src/components/FinnacePayment/EmployeSalarytable"
 
 
 import SummaryTable from "../src/components/SummaryTable/SummaryTable";
