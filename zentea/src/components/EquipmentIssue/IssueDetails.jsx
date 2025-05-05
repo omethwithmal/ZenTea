@@ -286,7 +286,7 @@ const IssueDetails = () => {
           </a>
           <a href="#" style={activeNavLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/IssueDetails'); }}>
             <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
-            <span>Issue Details</span>
+            <span>Failure Details</span>
           </a>
           <a href="#" style={navLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/NotificationDashboard'); }}>
             <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
@@ -306,7 +306,7 @@ const IssueDetails = () => {
       {/* Main Content */}
       <div style={mainContentStyle}>
         <div style={headerStyle}>
-          <h2 style={titleStyle}>Issue Management</h2>
+          <h2 style={titleStyle}>Equipment Failure Management</h2>
           <div style={buttonGroupStyle}>
             <button 
               style={addButtonStyle}
@@ -317,7 +317,7 @@ const IssueDetails = () => {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 4V20M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
               </svg>
-              Add Issue
+              Add Failure
             </button>
             <button 
               style={reportButtonStyle}

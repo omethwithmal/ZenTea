@@ -269,7 +269,7 @@ const MaintenanceSchedule = () => {
                     </a>
                     <a href="#" style={navLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/IssueDetails'); }}>
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
-                        <span>Issue Details</span>
+                        <span>Failure Details</span>
                     </a>
                     <a href="#" style={navLinkStyle} >
                         <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
