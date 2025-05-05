@@ -131,30 +131,33 @@ const EquipmentDashboard = () => {
     const generateReport = () => {
         if (!equipments.length) return;
 
-        const csvContent = [
-            ["Serial Number", "Equipment Name", "Type", "Purchase Date", "Last Maintenance", 
-             "Next Maintenance", "Warranty Info", "Description"],
-            ...equipments.map(eq => [
-                eq.serial_number,
-                eq.eqm_name,
-                eq.type,
-                formatDate(eq.purchase_date),
-                formatDate(eq.last_maintenance_date),
-                formatDate(eq.next_maintenance_date),
-                eq.warrenty_information,
-                eq.description
-            ])
-        ].map(row => row.join(",")).join("\n");
+        const input = document.getElementById('report-table');
+        
+        html2canvas(input, {
+            scale: 2,
+            logging: false,
+            useCORS: true,
+        }).then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgWidth = 210;
+            const pageHeight = 295;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
 
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", "equipment_report.csv");
-        link.style.visibility = "hidden";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            pdf.save('equipment-report.pdf');
+        });
     };
 
     // Styles
@@ -283,8 +286,19 @@ const EquipmentDashboard = () => {
     };
 
     const reportButtonStyle = {
-        ...addButtonStyle,
-        backgroundColor: '#28a745',
+        backgroundColor: '#6c757d',
+        color: 'white',
+        border: 'none',
+        borderRadius: '8px',
+        padding: '0.75rem 1.5rem',
+        fontSize: '1rem',
+        fontWeight: '600',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        boxShadow: '0 2px 8px rgba(108, 117, 125, 0.3)',
+        transition: 'all 0.2s ease',
     };
 
     const sidebarStyle = {
@@ -369,16 +383,20 @@ const EquipmentDashboard = () => {
                             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2671e0'}
                             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3a86ff'}
                         >
-                            <i className="fas fa-plus" style={{ marginRight: '8px' }}></i>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 4V20M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                            </svg>
                             Add Equipment
                         </button>
                         <button 
                             onClick={generateReport}
                             style={reportButtonStyle}
-                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#218838'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#28a745'}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5a6268'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6c757d'}
                         >
-                            <i className="fas fa-file-excel" style={{ marginRight: '8px' }}></i>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 17V7M9 7L5 11M9 7L13 11M15 7V17M15 17L19 13M15 17L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
                             Generate Report
                         </button>
                     </div>
@@ -395,53 +413,54 @@ const EquipmentDashboard = () => {
                     />
                 </div>
 
-                <table style={tableStyle}>
-                    <thead>
-                        <tr>
-                            <th style={thStyle}>Serial Number</th>
-                            <th style={thStyle}>Equipment Name</th>
-                            <th style={thStyle}>Type</th>
-                            <th style={thStyle}>Purchase Date</th>
-                            <th style={thStyle}>Last Maintenance</th>
-                            <th style={thStyle}>Next Maintenance</th>
-                            <th style={thStyle}>Warranty Info</th>
-                            <th style={thStyle}>Description</th>
-                            <th style={thStyle}>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredEquipments.length > 0 ? (
-                            filteredEquipments.map(equipment => (
-                                <tr key={equipment._id} style={{ ':hover': { backgroundColor: '#f8f9fa' } }}>
-                                    <td style={tdStyle}>{equipment.serial_number}</td>
-                                    <td style={tdStyle}>{equipment.eqm_name}</td>
-                                    <td style={tdStyle}>{equipment.type}</td>
-                                    <td style={tdStyle}>{formatDate(equipment.purchase_date)}</td>
-                                    <td style={tdStyle}>{formatDate(equipment.last_maintenance_date)}</td>
-                                    <td style={tdStyle}>{formatDate(equipment.next_maintenance_date)}</td>
-                                    <td style={tdStyle}>{equipment.warrenty_information}</td>
-                                    <td style={tdStyle}>{equipment.description}</td>
-                                    <td style={tdStyle}>
-                                        <button 
-                                            style={buttonStyle}
-                                            onClick={() => handleEditClick(equipment)}
-                                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e9ecef'}
-                                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            style={{ ...buttonStyle, ...deleteButtonStyle }}
-                                            onClick={() => handleDelete(equipment._id)}
-                                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ffe3e3'}
-                                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff5f5'}
-                                        >
-                                            Delete
-                                        </button>
-                                        <button
-                                            style={{ ...buttonStyle, ...emailButtonStyle }}
-                                            onClick={() => {
-                                                const body = `
+                <div id="report-table">
+                    <table style={tableStyle}>
+                        <thead>
+                            <tr>
+                                <th style={thStyle}>Serial Number</th>
+                                <th style={thStyle}>Equipment Name</th>
+                                <th style={thStyle}>Type</th>
+                                <th style={thStyle}>Purchase Date</th>
+                                <th style={thStyle}>Last Maintenance</th>
+                                <th style={thStyle}>Next Maintenance</th>
+                                <th style={thStyle}>Warranty Info</th>
+                                <th style={thStyle}>Description</th>
+                                <th style={thStyle}>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredEquipments.length > 0 ? (
+                                filteredEquipments.map(equipment => (
+                                    <tr key={equipment._id} style={{ ':hover': { backgroundColor: '#f8f9fa' } }}>
+                                        <td style={tdStyle}>{equipment.serial_number}</td>
+                                        <td style={tdStyle}>{equipment.eqm_name}</td>
+                                        <td style={tdStyle}>{equipment.type}</td>
+                                        <td style={tdStyle}>{formatDate(equipment.purchase_date)}</td>
+                                        <td style={tdStyle}>{formatDate(equipment.last_maintenance_date)}</td>
+                                        <td style={tdStyle}>{formatDate(equipment.next_maintenance_date)}</td>
+                                        <td style={tdStyle}>{equipment.warrenty_information}</td>
+                                        <td style={tdStyle}>{equipment.description}</td>
+                                        <td style={tdStyle}>
+                                            <button 
+                                                style={buttonStyle}
+                                                onClick={() => handleEditClick(equipment)}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e9ecef'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                style={{ ...buttonStyle, ...deleteButtonStyle }}
+                                                onClick={() => handleDelete(equipment._id)}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ffe3e3'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff5f5'}
+                                            >
+                                                Delete
+                                            </button>
+                                            <button
+                                                style={{ ...buttonStyle, ...emailButtonStyle }}
+                                                onClick={() => {
+                                                    const body = `
 Serial Number: ${equipment.serial_number}
 Equipment Name: ${equipment.eqm_name}
 Type: ${equipment.type}
@@ -450,28 +469,29 @@ Last Maintenance: ${formatDate(equipment.last_maintenance_date)}
 Next Maintenance: ${formatDate(equipment.next_maintenance_date)}
 Warranty Info: ${equipment.warrenty_information}
 Description: ${equipment.description}
-                                                `.trim();
-                                                const subject = `Equipment Details - ${equipment.serial_number}`;
-                                                const gmailUrl = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&tf=1`;
-                                                window.open(gmailUrl, '_blank');
-                                            }}
-                                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#218838'}
-                                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#28a745'}
-                                        >
-                                            Email
-                                        </button>
+                                                    `.trim();
+                                                    const subject = `Equipment Details - ${equipment.serial_number}`;
+                                                    const gmailUrl = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&tf=1`;
+                                                    window.open(gmailUrl, '_blank');
+                                                }}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#218838'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#28a745'}
+                                            >
+                                                Email
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="9" style={noResultsStyle}>
+                                        {searchTerm ? 'No equipment matches your search.' : 'No equipment records found.'}
                                     </td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="9" style={noResultsStyle}>
-                                    {searchTerm ? 'No equipment matches your search.' : 'No equipment records found.'}
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
                 {/* Add/Edit Modal */}
                 {(editingId || isAdding) && (
