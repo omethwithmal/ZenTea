@@ -324,13 +324,13 @@ const styles = {
     borderCollapse: 'collapse',
   },
   th: {
-    background: '#00cc00',
+    background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
     color: '#ffffff',
     fontSize: '1rem',
     fontWeight: 'bold',
     padding: '12px',
     textAlign: 'left',
-    borderRadius: '8px 8px 0 0',
+    
     whiteSpace: 'nowrap',
   },
   tr: {
