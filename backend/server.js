@@ -29,6 +29,10 @@ app.use("/task", taskRouter);
 const userRouter = require("./UserManagement/routes/addusers");
 app.use("/user", userRouter);
 
+const ZenTeaEmployees = require("./ZenTeaEmployeeTable/routers/ZenTeaEmployees");
+app.use("/ZenTeaEmployees", ZenTeaEmployees);
+
+
 const attendanceRouter = require("./Attendance/routes/attendances");
 app.use("/attendance", attendanceRouter);
 
