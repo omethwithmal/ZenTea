@@ -43,9 +43,8 @@ import EmployeeSalary from "../src/components/Salary/EmployeeSalary";
 import ViewOrderDetails from "../src/components/ViewOrderDetails/ViewOrderDetails";
 import MaintenanceRevenue from "../src/components/MaintenanceRevebue/MaintenanceReveue";
 import EmployeeSalaryTable from "../src/components/FinnacePayment/EmployeSalarytable";
-
-
 import SummaryTable from "../src/components/SummaryTable/SummaryTable";
+
 import IssueDetails from "./components/EquipmentIssue/IssueDetails";
 import AddIssue from "./components/EquipmentIssue/AddIssue";
 import UpdateIssue from "./components/EquipmentIssue/UpdateIssue";
