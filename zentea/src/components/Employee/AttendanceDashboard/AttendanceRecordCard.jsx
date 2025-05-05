@@ -1,11 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const EmployeeDetailsCart = () => {
+const AttendanceRecordCard = () => {
   const navigate = useNavigate();
 
+  // Fetch employee data from localStorage
   const allUsers = JSON.parse(localStorage.getItem('zentea_users') || '[]');
 
+  // Simulate admin-added employees
   const adminUsers = [
     { email: 'admin1@zentea.com', fullName: 'Admin User 1', role: 'admin', source: 'admin' },
     { email: 'admin2@zentea.com', fullName: 'Admin User 2', role: 'employee', source: 'admin' },
@@ -14,19 +16,19 @@ const EmployeeDetailsCart = () => {
   const employeeUsers = allUsers.filter((user) => !user.source || user.source === 'employee');
 
   const handleEmployeeCartClick = () => {
-    navigate('/ZenTeaEmployeeTable', {
+    navigate('/attendanceForm', {
       state: { type: 'employee', employees: employeeUsers },
     });
   };
 
   const handleAdminCartClick = () => {
-    navigate('/EmployeeDetailsTable', {
+    navigate('/QRCodeScanner', {
       state: { type: 'admin', employees: adminUsers },
     });
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={styles.mainLayout}>
       {/* Sidebar */}
       <aside style={styles.sidebar}>
         <div style={styles.sidebarHeader}>
@@ -35,42 +37,46 @@ const EmployeeDetailsCart = () => {
           <h2 style={{ margin: '5px 0', fontSize: '25px', fontWeight: 'normal' }}>Dashboard</h2>
         </div>
         <nav style={{ marginTop: '20px' }}>
-          <a href="#" style={styles.navItem} onClick={() => navigate('/EmployeeDashboard')}>
+          <a href="#" style={styles.sidebarLink} onClick={() => navigate('/EmployeeDashboard')}>
             <i className="fas fa-users" style={{ marginRight: '10px' }}></i>
             <span>Employee Task</span>
           </a>
-          <a href="#" style={styles.navItem} onClick={() => navigate('/NotificationDashboard')}>
+
+          <a href="#" style={styles.sidebarLink} onClick={() => navigate('/NotificationDashboard')}>
             <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
             <span>Notification</span>
           </a>
-          <a href="#" style={styles.navItem} onClick={() => navigate('/AttendanceRecordCard')}>
-            <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
+
+          <a href="#" style={styles.sidebarLink} onClick={() => navigate('/AttendanceRecordCard')}>
+            <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
             <span>Mark Attendance</span>
           </a>
-          <a href="#" style={styles.navItem} onClick={() => navigate('/AttendanceDashboard')}>
+
+
+          <a href="#" style={styles.sidebarLink} onClick={() => navigate('/AttendanceDashboard')}>
             <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
             <span>Employee Attendance</span>
           </a>
-          <a href="#" style={styles.navItem} onClick={() => navigate('/EmployeeDetailsCart')}>
-            <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
+          <a href="#" style={styles.sidebarLink} onClick={() => navigate('/EmployeeDetailsCart')}>
+            <i className="fas fa-id-badge" style={{ marginRight: '10px' }}></i>
             <span>Employee Details</span>
           </a>
-          <a href="#" style={styles.navItem}>
+          <a href="#" style={styles.sidebarLink}>
             <i className="fas fa-boxes" style={{ marginRight: '10px' }}></i>
             <span>Settings</span>
           </a>
-          <a href="#" style={styles.navItem} onClick={() => navigate('/')}>
-            <i className="fas fa-tools" style={{ marginRight: '10px' }}></i>
+          <a href="#" style={styles.sidebarLink} onClick={() => navigate('/')}>
+            <i className="fas fa-sign-out-alt" style={{ marginRight: '10px' }}></i>
             <span>Log Out</span>
           </a>
         </nav>
       </aside>
 
-      {/* Main Content */}
+      {/* Content Area */}
       <div style={styles.container}>
-        <h1 style={styles.title}>ZenTea Employee Details</h1>
+        <h1 style={styles.title}>ZenTea Employee Attendance</h1>
         <div style={styles.cartWrapper}>
-          {/* Employee-Added Cart */}
+          {/* Employee Manual Entry */}
           <div style={styles.cart} onClick={handleEmployeeCartClick}>
             <img
               src="https://images.unsplash.com/photo-1528747045269-390fe33c19f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
@@ -78,16 +84,15 @@ const EmployeeDetailsCart = () => {
               style={styles.coverPhoto}
             />
             <div style={styles.cartContent}>
-              <h2 style={styles.cartTitle}>Employee-Added Profiles</h2>
+              <h2 style={styles.cartTitle}>Manual Add Employee</h2>
               <p style={styles.cartDescription}>
-                View details of {employeeUsers.length} employees registered by themselves.
+                Add attendance Manually...
               </p>
-             
-              <button style={styles.cartButton}>Explore Employee Profiles</button>
+              <button style={styles.cartButton}>Go</button>
             </div>
           </div>
 
-          {/* Admin-Added Cart */}
+          {/* QR Scanner */}
           <div style={styles.cart} onClick={handleAdminCartClick}>
             <img
               src="https://images.unsplash.com/photo-1528747045269-390fe33c19f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
@@ -95,12 +100,11 @@ const EmployeeDetailsCart = () => {
               style={styles.coverPhoto}
             />
             <div style={styles.cartContent}>
-              <h2 style={styles.cartTitle}>Admin-Added Profiles</h2>
+              <h2 style={styles.cartTitle}>Scan QR Code</h2>
               <p style={styles.cartDescription}>
-                View details of {adminUsers.length} employees added by administrators.
+                Scan ID via QR...
               </p>
-              
-              <button style={styles.cartButton}>Explore Admin Profiles</button>
+              <button style={styles.cartButton}>Go</button>
             </div>
           </div>
         </div>
@@ -109,32 +113,38 @@ const EmployeeDetailsCart = () => {
   );
 };
 
+// Styling
 const styles = {
+  mainLayout: {
+    display: 'flex',
+    minHeight: '100vh',
+    fontFamily: "'Helvetica Neue', Arial, sans-serif",
+  },
   sidebar: {
     width: '250px',
     background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
     color: 'white',
     padding: '20px 0',
-    minHeight: '100vh',
   },
   sidebarHeader: {
     textAlign: 'center',
     padding: '20px 0',
     borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
   },
-  navItem: {
+  sidebarLink: {
     display: 'block',
     padding: '15px 20px',
     color: 'white',
     textDecoration: 'none',
     borderLeft: '4px solid transparent',
+    
+    cursor: 'pointer',
   },
   container: {
-    fontFamily: "'Helvetica Neue', Arial, sans-serif",
     flex: 1,
-    padding: '40px 20px',
     background: 'linear-gradient(135deg, rgb(255, 255, 255) 0%, #f9f9f9 100%)',
-    minHeight: '100vh',
+    padding: '40px 20px',
+    overflowY: 'auto',
     width:'1300px'
   },
   title: {
@@ -149,6 +159,8 @@ const styles = {
     gap: '30px',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    maxWidth: '1200px',
+    margin: '0 auto',
   },
   cart: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -166,8 +178,6 @@ const styles = {
     width: '100%',
     height: '200px',
     objectFit: 'cover',
-    borderTopLeftRadius: '16px',
-    borderTopRightRadius: '16px',
   },
   cartContent: {
     padding: '20px',
@@ -179,19 +189,13 @@ const styles = {
     fontSize: '1.8rem',
     color: '#2a5c42',
     fontWeight: '400',
-    margin: '0',
+    margin: 0,
   },
   cartDescription: {
     fontSize: '1rem',
     color: '#333',
-    margin: '0',
+    margin: 0,
     lineHeight: '1.5',
-  },
-  cartSample: {
-    fontSize: '0.9rem',
-    color: '#666',
-    fontStyle: 'italic',
-    margin: '0',
   },
   cartButton: {
     background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
@@ -206,4 +210,4 @@ const styles = {
   },
 };
 
-export default EmployeeDetailsCart;
+export default AttendanceRecordCard;

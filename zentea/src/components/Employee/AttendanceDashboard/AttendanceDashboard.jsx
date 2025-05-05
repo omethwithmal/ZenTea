@@ -104,6 +104,21 @@ const AttendanceDashboard = () => {
                         <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
                         <span>Notification</span>
                     </a>
+
+                    <a href="#" style={{
+                        display: 'block',
+                        padding: '15px 20px',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderLeft: '4px solid transparent',
+                       
+                    }}
+                    onClick={() => navigate('/AttendanceRecordCard')}
+                    >
+                        <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
+                        <span>Mark Attendance</span>
+                    </a>
+
                     <a href="#" style={{
                         display: 'block',
                         padding: '15px 20px',
@@ -125,7 +140,7 @@ const AttendanceDashboard = () => {
                             textDecoration: 'none',
                             borderLeft: '4px solid transparent'
                         }}
-                        onClick={() => navigate('/EmployeeDetailsTable')}
+                        onClick={() => navigate('/EmployeeDetailsCart')}
                     >
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Employee details</span>
