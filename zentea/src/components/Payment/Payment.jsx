@@ -5,6 +5,9 @@ const CheckoutForm = () => {
   const location = useLocation();
   const [selectedMethod, setSelectedMethod] = useState("Credit Card");
   const [cardNumber, setCardNumber] = useState("");
+  const [cardName, setCardName] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [expiry, setExpiry] = useState("");
   const [amount, setAmount] = useState(0);
   const [showPopup, setShowPopup] = useState(false); // Popup state
 
@@ -15,13 +18,33 @@ const CheckoutForm = () => {
     }
   }, [location.state]);
 
-  const handlePayment = () => {
-    // Show the popup when "Pay Now" is clicked
-    setShowPopup(true);
 
-    // Optionally, you can hide the popup after a few seconds
+  const handlePayment = () => {
+    
+    const newPayment = {
+      amount,
+      cardNumber: maskCardNumber(cardNumber),
+      cardName,
+      cvv,
+      expiry,
+    };
+    
+    const existingPayments = JSON.parse(localStorage.getItem("payments")) || [];
+    localStorage.setItem("payments", JSON.stringify([...existingPayments, newPayment]));
+    setShowPopup(true);
     setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
-  };
+   
+   };
+    
+    const maskCardNumber = (number) => {
+      if (!number) return "";
+      const last4 = number.slice(-4);
+      return `XXXX-XXXX-XXXX-${last4}`;
+    };
+  
+
+
+  
 
   return (
     <div className="checkout-container" style={styles.container}>
@@ -80,15 +103,21 @@ const CheckoutForm = () => {
 
             <label className="card-name-label" style={styles.label}>Name on Card</label>
             <input className="card-name-input" type="text" placeholder="Enter name" style={styles.input} />
+            {(e) => setCardName(e.target.value)} 
+     
 
             <div className="card-details-row" style={styles.row}>
               <div>
                 <label className="cvv-label" style={styles.label}>CVV CODE</label>
                 <input className="cvv-input" type="password" style={styles.inputSmall} placeholder="***" />
+               {(e) => setCvv(e.target.value)} 
+              
               </div>
               <div>
                 <label className="expiry-label" style={styles.label}>Expiration date</label>
                 <input className="expiry-input" type="text" placeholder="MM/YY" style={styles.inputSmall} />
+                {(e) => setExpiry(e.target.value)} 
+
               </div>
             </div>
           </>
