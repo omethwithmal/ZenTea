@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function EmployeeRegistrationForm() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    employeeId: '',
+    employeeID: '',
     birthday: '',
     contactNumber: '',
     email: '',
     homeAddress: '',
-    nationalId: '',
+    nationalID: '',
     startDate: '',
     jobTitle: '',
     department: '',
@@ -22,11 +23,13 @@ function EmployeeRegistrationForm() {
     birthday: '',
     contactNumber: '',
     email: '',
-    nationalId: '',
+    nationalID: '',
     startDate: '',
   });
   const [showPopup, setShowPopup] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const validateFirstLastName = (value) => {
     const regex = /^[a-zA-Z\s]*$/;
@@ -51,7 +54,7 @@ function EmployeeRegistrationForm() {
     return regex.test(value);
   };
 
-  const validateNationalId = (value) => {
+  const validateNationalID = (value) => {
     const regex = /^[0-9Vv]*$/;
     return regex.test(value);
   };
@@ -113,10 +116,10 @@ function EmployeeRegistrationForm() {
         ...errors,
         email: validateEmail(value) || value === '' ? '' : 'Invalid email format',
       });
-    } else if (name === 'nationalId') {
+    } else if (name === 'nationalID') {
       setErrors({
         ...errors,
-        nationalId: validateNationalId(value) ? '' : 'Only numbers and "V" or "v" are allowed',
+        nationalID: validateNationalID(value) ? '' : 'Only numbers and "V" or "v" are allowed',
       });
     }
   };
@@ -131,7 +134,7 @@ function EmployeeRegistrationForm() {
       if (!/^\d$/.test(char)) {
         e.preventDefault();
       }
-    } else if (type === 'nationalId') {
+    } else if (type === 'nationalID') {
       if (!/^[0-9Vv]$/.test(char)) {
         e.preventDefault();
       }
@@ -145,15 +148,13 @@ function EmployeeRegistrationForm() {
       validateBirthdayAge(formData.birthday) &&
       validateContactNumber(formData.contactNumber) &&
       validateEmail(formData.email) &&
-      validateNationalId(formData.nationalId) &&
+      validateNationalID(formData.nationalID) &&
       validateDate(formData.startDate)
     );
   };
 
-  const handleSave = () => {
-    if (isFormValid()) {
-      setShowPopup(true);
-    } else {
+  const handleSave = async () => {
+    if (!isFormValid()) {
       setErrors({
         firstName: validateFirstLastName(formData.firstName) ? '' : 'Numbers are not allowed',
         lastName: validateFirstLastName(formData.lastName) ? '' : 'Numbers are not allowed',
@@ -164,22 +165,54 @@ function EmployeeRegistrationForm() {
           : 'Invalid date format (mm/dd/yyyy)',
         contactNumber: validateContactNumber(formData.contactNumber) ? '' : 'Must be exactly 10 digits',
         email: validateEmail(formData.email) ? '' : 'Invalid email format',
-        nationalId: validateNationalId(formData.nationalId) ? '' : 'Only numbers and "V" or "v" are allowed',
+        nationalID: validateNationalID(formData.nationalID) ? '' : 'Only numbers and "V" or "v" are allowed',
         startDate: validateDate(formData.startDate) ? '' : 'Invalid date format (mm/dd/yyyy)',
       });
+      return;
     }
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      // Format dates before sending to backend
+      const formattedData = {
+        ...formData,
+        birthday: formatDateForBackend(formData.birthday),
+        startDate: formatDateForBackend(formData.startDate)
+      };
+
+      const response = await axios.post('http://localhost:8070/ZenTeaEmployees/add', formattedData);
+      
+      if (response.status === 200) {
+        setShowPopup(true);
+      } else {
+        setSubmitError('Failed to save employee data. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitError(error.response?.data?.message || 'An error occurred while saving. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const formatDateForBackend = (dateString) => {
+    if (!dateString) return '';
+    const [month, day, year] = dateString.split('/');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   };
 
   const handleCancel = () => {
     setFormData({
       firstName: '',
       lastName: '',
-      employeeId: '',
+      employeeID: '',
       birthday: '',
       contactNumber: '',
       email: '',
       homeAddress: '',
-      nationalId: '',
+      nationalID: '',
       startDate: '',
       jobTitle: '',
       department: '',
@@ -190,7 +223,7 @@ function EmployeeRegistrationForm() {
       birthday: '',
       contactNumber: '',
       email: '',
-      nationalId: '',
+      nationalID: '',
       startDate: '',
     });
   };
@@ -232,6 +265,11 @@ function EmployeeRegistrationForm() {
       </div>
       <div style={styles.formWrapper}>
         <h2 style={styles.formTitle}>Employee Registration</h2>
+        {submitError && (
+          <div style={styles.errorMessage}>
+            {submitError}
+          </div>
+        )}
         <div style={styles.form}>
           {/* Personal Info Section */}
           <div style={styles.section}>
@@ -281,8 +319,8 @@ function EmployeeRegistrationForm() {
                 <label style={styles.inputLabel}>Employee ID</label>
                 <input
                   type="text"
-                  name="employeeId"
-                  value={formData.employeeId}
+                  name="employeeID"
+                  value={formData.employeeID}
                   onChange={handleInputChange}
                   style={styles.input}
                   onFocus={(e) => {
@@ -384,21 +422,21 @@ function EmployeeRegistrationForm() {
                 <label style={styles.inputLabel}>National ID</label>
                 <input
                   type="text"
-                  name="nationalId"
-                  value={formData.nationalId}
+                  name="nationalID"
+                  value={formData.nationalID}
                   onChange={handleInputChange}
-                  onKeyPress={(e) => handleKeyPress(e, 'nationalId')}
-                  style={{ ...styles.input, border: errors.nationalId ? '2px solid #c62828' : '1px solid #e8edea' }}
+                  onKeyPress={(e) => handleKeyPress(e, 'nationalID')}
+                  style={{ ...styles.input, border: errors.nationalID ? '2px solid #c62828' : '1px solid #e8edea' }}
                   onFocus={(e) => {
-                    e.target.style.border = errors.nationalId ? '2px solid #c62828' : '2px solid #2a5c42';
-                    e.target.style.boxShadow = errors.nationalId ? '0 0 6px rgba(198, 40, 40, 0.3)' : '0 0 6px rgba(42, 92, 66, 0.3)';
+                    e.target.style.border = errors.nationalID ? '2px solid #c62828' : '2px solid #2a5c42';
+                    e.target.style.boxShadow = errors.nationalID ? '0 0 6px rgba(198, 40, 40, 0.3)' : '0 0 6px rgba(42, 92, 66, 0.3)';
                   }}
                   onBlur={(e) => {
-                    e.target.style.border = errors.nationalId ? '2px solid #c62828' : '1px solid #e8edea';
+                    e.target.style.border = errors.nationalID ? '2px solid #c62828' : '1px solid #e8edea';
                     e.target.style.boxShadow = 'none';
                   }}
                 />
-                {errors.nationalId && <span style={styles.errorText}>{errors.nationalId}</span>}
+                {errors.nationalID && <span style={styles.errorText}>{errors.nationalID}</span>}
               </div>
             </div>
           </div>
@@ -477,11 +515,15 @@ function EmployeeRegistrationForm() {
           {/* Buttons */}
           <div style={styles.buttonContainer}>
             <button
-              style={{ ...styles.saveButton, opacity: isFormValid() ? 1 : 0.6, cursor: isFormValid() ? 'pointer' : 'not-allowed' }}
+              style={{ 
+                ...styles.saveButton, 
+                opacity: isFormValid() ? 1 : 0.6, 
+                cursor: isFormValid() && !isSubmitting ? 'pointer' : 'not-allowed' 
+              }}
               onClick={handleSave}
-              disabled={!isFormValid()}
+              disabled={!isFormValid() || isSubmitting}
               onMouseEnter={(e) => {
-                if (isFormValid()) {
+                if (isFormValid() && !isSubmitting) {
                   e.target.style.background = '#1a3b2e';
                   e.target.style.transform = 'scale(1.05)';
                 }
@@ -491,34 +533,41 @@ function EmployeeRegistrationForm() {
                 e.target.style.transform = 'scale(1)';
               }}
               onMouseDown={(e) => {
-                if (isFormValid()) {
+                if (isFormValid() && !isSubmitting) {
                   e.target.style.transform = 'scale(0.95)';
                 }
               }}
               onMouseUp={(e) => {
-                if (isFormValid()) {
+                if (isFormValid() && !isSubmitting) {
                   e.target.style.transform = 'scale(1.05)';
                 }
               }}
             >
-              Save
+              {isSubmitting ? 'Saving...' : 'Save'}
             </button>
             <button
               style={styles.cancelButton}
               onClick={handleCancel}
+              disabled={isSubmitting}
               onMouseEnter={(e) => {
-                e.target.style.background = '#78909c';
-                e.target.style.transform = 'scale(1.05)';
+                if (!isSubmitting) {
+                  e.target.style.background = '#78909c';
+                  e.target.style.transform = 'scale(1.05)';
+                }
               }}
               onMouseLeave={(e) => {
                 e.target.style.background = '#90a4ae';
                 e.target.style.transform = 'scale(1)';
               }}
               onMouseDown={(e) => {
-                e.target.style.transform = 'scale(0.95)';
+                if (!isSubmitting) {
+                  e.target.style.transform = 'scale(0.95)';
+                }
               }}
               onMouseUp={(e) => {
-                e.target.style.transform = 'scale(1.05)';
+                if (!isSubmitting) {
+                  e.target.style.transform = 'scale(1.05)';
+                }
               }}
             >
               Cancel
@@ -531,6 +580,7 @@ function EmployeeRegistrationForm() {
           <div style={styles.popupOverlay}>
             <div style={styles.popup}>
               <h3 style={styles.popupTitle}>Registration Successful</h3>
+              <p style={styles.popupMessage}>Employee has been successfully registered.</p>
               <button
                 style={styles.popupButton}
                 onClick={handlePopupClose}
@@ -577,7 +627,7 @@ const styles = {
     backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27100%27 height=%27100%27 viewBox=%270 0 100 100%27%3Cpath d=%27M50 30C40 20 60 20 50 30C40 40 60 40 50 30Z%27 fill=%27%232a5c42%27 fill-opacity=%270.05%27/%3E%3C/svg%3E%27)',
     backgroundRepeat: 'repeat',
     backgroundSize: '150px 150px',
-    width:'1525px',
+    width: '1525px',
   },
   progressContainer: {
     position: 'absolute',
@@ -606,6 +656,15 @@ const styles = {
     marginBottom: '30px',
     fontWeight: '700',
     animation: 'fadeIn 0.5s ease-out',
+  },
+  errorMessage: {
+    backgroundColor: '#ffebee',
+    color: '#c62828',
+    padding: '12px',
+    borderRadius: '8px',
+    marginBottom: '20px',
+    textAlign: 'center',
+    border: '1px solid #ef9a9a',
   },
   form: {
     display: 'flex',
@@ -731,6 +790,11 @@ const styles = {
     color: '#2a5c42',
     marginBottom: '20px',
     fontWeight: '600',
+  },
+  popupMessage: {
+    fontSize: '1rem',
+    color: '#333',
+    marginBottom: '20px',
   },
   popupButton: {
     background: '#2a5c42',
