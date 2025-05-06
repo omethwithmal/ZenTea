@@ -60,6 +60,7 @@ import ZenTeaEmployeeProfile from "./components/Employee_Home/ZenTeaEmployeeProf
 import EmployeeDetailsCart from "./components/Employee/EmployeeDetailsTable/EmployeeDetailsCart";
 import ZenTeaEmployeeTable from "./components/Employee/EmployeeDetailsTable/ZenTeaEmployeeTable";
 import AttendanceRecordCard from "./components/Employee/AttendanceDashboard/AttendanceRecordCard";
+import QRAttendance from "./components/Employee/AttendanceDashboard/QRAttendance";
 
 
 
@@ -99,6 +100,7 @@ function App() {
       <Route path="/EmployeeDetailsCart" element={<EmployeeDetailsCart/>} />
       <Route path="/ZenTeaEmployeeTable" element={<ZenTeaEmployeeTable/>} />
       <Route path="/AttendanceRecordCard" element={<AttendanceRecordCard/>} />
+      <Route path="/QRAttendance" element={<QRAttendance/>} />
 
 
   
