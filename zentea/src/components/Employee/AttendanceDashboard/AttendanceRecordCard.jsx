@@ -79,7 +79,7 @@ const AttendanceRecordCard = () => {
           {/* Employee Manual Entry */}
           <div style={styles.cart} onClick={handleEmployeeCartClick}>
             <img
-              src="https://images.unsplash.com/photo-1528747045269-390fe33c19f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+              src="../src/assets/Manual Add Employee.jpg"
               alt="Employee Cover"
               style={styles.coverPhoto}
             />
@@ -95,7 +95,7 @@ const AttendanceRecordCard = () => {
           {/* QR Scanner */}
           <div style={styles.cart} onClick={handleAdminCartClick}>
             <img
-              src="https://images.unsplash.com/photo-1528747045269-390fe33c19f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+              src="../src/assets/Scan QR Code.jpg"
               alt="Admin Cover"
               style={styles.coverPhoto}
             />

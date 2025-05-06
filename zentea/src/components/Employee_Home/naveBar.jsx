@@ -18,9 +18,9 @@ const Navbar = () => {
       position: "fixed", // Changed from "sticky" to "fixed"
       top: 0,
       zIndex: 50,
-      background: "rgba(255, 255, 255, 0.9)",
+      background: "rgb(255, 255, 255)",
       backdropFilter: "blur(10px)",
-      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+      boxShadow: "0px 4px 6px rgba(21, 255, 0, 0.39)",
       padding: "10px 20px",
       left: "0", // Ensure it spans the full width of the viewport
       right: "0",
@@ -49,12 +49,12 @@ const Navbar = () => {
     logoText: {
       fontSize: "20px",
       fontWeight: "bold",
-      color: "#065f46",
+      color: "#1db209",
     },
     brandName: {
-      fontSize: "20px",
+      fontSize: "20px",                         
       fontWeight: "bold",
-      color: "#1f2937",
+      color: "#4d7e00",
       cursor: "pointer",
     },
     navButtons: {

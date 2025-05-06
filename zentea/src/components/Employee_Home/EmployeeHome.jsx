@@ -10,7 +10,7 @@ const HomePage = () => {
       <div style={styles.heroContainer}>
         <div style={styles.heroContent}>
           <h1 style={styles.heroTitle}>ZenTea</h1>
-          <p style={styles.heroSubtitle}>Experience the Serenity in Every Sip</p>
+          <p style={styles.heroSubtitle}>Welcome to the ZenTea Employee Portal</p>
           <button 
             style={styles.primaryButton}
             onMouseEnter={(e) => (e.target.style.transform = "translateY(-3px)")}
@@ -45,7 +45,7 @@ const HomePage = () => {
             </div>
           </div>
           <img 
-            src="https://images.unsplash.com/photo-1580933073521-dc49ac0d4e6a" 
+            src="../src/assets/Tea Philosophy2.jpg" 
             style={styles.sectionImage}
             alt="Tea ceremony" 
           />
@@ -56,7 +56,7 @@ const HomePage = () => {
       <section style={styles.sectionLight}>
         <div style={styles.sectionContentReverse}>
           <img
-            src="https://images.unsplash.com/photo-1559170897-5c544c6dcf67"
+            src="../src/assets/Our Story.jpg"
             style={styles.sectionImage}
             alt="Tea history"
           />
@@ -89,7 +89,7 @@ const HomePage = () => {
           <div style={styles.teamGrid}>
             {[
                 { 
-                  img: "https://images.unsplash.com/photo-1560250097-0b93528c311a",
+                  img: "../src/assets/Master Blender.jpeg",
                   name: "Ananda Perera",
                   role: "Master Blender",
                   bio: "15 years experience in traditional Ceylon tea preparation"
@@ -170,7 +170,7 @@ const styles = {
   heroContainer: {
     height: "90vh",
     width:"1513px",
-    background: "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1534957753291-64d667ce2927')",
+    background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)), url('../src/assets/home2.jpg')",
     backgroundSize: "cover",
     backgroundPosition: "center",
     display: "flex",
@@ -187,12 +187,14 @@ const styles = {
     fontSize: "4rem",
     fontWeight: "300",
     marginBottom: "1rem",
-    letterSpacing: "2px"
+    letterSpacing: "2px",
+    
   },
   heroSubtitle: {
     fontSize: "1.5rem",
     marginBottom: "2rem",
-    fontWeight: "300"
+    fontWeight: "300",
+    color: "white",
   },
   primaryButton: {
     padding: "15px 40px",
@@ -329,7 +331,7 @@ const styles = {
     marginTop: "1rem"
   },
   footer: {
-    backgroundColor: "#2a5c42",
+    backgroundColor: "#4bbb00",
     color: "#ffffff",
     padding: "60px 20px 30px",
     marginTop: "auto",
@@ -381,15 +383,16 @@ const styles = {
     backgroundColor: "rgba(255,255,255,0.1)",
     transition: "all 0.3s ease",
     ":hover": {
-      backgroundColor: "rgba(255,255,255,0.2)",
+      backgroundColor: "rgb(255, 255, 255)",
     }
   },
   copyright: {
     textAlign: "center",
     paddingTop: "30px",
     marginTop: "30px",
-    color: "#e0e0e0",
+    color: "#ffffff",
     fontSize: "0.9rem",
+   
   }
 };
 
