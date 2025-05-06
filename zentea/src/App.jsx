@@ -37,6 +37,7 @@ import CustomerOrderDashboard from "./components/CustomerOrderDashBoard/Customer
 import PaymentDashboard from "./components/PaymentDashboard/PaymentDashboard";
 
 
+
 // Dieepa
 
 import FinancialDashboard from "../src/components/FinancialDashBoard/FinancialDashBoard";
@@ -112,6 +113,7 @@ function App() {
                 <Route path="/Orderdash" element={<OrderManagementDashboard />} />
                 <Route path="/CustomerDash" element={<CustomerOrderDashboard />} />
                 <Route path="/PaymentDash" element={<PaymentDashboard />} />
+                
 
 
                 <Route path="/FinancialDashboard" element={<FinancialDashboard />} />
