@@ -34,7 +34,7 @@ import CheckoutForm from "./components/Payment/Payment";
 import TeaOrderForm from "./components/Order/TeaOrderForm";
 import OrderManagementDashboard from "./components/OrderManagementDashboard/OrderManagementDashboard";
 import CustomerOrderDashboard from "./components/CustomerOrderDashBoard/CustomerOrderDashBoard";
-
+import PaymentDashboard from "./components/PaymentDashboard/PaymentDashboard";
 
 // Dieepa
 
@@ -110,6 +110,7 @@ function App() {
                 <Route path="/CheckoutForm" element={<CheckoutForm />} />
                 <Route path="/Orderdash" element={<OrderManagementDashboard />} />
                 <Route path="/CustomerDash" element={<CustomerOrderDashboard />} />
+                <Route path="/PaymentDash" element={<PaymentDashboard/>} />
 
 
                 <Route path="/FinancialDashboard" element={<FinancialDashboard />} />
