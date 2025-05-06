@@ -73,7 +73,7 @@ const EmployeeDetailsCart = () => {
           {/* Employee-Added Cart */}
           <div style={styles.cart} onClick={handleEmployeeCartClick}>
             <img
-              src="https://images.unsplash.com/photo-1528747045269-390fe33c19f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+              src="../src/assets/Employee-Added Profiles.jpg"
               alt="Employee Cover"
               style={styles.coverPhoto}
             />
@@ -90,7 +90,7 @@ const EmployeeDetailsCart = () => {
           {/* Admin-Added Cart */}
           <div style={styles.cart} onClick={handleAdminCartClick}>
             <img
-              src="https://images.unsplash.com/photo-1528747045269-390fe33c19f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+              src="../src/assets/Admin-Added Profiles.jpg"
               alt="Admin Cover"
               style={styles.coverPhoto}
             />
