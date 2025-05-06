@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import navigate from react-router-dom
 
-const AttendanceDashboard = () => {
+const QRAttendance = () => {
     const navigate = useNavigate(); 
     
     const [attendanceData, setAttendanceData] = useState([
@@ -126,7 +126,12 @@ const AttendanceDashboard = () => {
                         textDecoration: 'none',
                         borderLeft: '4px solid transparent',
                         backgroundColor: 'rgba(255, 255, 255, 0.28)'
-                    }}>
+                    }}
+                    onClick={() => navigate('/AttendanceDashboard')}
+                    >
+                        
+                        
+
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Employee Attendance</span>
                     </a>
@@ -220,21 +225,7 @@ const AttendanceDashboard = () => {
                     </button>
 
 
-                    <button
-                        onClick={() => navigate('/QRAttendance')}
-                        style={{
-                            padding: '10px 20px',
-                            backgroundColor: '#2c3e50',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '5px',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                             background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)'
-                        }}
-                    >
-                        View Scan ID Attendance
-                    </button>
+                   
 
                 </div>
 
@@ -313,4 +304,4 @@ const AttendanceDashboard = () => {
     );
 };
 
-export default AttendanceDashboard;
+export default QRAttendance;
