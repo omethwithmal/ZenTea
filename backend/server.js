@@ -51,6 +51,11 @@ app.use("/issues", router2);
 const loginSignRoutes = require("./LoginSignup/router");
 app.use("/login", loginSignRoutes);
 
+
+const EmployeeLoginSignupRoutes = require("./EmployeeLoginSignup/router");
+app.use("/login", EmployeeLoginSignupRoutes);
+
+
 // Default Route
 app.get("/", (req, res) => {
     res.send("Welcome to the ZenTea Task Management API ");
