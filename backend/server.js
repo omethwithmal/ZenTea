@@ -6,8 +6,16 @@ require("dotenv").config(); // Load environment variables
 
 const app = express();
 
+// CORS configuration
+const corsOptions = {
+  origin: 'http://localhost:5173', // Explicitly allow the frontend origin
+  credentials: true, // Allow cookies and credentials
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+};
+app.use(cors(corsOptions));
+
 // Middleware
-app.use(cors());
 app.use(bodyParser.json());
 
 // Environment variables
@@ -16,11 +24,11 @@ const MONGODB_URL = process.env.MONGODB_URL;
 
 // MongoDB connection
 mongoose.connect(MONGODB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 })
-    .then(() => console.log(" MongoDB Connected Successfully!"))
-    .catch((err) => console.error(" MongoDB Connection Failed:", err.message));
+  .then(() => console.log("MongoDB Connected Successfully!"))
+  .catch((err) => console.error("MongoDB Connection Failed:", err.message));
 
 // Import routes
 const taskRouter = require("./TaskManagement/routers/tasks");
@@ -31,7 +39,6 @@ app.use("/user", userRouter);
 
 const ZenTeaEmployees = require("./ZenTeaEmployeeTable/routers/ZenTeaEmployees");
 app.use("/ZenTeaEmployees", ZenTeaEmployees);
-
 
 const attendanceRouter = require("./Attendance/routes/attendances");
 app.use("/attendance", attendanceRouter);
@@ -51,17 +58,15 @@ app.use("/issues", router2);
 const loginSignRoutes = require("./LoginSignup/router");
 app.use("/login", loginSignRoutes);
 
-
 const EmployeeLoginSignupRoutes = require("./EmployeeLoginSignup/router");
-app.use("/login", EmployeeLoginSignupRoutes);
-
+app.use("/employee", EmployeeLoginSignupRoutes); // Changed to avoid conflict with /login
 
 // Default Route
 app.get("/", (req, res) => {
-    res.send("Welcome to the ZenTea Task Management API ");
+  res.send("Welcome to the ZenTea Task Management API");
 });
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(` Server is running on port: ${PORT}`);
+  console.log(`Server is running on port: ${PORT}`);
 });

@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 function EmployeeRegistrationForm() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Retrieve user data from navigation state
+  const initialEmail = location.state?.user?.email || '';
+  const initialFullName = location.state?.user?.fullName || '';
+
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    firstName: initialFullName.split(' ')[0] || '',
+    lastName: initialFullName.split(' ').slice(1).join(' ') || '',
     employeeID: '',
     birthday: '',
     contactNumber: '',
-    email: '',
+    email: initialEmail,
     homeAddress: '',
     nationalID: '',
     startDate: '',
@@ -40,7 +46,7 @@ function EmployeeRegistrationForm() {
     if (!validateDate(value)) return false;
     const [month, day, year] = value.split('/').map(Number);
     const inputDate = new Date(year, month - 1, day);
-    const sixteenYearsAgo = new Date(2009, 4, 4); // May 4, 2009 (16 years before May 4, 2025)
+    const sixteenYearsAgo = new Date(2009, 4, 4); // May 4, 2009
     return inputDate <= sixteenYearsAgo;
   };
 
@@ -175,15 +181,14 @@ function EmployeeRegistrationForm() {
     setSubmitError('');
 
     try {
-      // Format dates before sending to backend
       const formattedData = {
         ...formData,
         birthday: formatDateForBackend(formData.birthday),
-        startDate: formatDateForBackend(formData.startDate)
+        startDate: formatDateForBackend(formData.startDate),
       };
 
       const response = await axios.post('http://localhost:8070/ZenTeaEmployees/add', formattedData);
-      
+
       if (response.status === 200) {
         setShowPopup(true);
       } else {
@@ -205,12 +210,12 @@ function EmployeeRegistrationForm() {
 
   const handleCancel = () => {
     setFormData({
-      firstName: '',
-      lastName: '',
+      firstName: initialFullName.split(' ')[0] || '',
+      lastName: initialFullName.split(' ').slice(1).join(' ') || '',
       employeeID: '',
       birthday: '',
       contactNumber: '',
-      email: '',
+      email: initialEmail,
       homeAddress: '',
       nationalID: '',
       startDate: '',
@@ -230,7 +235,8 @@ function EmployeeRegistrationForm() {
 
   const handlePopupClose = () => {
     setShowPopup(false);
-    navigate('/HomePage');
+    // Pass formData to ZenTeaEmployeeProfile
+    navigate('/ZenTeaEmployeeProfile', { state: { employeeData: formData } });
   };
 
   useEffect(() => {
@@ -271,7 +277,6 @@ function EmployeeRegistrationForm() {
           </div>
         )}
         <div style={styles.form}>
-          {/* Personal Info Section */}
           <div style={styles.section}>
             <h3 style={styles.sectionTitle}>Personal Information</h3>
             <div style={styles.inputGrid}>
@@ -356,7 +361,6 @@ function EmployeeRegistrationForm() {
             </div>
           </div>
 
-          {/* Contact Info Section */}
           <div style={styles.section}>
             <h3 style={styles.sectionTitle}>Contact Information</h3>
             <div style={styles.inputGrid}>
@@ -441,7 +445,6 @@ function EmployeeRegistrationForm() {
             </div>
           </div>
 
-          {/* Job Details Section */}
           <div style={styles.section}>
             <h3 style={styles.sectionTitle}>Job Details</h3>
             <div style={styles.inputGrid}>
@@ -512,7 +515,6 @@ function EmployeeRegistrationForm() {
             </div>
           </div>
 
-          {/* Buttons */}
           <div style={styles.buttonContainer}>
             <button
               style={{ 
@@ -575,7 +577,6 @@ function EmployeeRegistrationForm() {
           </div>
         </div>
 
-        {/* Popup */}
         {showPopup && (
           <div style={styles.popupOverlay}>
             <div style={styles.popup}>
@@ -827,7 +828,6 @@ const styles = {
   },
 };
 
-// Define keyframes for animations
 const styleSheet = document.styleSheets[0];
 styleSheet.insertRule(`
   @keyframes fadeIn {

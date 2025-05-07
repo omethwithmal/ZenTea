@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const EmpSignUp = () => {
   const navigate = useNavigate();
@@ -63,7 +64,6 @@ const EmpSignUp = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    // Real-time validation
     if (name === 'fullName') {
       setErrors({
         ...errors,
@@ -96,7 +96,7 @@ const EmpSignUp = () => {
     }
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     const validationErrors = {
       fullName: validateFullName(formData.fullName) ? '' : 'Full Name must contain only letters and be non-empty',
       email: validateEmail(formData.email) ? '' : 'Invalid email format',
@@ -110,43 +110,29 @@ const EmpSignUp = () => {
     setErrors(validationErrors);
 
     if (Object.values(validationErrors).every((error) => error === '')) {
-      // Store user data in localStorage (for demo)
-      const users = JSON.parse(localStorage.getItem('zentea_users') || '[]');
-      users.push({
-        email: formData.email,
-        password: formData.password,
-        fullName: formData.fullName,
-        role: formData.role,
-      });
-      localStorage.setItem('zentea_users', JSON.stringify(users));
-
-      // Navigate to EmployeeRegistrationForm
-      navigate('/EmployeeRegistrationForm', {
-        state: { user: { email: formData.email, role: formData.role, fullName: formData.fullName } },
-      });
+      try {
+        const response = await axios.post('http://localhost:8070/login/registerUser', {
+          fullName: formData.fullName,
+          email: formData.email,
+          role: formData.role,
+          password: formData.password,
+        });
+        const user = {
+          email: formData.email,
+          role: formData.role,
+          fullName: formData.fullName,
+        };
+        navigate('/EmployeeRegistrationForm', { state: { user } });
+      } catch (error) {
+        setErrors({
+          ...errors,
+          email: error.response?.data?.message || 'Failed to register user',
+        });
+      }
     }
   };
 
-  const handleGoogleSignUp = () => {
-    // Simulate Google sign-up with dummy data
-    const googleUser = {
-      email: `googleuser${Date.now()}@zentea.com`, // Unique email
-      fullName: 'Google User',
-      role: 'employee', // Default role
-    };
-
-    // Store dummy user data in localStorage (no password for Google users)
-    const users = JSON.parse(localStorage.getItem('zentea_users') || '[]');
-    users.push(googleUser);
-    localStorage.setItem('zentea_users', JSON.stringify(users));
-
-    // Navigate to EmployeeRegistrationForm
-    navigate('/EmployeeRegistrationForm', {
-      state: { user: { email: googleUser.email, role: googleUser.role, fullName: googleUser.fullName } },
-    });
-  };
-
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     const validationErrors = {
       email: validateEmail(formData.email) ? '' : 'Invalid email format',
       password: formData.password.length > 0 ? '' : 'Password is required',
@@ -155,22 +141,18 @@ const EmpSignUp = () => {
     setErrors(validationErrors);
 
     if (Object.values(validationErrors).every((error) => error === '')) {
-      // Check credentials against localStorage (for demo)
-      const users = JSON.parse(localStorage.getItem('zentea_users') || '[]');
-      const user = users.find(
-        (u) => u.email === formData.email && u.password === formData.password
-      );
-
-      if (user) {
-        // Navigate to HomePage
-        navigate('/HomePage', {
-          state: { user: { email: user.email, role: user.role, fullName: user.fullName } },
+      try {
+        const response = await axios.post('http://localhost:8070/login/login', {
+          email: formData.email,
+          password: formData.password,
         });
-      } else {
+        const user = response.data;
+        navigate('/HomePage', { state: { user } });
+      } catch (error) {
         setErrors({
           ...errors,
-          email: 'Invalid email or password',
-          password: 'Invalid email or password',
+          email: error.response?.data?.message || 'Invalid email or password',
+          password: error.response?.data?.message || 'Invalid email or password',
         });
       }
     }
@@ -179,7 +161,6 @@ const EmpSignUp = () => {
   return (
     <div style={styles.container}>
       <div style={styles.formWrapper}>
-        {/* Toggle Buttons */}
         <div style={styles.toggleContainer}>
           <button
             style={{
@@ -203,7 +184,6 @@ const EmpSignUp = () => {
           </button>
         </div>
 
-        {/* Form */}
         <div style={styles.formContainer}>
           {isSignUp ? (
             <div style={styles.form}>
@@ -320,43 +300,6 @@ const EmpSignUp = () => {
                 }}
               >
                 Sign Up
-              </button>
-              <button
-                style={styles.googleButton}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = '#f9f9f9';
-                  e.target.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'white';
-                  e.target.style.transform = 'translateY(0)';
-                }}
-                onClick={handleGoogleSignUp}
-              >
-                <svg
-                  style={styles.googleIcon}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    fill="#4285F4"
-                  />
-                  <path
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-1.02.68-2.33 1.09-3.71 1.09-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C4.01 20.39 7.64 23 12 23z"
-                    fill="#34A853"
-                  />
-                  <path
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
-                    fill="#FBBC05"
-                  />
-                  <path
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.64 1 4.01 3.61 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    fill="#EA4335"
-                  />
-                </svg>
-                Sign Up with Google
               </button>
             </div>
           ) : (
@@ -541,24 +484,6 @@ const styles = {
     cursor: 'pointer',
     transition: 'all 0.3s ease',
   },
-  googleButton: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '10px',
-    backgroundColor: 'white',
-    color: '#333',
-    padding: '14px',
-    fontSize: '1.1rem',
-    border: '1px solid #2a5c42',
-    borderRadius: '12px',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-  },
-  googleIcon: {
-    width: '20px',
-    height: '20px',
-  },
   forgotPassword: {
     fontSize: '0.9rem',
     color: '#2a5c42',
@@ -581,7 +506,6 @@ const styles = {
   },
 };
 
-// Define keyframes for animations
 const styleSheet = document.styleSheets[0];
 styleSheet.insertRule(`
   @keyframes fadeSlideUp {
