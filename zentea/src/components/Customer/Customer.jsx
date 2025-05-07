@@ -11,7 +11,7 @@ const OrderDashboard1 = () => {
     emailAddress: "",
     teaType: "",
     quantity: "",
-    Price: ""
+    price: ""
   });
 
   useEffect(() => {
@@ -21,7 +21,18 @@ const OrderDashboard1 = () => {
   const fetchOrders = async () => {
     try {
       const res = await axios.get("http://localhost:8070/order");
-      setOrders(res.data);
+      // Transform data to ensure consistent field names
+      const formattedOrders = res.data.map(order => ({
+        _id: order._id,
+        fullName: order.fullName || order.Full_Name,
+        deliveryAddress: order.deliveryAddress || order.Delivery_Address,
+        contactNumber: order.contactNumber || order.Contact_Number,
+        emailAddress: order.emailAddress || order.Email_Address,
+        teaType: order.teaType || order.Select_Tea_Type,
+        quantity: order.quantity || order.Quantity,
+        price: order.price || order.Price
+      }));
+      setOrders(formattedOrders);
     } catch (err) {
       console.error("Error fetching orders:", err);
     }
@@ -38,7 +49,15 @@ const OrderDashboard1 = () => {
 
   const handleEdit = (order) => {
     setEditingOrder(order._id);
-    setFormData(order);
+    setFormData({
+      fullName: order.fullName,
+      deliveryAddress: order.deliveryAddress,
+      contactNumber: order.contactNumber,
+      emailAddress: order.emailAddress,
+      teaType: order.teaType,
+      quantity: order.quantity,
+      price: order.price
+    });
   };
 
   const handleInputChange = (e) => {
@@ -63,7 +82,7 @@ const OrderDashboard1 = () => {
         emailAddress: "",
         teaType: "",
         quantity: "",
-        rs: ""
+        price: ""
       });
     } catch (err) {
       console.error("Error updating order:", err);
@@ -81,7 +100,7 @@ const OrderDashboard1 = () => {
               {Object.keys(formData).map((key) => (
                 <input
                   key={key}
-                  type={["quantity", "rs"].includes(key) ? "number" : "text"}
+                  type={["quantity", "price"].includes(key) ? "number" : "text"}
                   name={key}
                   value={formData[key]}
                   onChange={handleInputChange}
@@ -122,7 +141,7 @@ const OrderDashboard1 = () => {
                 <td style={tdStyle}>{order.emailAddress}</td>
                 <td style={tdStyle}>{order.teaType}</td>
                 <td style={tdStyle}>{order.quantity}</td>
-                <td style={tdStyle}>{order.rs}</td>
+                <td style={tdStyle}>{order.price}</td>
                 <td style={tdStyle}>
                   <button onClick={() => handleEdit(order)} style={buttonStyle("#2ecc71")}>
                     Edit
