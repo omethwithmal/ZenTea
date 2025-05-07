@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const CheckoutForm = () => {
   const location = useLocation();
@@ -9,7 +10,8 @@ const CheckoutForm = () => {
   const [cvv, setCvv] = useState("");
   const [expiry, setExpiry] = useState("");
   const [amount, setAmount] = useState(0);
-  const [showPopup, setShowPopup] = useState(false); // Popup state
+  const [showPopup, setShowPopup] = useState(false);
+  const navigate = useNavigate(); // Popup state
 
   useEffect(() => {
     if (location.state?.orderData?.Price) {
@@ -157,9 +159,10 @@ const CheckoutForm = () => {
           <div style={styles.popupContent}>
             <h2>Payment Successful!</h2>
             <p>Your payment has been completed successfully.</p>
-            <button onClick={() => setShowPopup(false)} style={styles.popupCloseButton}>
-              Close
+            <button onClick={() => navigate("/")} style={styles.popupCloseButton}>
+              OK
             </button>
+
           </div>
         </div>
       )}
