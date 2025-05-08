@@ -35,6 +35,8 @@ const OrderManagementDashboard = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
 
+
+
     // Fetch orders from backend
     useEffect(() => {
         const fetchOrders = async () => {
@@ -334,6 +336,8 @@ const OrderManagementDashboard = () => {
                             textDecoration: 'none',
                             borderLeft: '4px solid transparent'
                         }}
+
+                        onClick={() => navigate('/PaymentDash')}
                         
                     >
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
@@ -345,7 +349,11 @@ const OrderManagementDashboard = () => {
                         color: 'white',
                         textDecoration: 'none',
                         borderLeft: '4px solid transparent'
-                    }}>
+                    }}
+                    
+                        
+                    
+                    >
                         <i className="fas fa-boxes" style={{ marginRight: '10px' }}></i>
                         <span>Analytics</span>
                     </a>
