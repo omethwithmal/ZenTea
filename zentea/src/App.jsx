@@ -74,6 +74,10 @@ import AttendanceRecordCard from "./components/Employee/AttendanceDashboard/Atte
 import QRAttendance from "./components/Employee/AttendanceDashboard/QRAttendance";
 import TeaItemForm from "./components/itemManagement/Additem";
 import TeaCartPage from "./components/itemManagement/cart";
+import InventoryForm from "./components/Inventory/Inventory";
+import InventoryTable from "./components/Inventory/InventoryData";
+import Dashboard from "./components/Inventory/Dashboard";
+import AnalyzePage from "./components/Inventory/Analyzie";
 
 
 
@@ -156,11 +160,13 @@ function App() {
       <Route path="/issues/update/:id" element={<UpdateIssue />} />
 
       <Route path="/add-tea-item" element={<TeaItemForm />} />
-            <Route path="/TeaCartPage" element={<TeaCartPage/>}/>
-     
+      <Route path="/TeaCartPage" element={<TeaCartPage/>}/>
 
-
-
+      <Route path="/inventory-form" element={<InventoryForm />} />
+      <Route path="/inventory-table" element={<InventoryTable />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/analyze" element={<AnalyzePage />} />
+    
       </Routes>
     </Router>
   );
