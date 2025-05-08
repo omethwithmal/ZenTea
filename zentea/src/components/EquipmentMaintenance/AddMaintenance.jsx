@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AddMaintenance = () => {
     const navigate = useNavigate();
+    const [equipments, setEquipments] = useState([]);
     const [formData, setFormData] = useState({
         serial_number: '',
         eqm_name: '',
@@ -14,12 +15,37 @@ const AddMaintenance = () => {
         status: 'pending',
     });
 
+    useEffect(() => {
+        const fetchEquipments = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/equipments');
+                if (response.data?.equipments) {
+                    setEquipments(response.data.equipments);
+                }
+            } catch (error) {
+                console.error("Error fetching equipments:", error);
+            }
+        };
+        fetchEquipments();
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value,
-        }));
+        
+        // If serial number changes, update the equipment name
+        if (name === 'serial_number') {
+            const selectedEquipment = equipments.find(eq => eq.serial_number === value);
+            setFormData(prev => ({
+                ...prev,
+                [name]: value,
+                eqm_name: selectedEquipment ? selectedEquipment.eqm_name : ''
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value,
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -38,7 +64,6 @@ const AddMaintenance = () => {
     return (
         <div style={{
             maxWidth: '600px',
-           
             margin: '40px auto',
             marginLeft:"550px",
             padding: '30px',
@@ -49,7 +74,6 @@ const AddMaintenance = () => {
         }}>
             <h2 style={{
                 textAlign: 'center',
-                
                 fontSize: '1.8rem',
                 fontWeight: '700',
                 color: '#333',
@@ -64,8 +88,7 @@ const AddMaintenance = () => {
                         fontWeight: '500',
                         color: '#333',
                     }}>Serial Number</label>
-                    <input
-                        type="text"
+                    <select
                         id="serial_number"
                         name="serial_number"
                         value={formData.serial_number}
@@ -78,9 +101,21 @@ const AddMaintenance = () => {
                             borderRadius: '6px',
                             fontSize: '1rem',
                             outline: 'none',
+                            appearance: 'none',
+                            backgroundImage: `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'right 1rem center',
+                            backgroundSize: '16px',
                         }}
                         required
-                    />
+                    >
+                        <option value="">Select Equipment</option>
+                        {equipments.map(equipment => (
+                            <option key={equipment._id} value={equipment.serial_number}>
+                                {equipment.serial_number} - {equipment.eqm_name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 {/* Equipment Name */}
@@ -106,6 +141,7 @@ const AddMaintenance = () => {
                             outline: 'none',
                         }}
                         required
+                        readOnly
                     />
                 </div>
 
