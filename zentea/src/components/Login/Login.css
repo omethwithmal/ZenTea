@@ -21,10 +21,11 @@
 
 /* Auth Container Styling */
 .IT22090508-LogIn-auth-container {
-    display: flex;
+   
     justify-content: center;
     align-items: center;
     width: 100%;
+    margin-left: 10%;
 }
 
 .IT22090508-LogIn-auth-box {
