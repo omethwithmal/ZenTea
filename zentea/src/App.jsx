@@ -51,9 +51,9 @@ import EmployeeSalaryTable from "../src/components/FinnacePayment/EmployeSalaryt
 import EmployeeSalary from "./components/Salary/EmployeeSalary";
 import UpdateSalaryForm from "./components/Salary/UpdateSalaryForm";
 import Notifications from "./components/FinancialDashBoard/Notifications";
-
-
 import SummaryTable from "../src/components/SummaryTable/SummaryTable";
+
+
 import EquipmentDashboard from "./components/EquipmentDetails/EquipmentDashboard";
 import AddEquipment from "./components/EquipmentDetails/AddEquipment";
 import IssueDetails from "./components/EquipmentIssue/IssueDetails";
@@ -62,7 +62,7 @@ import UpdateIssue from "./components/EquipmentIssue/UpdateIssue";
 import MaintenanceSchedule from "./components/EquipmentMaintenance/MaintenanceSchedule";
 import AddMaintenance from "./components/EquipmentMaintenance/AddMaintenance";
 import UpdateMaintenance from "./components/EquipmentMaintenance/UpdateMaintenance";
-
+import EqmNotification from "./components/EquipmentDetails/EqmNotification";
 
 
 // ometh
@@ -74,7 +74,7 @@ import AttendanceRecordCard from "./components/Employee/AttendanceDashboard/Atte
 import QRAttendance from "./components/Employee/AttendanceDashboard/QRAttendance";
 import TeaItemForm from "./components/itemManagement/Additem";
 import TeaCartPage from "./components/itemManagement/cart";
-import EqmNotification from "./components/EquipmentDetails/EqmNotification";
+
 
 
 
