@@ -74,6 +74,7 @@ import AttendanceRecordCard from "./components/Employee/AttendanceDashboard/Atte
 import QRAttendance from "./components/Employee/AttendanceDashboard/QRAttendance";
 import TeaItemForm from "./components/itemManagement/Additem";
 import TeaCartPage from "./components/itemManagement/cart";
+import EqmNotification from "./components/EquipmentDetails/EqmNotification";
 
 
 
@@ -145,6 +146,7 @@ function App() {
 
       <Route path="/EquipmentDashboard" element={<EquipmentDashboard />} />
       <Route path="/AddEquipment" element={<AddEquipment />} />
+      <Route path="/EqmNotification" element={<EqmNotification />} />
 
       <Route path="/MaintenanceSchedule" element={<MaintenanceSchedule />} />
       <Route path="/AddMaintenance" element={<AddMaintenance />} />

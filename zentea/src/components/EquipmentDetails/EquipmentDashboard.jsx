@@ -421,9 +421,9 @@ const EquipmentDashboard = () => {
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Failure Details</span>
                     </a>
-                    <a href="#" style={navLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/NotificationDashboard'); }}>
+                    <a href="#" style={navLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/EqmNotification'); }}>
                         <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
-                        <span>Notification</span>
+                        <span>Notifications</span>
                     </a>
                     <a href="#" style={navLinkStyle}>
                         <i className="fas fa-boxes" style={{ marginRight: '10px' }}></i>
