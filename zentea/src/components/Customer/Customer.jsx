@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { FaWhatsapp } from "react-icons/fa";
+
 
 const OrderDashboard1 = () => {
   const [orders, setOrders] = useState([]);
   const [editingOrder, setEditingOrder] = useState(null);
   const [formData, setFormData] = useState({
-    fullName: "",
-    deliveryAddress: "",
-    contactNumber: "",
-    emailAddress: "",
-    teaType: "",
-    quantity: "",
-    price: ""
+    Full_Name: "",
+    Delivery_Address: "",
+    Contact_Number: "",
+    Email_Address: "",
+    Select_Tea_Type: "",
+    Quantity: "",
+    Price: ""
   });
 
   useEffect(() => {
@@ -21,17 +23,7 @@ const OrderDashboard1 = () => {
   const fetchOrders = async () => {
     try {
       const res = await axios.get("http://localhost:8070/order");
-      // Transform data to ensure consistent field names
-      const formattedOrders = res.data.map(order => ({
-        _id: order._id,
-        fullName: order.fullName || order.Full_Name,
-        deliveryAddress: order.deliveryAddress || order.Delivery_Address,
-        contactNumber: order.contactNumber || order.Contact_Number,
-        emailAddress: order.emailAddress || order.Email_Address,
-        teaType: order.teaType || order.Select_Tea_Type,
-        quantity: order.quantity || order.Quantity,
-        price: order.price || order.Price
-      }));
+      const formattedOrders = res.data.orders || [];
       setOrders(formattedOrders);
     } catch (err) {
       console.error("Error fetching orders:", err);
@@ -40,7 +32,7 @@ const OrderDashboard1 = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:8070/order/delete/${id}`);
+      await axios.delete(`http://localhost:8070/order/deleteOrder/${id}`);
       setOrders((prev) => prev.filter((order) => order._id !== id));
     } catch (err) {
       console.error("Error deleting order:", err);
@@ -50,13 +42,13 @@ const OrderDashboard1 = () => {
   const handleEdit = (order) => {
     setEditingOrder(order._id);
     setFormData({
-      fullName: order.fullName,
-      deliveryAddress: order.deliveryAddress,
-      contactNumber: order.contactNumber,
-      emailAddress: order.emailAddress,
-      teaType: order.teaType,
-      quantity: order.quantity,
-      price: order.price
+      Full_Name: order.Full_Name,
+      Delivery_Address: order.Delivery_Address,
+      Contact_Number: order.Contact_Number,
+      Email_Address: order.Email_Address,
+      Select_Tea_Type: order.Select_Tea_Type,
+      Quantity: order.Quantity,
+      Price: order.Price
     });
   };
 
@@ -68,7 +60,7 @@ const OrderDashboard1 = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:8070/order/update/${editingOrder}`, formData);
+      await axios.put(`http://localhost:8070/order/updateOrder/${editingOrder}`, formData);
       setOrders((prev) =>
         prev.map((order) =>
           order._id === editingOrder ? { ...formData, _id: editingOrder } : order
@@ -76,17 +68,31 @@ const OrderDashboard1 = () => {
       );
       setEditingOrder(null);
       setFormData({
-        fullName: "",
-        deliveryAddress: "",
-        contactNumber: "",
-        emailAddress: "",
-        teaType: "",
-        quantity: "",
-        price: ""
+        Full_Name: "",
+        Delivery_Address: "",
+        Contact_Number: "",
+        Email_Address: "",
+        Select_Tea_Type: "",
+        Quantity: "",
+        Price: ""
       });
     } catch (err) {
       console.error("Error updating order:", err);
     }
+  };
+
+  const shareOnWhatsApp = (order) => {
+    const message = `Order Details:\n\n` +
+      `Name: ${order.Full_Name}\n` +
+      `Address: ${order.Delivery_Address}\n` +
+      `Contact: ${order.Contact_Number}\n` +
+      `Email: ${order.Email_Address}\n` +
+      `Tea Type: ${order.Select_Tea_Type}\n` +
+      `Quantity: ${order.Quantity}\n` +
+      `Price: ${order.Price}`;
+    
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   return (
@@ -96,25 +102,22 @@ const OrderDashboard1 = () => {
 
         {editingOrder && (
           <form onSubmit={handleUpdate} style={formStyle}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "15px" }}>
-              {Object.keys(formData).map((key) => (
+            {Object.keys(formData).map((key) => (
+              <div key={key} style={{ marginBottom: "10px" }}>
                 <input
-                  key={key}
-                  type={["quantity", "price"].includes(key) ? "number" : "text"}
+                  type={["Quantity", "Price"].includes(key) ? "number" : "text"}
                   name={key}
                   value={formData[key]}
                   onChange={handleInputChange}
-                  placeholder={key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
+                  placeholder={key.replace(/_/g, " ")}
                   required
                   style={inputStyle}
                 />
-              ))}
-            </div>
-            <div style={{ marginTop: "15px", textAlign: "right" }}>
+              </div>
+            ))}
+            <div style={{ textAlign: "right" }}>
               <button type="submit" style={buttonStyle("#3498db")}>Update</button>
-              <button type="button" onClick={() => setEditingOrder(null)} style={buttonStyle("#e74c3c")}>
-                Cancel
-              </button>
+              <button type="button" onClick={() => setEditingOrder(null)} style={buttonStyle("#e74c3c")}>Cancel</button>
             </div>
           </form>
         )}
@@ -135,20 +138,27 @@ const OrderDashboard1 = () => {
           <tbody>
             {orders.map((order, index) => (
               <tr key={order._id} style={{ backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#fff" }}>
-                <td style={tdStyle}>{order.fullName}</td>
-                <td style={tdStyle}>{order.deliveryAddress}</td>
-                <td style={tdStyle}>{order.contactNumber}</td>
-                <td style={tdStyle}>{order.emailAddress}</td>
-                <td style={tdStyle}>{order.teaType}</td>
-                <td style={tdStyle}>{order.quantity}</td>
-                <td style={tdStyle}>{order.price}</td>
+                <td style={tdStyle}>{order.Full_Name}</td>
+                <td style={tdStyle}>{order.Delivery_Address}</td>
+                <td style={tdStyle}>{order.Contact_Number}</td>
+                <td style={tdStyle}>{order.Email_Address}</td>
+                <td style={tdStyle}>{order.Select_Tea_Type}</td>
+                <td style={tdStyle}>{order.Quantity}</td>
+                <td style={tdStyle}>{order.Price}</td>
                 <td style={tdStyle}>
-                  <button onClick={() => handleEdit(order)} style={buttonStyle("#2ecc71")}>
-                    Edit
-                  </button>
-                  <button onClick={() => handleDelete(order._id)} style={buttonStyle("#e74c3c")}>
-                    Delete
-                  </button>
+                  
+                <button onClick={() => handleEdit(order)} style={buttonStyle("#2ecc71")}>Edit</button>
+                <button onClick={() => handleDelete(order._id)} style={buttonStyle("#e74c3c")}>Delete</button>
+                    <a
+                          href={`https://wa.me/?text=${encodeURIComponent(
+                          `Order Details:\nName: ${order.Full_Name}\nAddress: ${order.Delivery_Address}\nContact: ${order.Contact_Number}\nEmail: ${order.Email_Address}\nTea Type: ${order.Select_Tea_Type}\nQuantity: ${order.Quantity}\nPrice: ${order.Price}`
+                     )}`}
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           style={{ marginLeft: "5px", color: "#25D366", fontSize: "1.5em" }}
+                     >
+                               <FaWhatsapp />
+                     </a>
                 </td>
               </tr>
             ))}
@@ -165,7 +175,7 @@ const dashboardContainer = {
   background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
   minHeight: "100vh",
   fontFamily: "Arial, sans-serif",
-  marginLeft: "250px"
+  marginLeft:"140px"
 };
 
 const cardContainer = {
@@ -174,9 +184,7 @@ const cardContainer = {
   backgroundColor: "#fff",
   borderRadius: "12px",
   boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-  padding: "20px",
-  maxHeight: "600px",
-  overflowY: "auto"
+  padding: "20px"
 };
 
 const title = {
@@ -190,28 +198,26 @@ const title = {
 const formStyle = {
   marginBottom: "20px",
   padding: "20px",
-  backgroundColor: "#f1f3f5",
+  background: 'linear-gradient(135deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
   borderRadius: "8px"
 };
 
 const inputStyle = {
-  flex: "1 1 200px",
+  width: "100%",
   padding: "10px",
-  border: "1px solid #ddd",
+  border: "1px solid #ccc",
   borderRadius: "6px",
-  fontSize: "1em",
-  outline: "none"
+  fontSize: "1em"
 };
 
 const buttonStyle = (bgColor) => ({
   padding: "8px 15px",
-  marginLeft: "10px",
+  margin: "5px",
   backgroundColor: bgColor,
-  color: "#fff",
+  background: 'linear-gradient(135deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
   border: "none",
   borderRadius: "4px",
-  cursor: "pointer",
-  transition: "background-color 0.3s"
+  cursor: "pointer"
 });
 
 const tableStyle = {
@@ -223,15 +229,14 @@ const tableStyle = {
 };
 
 const headerRowStyle = {
-  backgroundColor: "#3498db",
+  background: 'linear-gradient(135deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
   color: "#fff"
 };
 
 const thStyle = {
   padding: "15px",
   border: "1px solid #ddd",
-  textAlign: "left",
-  fontWeight: "600"
+  textAlign: "left"
 };
 
 const tdStyle = {
