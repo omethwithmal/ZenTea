@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 const EquipmentDashboard = () => {
     const [equipments, setEquipments] = useState([]);
@@ -8,6 +10,7 @@ const EquipmentDashboard = () => {
     const [error, setError] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [isAdding, setIsAdding] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
     const [editFormData, setEditFormData] = useState({
         serial_number: '',
         eqm_name: '',
@@ -19,85 +22,6 @@ const EquipmentDashboard = () => {
         description: ''
     });
     const navigate = useNavigate();
-
-    // Sidebar Styles
-    const sidebarStyle = {
-        width: '250px',
-        height: '100vh',
-        position: 'fixed',
-        left: '0',
-        top: '0',
-        backgroundColor: '#2c3e50',
-        color: 'white',
-        padding: '20px',
-        boxSizing: 'border-box'
-    };
-    const sidebarHeaderStyle = {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        paddingBottom: '20px',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
-    };
-    const navLinkStyle = {
-        display: 'flex',
-        alignItems: 'center',
-        padding: '10px 15px',
-        margin: '5px 0',
-        borderRadius: '5px',
-        color: 'white',
-        textDecoration: 'none',
-        transition: 'background-color 0.3s',
-        ':hover': {
-            backgroundColor: '#34495e'
-        }
-    };
-    const activeNavLinkStyle = {
-        ...navLinkStyle,
-        backgroundColor: '#3498db'
-    };
-
-    // Button Styles
-    const buttonStyle = {
-        padding: '0.5rem 1rem',
-        marginRight: '0.5rem',
-        cursor: 'pointer',
-        border: 'none',
-        borderRadius: '6px',
-        backgroundColor: '#f8f9fa',
-        color: '#3a86ff',
-        fontWeight: '500',
-        fontSize: '0.875rem',
-        transition: 'all 0.2s ease',
-    };
-    const deleteButtonStyle = {
-        backgroundColor: '#fff5f5',
-        color: '#ff6b6b',
-    };
-    const emailButtonStyle = {
-        backgroundColor: '#28a745',
-        color: 'white',
-    };
-    const addButtonStyle = {
-        backgroundColor: '#3a86ff',
-        color: 'white',
-        border: 'none',
-        borderRadius: '8px',
-        padding: '0.75rem 1.5rem',
-        fontSize: '1rem',
-        fontWeight: '600',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.5rem',
-        boxShadow: '0 2px 8px rgba(58, 134, 255, 0.3)',
-        transition: 'all 0.2s ease',
-    };
-    const reportButtonStyle = {
-        ...addButtonStyle,
-        backgroundColor: '#28a745',
-        marginLeft: '10px',
-    };
 
     useEffect(() => {
         fetchEquipments();
@@ -118,6 +42,14 @@ const EquipmentDashboard = () => {
             setLoading(false);
         }
     };
+
+    const filteredEquipments = equipments.filter(equipment => 
+        equipment.serial_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        equipment.eqm_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        equipment.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (equipment.warrenty_information && equipment.warrenty_information.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (equipment.description && equipment.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
 
     const handleAddClick = () => {
         setIsAdding(true);
@@ -198,43 +130,277 @@ const EquipmentDashboard = () => {
         }
     };
 
-    // ✅ New: Generate Report Function
     const generateReport = () => {
-        if (!equipments.length) return;
+        if (!equipments.length) {
+            alert("No equipment data available to generate report");
+            return;
+        }
 
-        // Convert equipment data to CSV format
-        const csvContent = [
-            ["Serial Number", "Equipment Name", "Type", "Purchase Date", "Last Maintenance", 
-             "Next Maintenance", "Warranty Info", "Description"],
-            ...equipments.map(eq => [
-                eq.serial_number,
-                eq.eqm_name,
-                eq.type,
-                formatDate(eq.purchase_date),
-                formatDate(eq.last_maintenance_date),
-                formatDate(eq.next_maintenance_date),
-                eq.warrenty_information,
-                eq.description
-            ])
-        ].map(row => row.join(",")).join("\n");
+        // Create a temporary table without the Actions column
+        const reportTable = document.createElement('div');
+        reportTable.style.position = 'absolute';
+        reportTable.style.left = '-9999px';
+        reportTable.style.width = '100%';
+        
+        const table = document.createElement('table');
+        table.style.width = '100%';
+        table.style.borderCollapse = 'collapse';
+        
+        // Create table header
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        
+        ['Serial Number', 'Equipment Name', 'Type', 'Purchase Date', 'Last Maintenance', 
+         'Next Maintenance', 'Warranty Info', 'Description'].forEach(text => {
+            const th = document.createElement('th');
+            th.textContent = text;
+            th.style.border = '1px solid #ddd';
+            th.style.padding = '8px';
+            th.style.textAlign = 'left';
+            th.style.backgroundColor = '#f2f2f2';
+            headerRow.appendChild(th);
+        });
+        
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+        
+        // Create table body
+        const tbody = document.createElement('tbody');
+        filteredEquipments.forEach(equipment => {
+            const row = document.createElement('tr');
+            
+            [
+                equipment.serial_number,
+                equipment.eqm_name,
+                equipment.type,
+                formatDate(equipment.purchase_date),
+                formatDate(equipment.last_maintenance_date),
+                formatDate(equipment.next_maintenance_date),
+                equipment.warrenty_information || 'N/A',
+                equipment.description || 'N/A'
+            ].forEach(text => {
+                const td = document.createElement('td');
+                td.textContent = text;
+                td.style.border = '1px solid #ddd';
+                td.style.padding = '8px';
+                row.appendChild(td);
+            });
+            
+            tbody.appendChild(row);
+        });
+        
+        table.appendChild(tbody);
+        reportTable.appendChild(table);
+        document.body.appendChild(reportTable);
+        
+        // Generate PDF
+        html2canvas(reportTable, {
+            scale: 2,
+            logging: false,
+            useCORS: true,
+        }).then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgWidth = 210;
+            const pageHeight = 295;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
 
-        // Create and download CSV file
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", "equipment_report.csv");
-        link.style.visibility = "hidden";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            // Clean up
+            document.body.removeChild(reportTable);
+            
+            pdf.save('equipment-report.pdf');
+        });
+    };
+
+    // Styles
+    const containerStyle = {
+        display: 'flex',
+        minHeight: '100vh',
+        backgroundColor: '#f5f7fa',
+    };
+
+    const mainContentStyle = {
+        flex: '1',
+        padding: '2rem',
+        fontFamily: "'Inter', sans-serif",
+        maxWidth: 'calc(100% - 250px)',
+    };
+
+    const headerStyle = {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '2rem',
+    };
+
+    const titleStyle = {
+        fontSize: '2rem',
+        fontWeight: '700',
+        color: '#1a1a1a',
+        margin: '0',
+    };
+
+    const buttonGroupStyle = {
+        display: 'flex',
+        gap: '1rem',
+    };
+
+    const searchContainerStyle = {
+        marginBottom: '1.5rem',
+        display: 'flex',
+        gap: '1rem',
+    };
+
+    const searchInputStyle = {
+        flex: '1',
+        padding: '0.875rem 1rem',
+        border: '1px solid #e9ecef',
+        borderRadius: '8px',
+        fontSize: '1rem',
+        transition: 'all 0.2s ease',
+        backgroundColor: '#f8f9fa',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+    };
+
+    const tableStyle = {
+        width: '100%',
+        borderCollapse: 'separate',
+        borderSpacing: '0',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+    };
+
+    const thStyle = {
+        backgroundColor: '#f8f9fa',
+        color: '#6c757d',
+        padding: '1rem',
+        textAlign: 'left',
+        fontWeight: '600',
+        fontSize: '0.875rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        borderBottom: '1px solid #e9ecef',
+    };
+
+    const tdStyle = {
+        padding: '1rem',
+        textAlign: 'left',
+        borderBottom: '1px solid #e9ecef',
+        backgroundColor: 'white',
+        transition: 'background-color 0.2s ease',
+    };
+
+    const buttonStyle = {
+        padding: '0.5rem 1rem',
+        marginRight: '0.5rem',
+        cursor: 'pointer',
+        border: 'none',
+        borderRadius: '6px',
+        backgroundColor: '#f8f9fa',
+        color: '#3a86ff',
+        fontWeight: '500',
+        fontSize: '0.875rem',
+        transition: 'all 0.2s ease',
+    };
+
+    const deleteButtonStyle = {
+        backgroundColor: '#fff5f5',
+        color: '#ff6b6b',
+    };
+
+    const emailButtonStyle = {
+        backgroundColor: '#28a745',
+        color: 'white',
+    };
+
+    const noResultsStyle = {
+        padding: '2rem',
+        textAlign: 'center',
+        color: '#6c757d',
+        backgroundColor: 'white',
+    };
+
+    const addButtonStyle = {
+        backgroundColor: '#3a86ff',
+        color: 'white',
+        border: 'none',
+        borderRadius: '8px',
+        padding: '0.75rem 1.5rem',
+        fontSize: '1rem',
+        fontWeight: '600',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        boxShadow: '0 2px 8px rgba(58, 134, 255, 0.3)',
+        transition: 'all 0.2s ease',
+    };
+
+    const reportButtonStyle = {
+        backgroundColor: '#6c757d',
+        color: 'white',
+        border: 'none',
+        borderRadius: '8px',
+        padding: '0.75rem 1.5rem',
+        fontSize: '1rem',
+        fontWeight: '600',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        boxShadow: '0 2px 8px rgba(108, 117, 125, 0.3)',
+        transition: 'all 0.2s ease',
+    };
+
+    const sidebarStyle = {
+        width: '250px',
+        backgroundColor: '#2c3e50',
+        color: 'white',
+        padding: '20px 0',
+        minHeight: '100vh',
+        background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
+        position: 'sticky',
+        top: '0',
+    };
+
+    const sidebarHeaderStyle = {
+        textAlign: 'center',
+        padding: '20px 0',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+    };
+
+    const navLinkStyle = {
+        display: 'block',
+        padding: '15px 20px',
+        color: 'white',
+        textDecoration: 'none',
+        borderLeft: '4px solid transparent',
+        transition: 'all 0.2s ease',
+    };
+
+    const activeNavLinkStyle = {
+        ...navLinkStyle,
+        backgroundColor: 'rgba(255, 255, 255, 0.28)'
     };
 
     if (loading) return <div style={{ padding: '20px', textAlign: 'center', fontSize: '18px' }}>Loading...</div>;
     if (error) return <div style={{ padding: '20px', textAlign: 'center', fontSize: '18px', color: '#dc3545' }}>Error: {error}</div>;
 
     return (
-        <div style={{ display: 'flex' }}>
+        <div style={containerStyle}>
             {/* Sidebar */}
             <aside style={sidebarStyle}>
                 <div style={sidebarHeaderStyle}>
@@ -244,102 +410,121 @@ const EquipmentDashboard = () => {
                 </div>
                 <nav style={{ marginTop: '20px' }}>
                     <a href="#" style={activeNavLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/EquipmentDashboard'); }}>
-                        <i className="fas fa-users" style={{ marginRight: '10px' }}></i> <span>Equipment Details</span>
+                        <i className="fas fa-users" style={{ marginRight: '10px' }}></i>
+                        <span>Equipment Details</span>
                     </a>
                     <a href="#" style={navLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/MaintenanceSchedule'); }}>
-                        <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i> <span>Maintenance Schedule</span>
+                        <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
+                        <span>Maintenance Schedule</span>
                     </a>
                     <a href="#" style={navLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/IssueDetails'); }}>
-                        <i className="fas fa-truck" style={{ marginRight: '10px' }}></i> <span>Issue Details</span>
+                        <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
+                        <span>Failure Details</span>
                     </a>
                     <a href="#" style={navLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/NotificationDashboard'); }}>
-                        <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i> <span>Notification</span>
+                        <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
+                        <span>Notification</span>
                     </a>
                     <a href="#" style={navLinkStyle}>
-                        <i className="fas fa-boxes" style={{ marginRight: '10px' }}></i> <span>Settings</span>
+                        <i className="fas fa-boxes" style={{ marginRight: '10px' }}></i>
+                        <span>Settings</span>
                     </a>
                     <a href="#" style={navLinkStyle}>
-                        <i className="fas fa-tools" style={{ marginRight: '10px' }}></i> <span>Log Out</span>
+                        <i className="fas fa-tools" style={{ marginRight: '10px' }}></i>
+                        <span>Log Out</span>
                     </a>
                 </nav>
             </aside>
 
             {/* Main Content */}
-            <div style={{ marginLeft: '250px', padding: '20px', fontFamily: 'Arial, sans-serif', width: 'calc(100% - 250px)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                    <h1 style={{ color: '#333', margin: 0 }}>Equipment Management</h1>
-                    
-                    {/* Buttons Container */}
-                    <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={mainContentStyle}>
+                <div style={headerStyle}>
+                    <h2 style={titleStyle}>Equipment Management</h2>
+                    <div style={buttonGroupStyle}>
                         <button 
                             onClick={handleAddClick}
                             style={addButtonStyle}
                             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2671e0'}
                             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3a86ff'}
                         >
-                            <i className="fas fa-plus" style={{ marginRight: '8px' }}></i>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 4V20M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                            </svg>
                             Add Equipment
                         </button>
-
-                        {/* ✅ New: Generate Report Button */}
                         <button 
                             onClick={generateReport}
                             style={reportButtonStyle}
-                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#218838'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#28a745'}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5a6268'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6c757d'}
                         >
-                            <i className="fas fa-file-excel" style={{ marginRight: '8px' }}></i>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 17V7M9 7L5 11M9 7L13 11M15 7V17M15 17L19 13M15 17L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
                             Generate Report
                         </button>
                     </div>
                 </div>
+                
+                {/* Search Bar */}
+                <div style={searchContainerStyle}>
+                    <input
+                        type="text"
+                        placeholder="Search equipment..."
+                        style={searchInputStyle}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
 
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
-                    <thead>
-                        <tr>
-                            <th style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left', backgroundColor: '#f2f2f2', fontWeight: 'bold' }}>Serial Number</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left', backgroundColor: '#f2f2f2', fontWeight: 'bold' }}>Equipment Name</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left', backgroundColor: '#f2f2f2', fontWeight: 'bold' }}>Type</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left', backgroundColor: '#f2f2f2', fontWeight: 'bold' }}>Purchase Date</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left', backgroundColor: '#f2f2f2', fontWeight: 'bold' }}>Last Maintenance</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left', backgroundColor: '#f2f2f2', fontWeight: 'bold' }}>Next Maintenance</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left', backgroundColor: '#f2f2f2', fontWeight: 'bold' }}>Warranty Info</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left', backgroundColor: '#f2f2f2', fontWeight: 'bold' }}>Description</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left', backgroundColor: '#f2f2f2', fontWeight: 'bold' }}>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {equipments.map(equipment => (
-                            <tr key={equipment._id} style={{ ':hover': { backgroundColor: '#f1f1f1' } }}>
-                                <td style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left' }}>{equipment.serial_number}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left' }}>{equipment.eqm_name}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left' }}>{equipment.type}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left' }}>{formatDate(equipment.purchase_date)}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left' }}>{formatDate(equipment.last_maintenance_date)}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left' }}>{formatDate(equipment.next_maintenance_date)}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left' }}>{equipment.warrenty_information}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left' }}>{equipment.description}</td>
-                                <td style={{ border: '1px solid #ddd', padding: '8px 12px', textAlign: 'left' }}>
-                                    <button 
-                                        style={buttonStyle}
-                                        onClick={() => handleEditClick(equipment)}
-                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e9ecef'}
-                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        style={{ ...buttonStyle, ...deleteButtonStyle }}
-                                        onClick={() => handleDelete(equipment._id)}
-                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ffe3e3'}
-                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff5f5'}
-                                    >
-                                        Delete
-                                    </button>
-                                    <button
-                                        style={{ ...buttonStyle, ...emailButtonStyle }}
-                                        onClick={() => {
-                                            const body = `
+                <div id="report-table">
+                    <table style={tableStyle}>
+                        <thead>
+                            <tr>
+                                <th style={thStyle}>Serial Number</th>
+                                <th style={thStyle}>Equipment Name</th>
+                                <th style={thStyle}>Type</th>
+                                <th style={thStyle}>Purchase Date</th>
+                                <th style={thStyle}>Last Maintenance</th>
+                                <th style={thStyle}>Next Maintenance</th>
+                                <th style={thStyle}>Warranty Info</th>
+                                <th style={thStyle}>Description</th>
+                                <th style={thStyle}>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredEquipments.length > 0 ? (
+                                filteredEquipments.map(equipment => (
+                                    <tr key={equipment._id} style={{ ':hover': { backgroundColor: '#f8f9fa' } }}>
+                                        <td style={tdStyle}>{equipment.serial_number}</td>
+                                        <td style={tdStyle}>{equipment.eqm_name}</td>
+                                        <td style={tdStyle}>{equipment.type}</td>
+                                        <td style={tdStyle}>{formatDate(equipment.purchase_date)}</td>
+                                        <td style={tdStyle}>{formatDate(equipment.last_maintenance_date)}</td>
+                                        <td style={tdStyle}>{formatDate(equipment.next_maintenance_date)}</td>
+                                        <td style={tdStyle}>{equipment.warrenty_information}</td>
+                                        <td style={tdStyle}>{equipment.description}</td>
+                                        <td style={tdStyle}>
+                                            <button 
+                                                style={buttonStyle}
+                                                onClick={() => handleEditClick(equipment)}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e9ecef'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                style={{ ...buttonStyle, ...deleteButtonStyle }}
+                                                onClick={() => handleDelete(equipment._id)}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ffe3e3'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff5f5'}
+                                            >
+                                                Delete
+                                            </button>
+                                            <button
+                                                style={{ ...buttonStyle, ...emailButtonStyle }}
+                                                onClick={() => {
+                                                    const body = `
 Serial Number: ${equipment.serial_number}
 Equipment Name: ${equipment.eqm_name}
 Type: ${equipment.type}
@@ -348,21 +533,29 @@ Last Maintenance: ${formatDate(equipment.last_maintenance_date)}
 Next Maintenance: ${formatDate(equipment.next_maintenance_date)}
 Warranty Info: ${equipment.warrenty_information}
 Description: ${equipment.description}
-                                            `.trim();
-                                            const subject = `Equipment Details - ${equipment.serial_number}`;
-                                            const gmailUrl = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&tf=1`;
-                                            window.open(gmailUrl, '_blank');
-                                        }}
-                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#218838'}
-                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#28a745'}
-                                    >
-                                        Email
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                                    `.trim();
+                                                    const subject = `Equipment Details - ${equipment.serial_number}`;
+                                                    const gmailUrl = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&tf=1`;
+                                                    window.open(gmailUrl, '_blank');
+                                                }}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#218838'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#28a745'}
+                                            >
+                                                Email
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="9" style={noResultsStyle}>
+                                        {searchTerm ? 'No equipment matches your search.' : 'No equipment records found.'}
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
                 {/* Add/Edit Modal */}
                 {(editingId || isAdding) && (

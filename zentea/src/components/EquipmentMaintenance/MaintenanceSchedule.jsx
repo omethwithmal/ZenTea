@@ -51,11 +51,76 @@ const MaintenanceSchedule = () => {
         navigate(`/updateMaintenance/${id}`);
     };
 
-    // Generate PDF Report
+    // Generate PDF Report (modified version)
     const generateReport = () => {
-        const input = document.getElementById('report-table');
+        if (!filteredMaintenance.length) {
+            alert("No maintenance records available to generate report");
+            return;
+        }
+
+        // Create a temporary table for the report
+        const reportTable = document.createElement('div');
+        reportTable.style.position = 'absolute';
+        reportTable.style.left = '-9999px';
+        reportTable.style.width = '100%';
         
-        html2canvas(input, {
+        const table = document.createElement('table');
+        table.style.width = '100%';
+        table.style.borderCollapse = 'collapse';
+        
+        // Create table header without Actions column
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        
+        ['#', 'Equipment Name', 'Description', 'Last Maintenance', 'Next Maintenance', 'Technician', 'Status'].forEach(text => {
+            const th = document.createElement('th');
+            th.textContent = text;
+            th.style.border = '1px solid #ddd';
+            th.style.padding = '8px';
+            th.style.textAlign = 'left';
+            th.style.backgroundColor = '#f2f2f2';
+            headerRow.appendChild(th);
+        });
+        
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+        
+        // Create table body without Actions column
+        const tbody = document.createElement('tbody');
+        filteredMaintenance.forEach((item, index) => {
+            const row = document.createElement('tr');
+            
+            [
+                index + 1,
+                item.eqm_name,
+                item.description || 'N/A',
+                item.last_maintenance_date || 'N/A',
+                item.next_maintenance_date || 'N/A',
+                item.technician || 'N/A',
+                item.status
+            ].forEach(text => {
+                const td = document.createElement('td');
+                td.textContent = text;
+                td.style.border = '1px solid #ddd';
+                td.style.padding = '8px';
+                
+                // Apply status color styling
+                if (text === 'pending') td.style.color = '#ff922b';
+                if (text === 'completed') td.style.color = '#51cf66';
+                if (text === 'overdue') td.style.color = '#ff6b6b';
+                
+                row.appendChild(td);
+            });
+            
+            tbody.appendChild(row);
+        });
+        
+        table.appendChild(tbody);
+        reportTable.appendChild(table);
+        document.body.appendChild(reportTable);
+        
+        // Generate PDF from the temporary table
+        html2canvas(reportTable, {
             scale: 2,
             logging: false,
             useCORS: true,
@@ -78,11 +143,14 @@ const MaintenanceSchedule = () => {
                 heightLeft -= pageHeight;
             }
 
+            // Clean up
+            document.body.removeChild(reportTable);
+            
             pdf.save('maintenance-report.pdf');
         });
     };
 
-    // Styles
+    // Styles (remain the same as before)
     const containerStyle = {
         display: 'flex',
         minHeight: '100vh',
@@ -211,6 +279,12 @@ const MaintenanceSchedule = () => {
         color: '#ff6b6b',
     };
 
+    // Add email button style
+    const emailButtonStyle = {
+        backgroundColor: '#28a745',
+        color: 'white',
+    };
+
     const noResultsStyle = {
         padding: '2rem',
         textAlign: 'center',
@@ -269,9 +343,9 @@ const MaintenanceSchedule = () => {
                     </a>
                     <a href="#" style={navLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/IssueDetails'); }}>
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
-                        <span>Issue Details</span>
+                        <span>Failure Details</span>
                     </a>
-                    <a href="#" style={navLinkStyle} >
+                    <a href="#" style={navLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/NotificationDashboard'); }}>
                         <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
                         <span>Notification</span>
                     </a>
@@ -279,7 +353,7 @@ const MaintenanceSchedule = () => {
                         <i className="fas fa-boxes" style={{ marginRight: '10px' }}></i>
                         <span>Settings</span>
                     </a>
-                    <a href="#" style={navLinkStyle}onClick={(e) => { e.preventDefault(); navigate('/'); }}>
+                    <a href="#" style={navLinkStyle}>
                         <i className="fas fa-tools" style={{ marginRight: '10px' }}></i>
                         <span>Log Out</span>
                     </a>
@@ -378,6 +452,26 @@ const MaintenanceSchedule = () => {
                                                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff5f5'}
                                             >
                                                 Delete
+                                            </button>
+                                            <button
+                                                style={{ ...buttonStyle, ...emailButtonStyle }}
+                                                onClick={() => {
+                                                    const body = `
+Equipment Name: ${item.eqm_name}
+Description: ${item.description || 'N/A'}
+Last Maintenance: ${item.last_maintenance_date || 'N/A'}
+Next Maintenance: ${item.next_maintenance_date || 'N/A'}
+Technician: ${item.technician || 'N/A'}
+Status: ${item.status}
+                                                    `.trim();
+                                                    const subject = `Maintenance Record - ${item.eqm_name}`;
+                                                    const gmailUrl = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&tf=1`;
+                                                    window.open(gmailUrl, '_blank');
+                                                }}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#218838'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#28a745'}
+                                            >
+                                                Email
                                             </button>
                                         </td>
                                     </tr>

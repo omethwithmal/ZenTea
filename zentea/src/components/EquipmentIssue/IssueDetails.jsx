@@ -65,11 +65,76 @@ const IssueDetails = () => {
     }
   };
 
-  // Generate PDF Report
+  // Generate PDF Report (modified version)
   const generateReport = () => {
-    const input = document.getElementById('report-table');
+    if (!filteredIssues.length) {
+      alert("No issues available to generate report");
+      return;
+    }
+
+    // Create a temporary table for the report
+    const reportTable = document.createElement('div');
+    reportTable.style.position = 'absolute';
+    reportTable.style.left = '-9999px';
+    reportTable.style.width = '100%';
     
-    html2canvas(input, {
+    const table = document.createElement('table');
+    table.style.width = '100%';
+    table.style.borderCollapse = 'collapse';
+    
+    // Create table header without Actions column
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    
+    ['#', 'Serial Number', 'Issue Title', 'Description', 'Priority', 'Technician', 'Cost'].forEach(text => {
+      const th = document.createElement('th');
+      th.textContent = text;
+      th.style.border = '1px solid #ddd';
+      th.style.padding = '8px';
+      th.style.textAlign = 'left';
+      th.style.backgroundColor = '#f2f2f2';
+      headerRow.appendChild(th);
+    });
+    
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+    
+    // Create table body without Actions column
+    const tbody = document.createElement('tbody');
+    filteredIssues.forEach((issue, index) => {
+      const row = document.createElement('tr');
+      
+      [
+        index + 1,
+        issue.serial_number,
+        issue.issue_title,
+        issue.description,
+        issue.priority_level,
+        issue.assign_technician || 'Not Assigned',
+        `LKR ${issue.maintenance_cost}`
+      ].forEach(text => {
+        const td = document.createElement('td');
+        td.textContent = text;
+        td.style.border = '1px solid #ddd';
+        td.style.padding = '8px';
+        
+        // Apply priority color styling
+        if (text === 'High') td.style.color = '#ff6b6b';
+        if (text === 'Medium') td.style.color = '#ff922b';
+        if (text === 'Low') td.style.color = '#51cf66';
+        
+        row.appendChild(td);
+      });
+      
+      tbody.appendChild(row);
+    });
+    
+    table.appendChild(tbody);
+    reportTable.appendChild(table);
+    document.body.appendChild(reportTable);
+    
+    // Generate PDF from the temporary table
+    html2canvas(reportTable, {
       scale: 2,
       logging: false,
       useCORS: true,
@@ -92,14 +157,29 @@ const IssueDetails = () => {
         heightLeft -= pageHeight;
       }
 
+      // Clean up
+      document.body.removeChild(reportTable);
+      
       pdf.save('issue-report.pdf');
-      const pdfBlob = pdf.output('blob');
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.open(pdfUrl, '_blank');
     });
   };
 
-  // Styles (same as before)
+  // Prepare email data
+  const handleEmail = (issue) => {
+    const body = `
+Issue Title: ${issue.issue_title}
+Serial Number: ${issue.serial_number}
+Priority: ${issue.priority_level}
+Description: ${issue.description}
+Maintenance Cost: LKR ${issue.maintenance_cost}
+Technician: ${issue.assign_technician || 'Not Assigned'}
+    `.trim();
+    const subject = `Issue Details - ${issue.issue_title}`;
+    const gmailUrl = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&tf=1`;
+    window.open(gmailUrl, '_blank');
+  };
+
+  // Styles
   const containerStyle = {
     display: 'flex',
     minHeight: '100vh',
@@ -228,6 +308,11 @@ const IssueDetails = () => {
     color: '#ff6b6b',
   };
 
+  const emailButtonStyle = {
+    backgroundColor: '#28a745',
+    color: 'white',
+  };
+
   const noResultsStyle = {
     padding: '2rem',
     textAlign: 'center',
@@ -286,7 +371,7 @@ const IssueDetails = () => {
           </a>
           <a href="#" style={activeNavLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/IssueDetails'); }}>
             <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
-            <span>Issue Details</span>
+            <span>Failure Details</span>
           </a>
           <a href="#" style={navLinkStyle} onClick={(e) => { e.preventDefault(); navigate('/NotificationDashboard'); }}>
             <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
@@ -306,7 +391,7 @@ const IssueDetails = () => {
       {/* Main Content */}
       <div style={mainContentStyle}>
         <div style={headerStyle}>
-          <h2 style={titleStyle}>Issue Management</h2>
+          <h2 style={titleStyle}>Equipment Failure Management</h2>
           <div style={buttonGroupStyle}>
             <button 
               style={addButtonStyle}
@@ -374,7 +459,7 @@ const IssueDetails = () => {
                       {issue.priority_level}
                     </td>
                     <td style={tdStyle}>{issue.assign_technician || 'Not Assigned'}</td>
-                    <td style={{ ...tdStyle, fontWeight: '500' }}>${issue.maintenance_cost}</td>
+                    <td style={{ ...tdStyle, fontWeight: '500' }}>LKR {issue.maintenance_cost}</td>
                     <td style={tdStyle}>
                       <button 
                         style={buttonStyle}
@@ -391,6 +476,14 @@ const IssueDetails = () => {
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff5f5'}
                       >
                         Delete
+                      </button>
+                      <button
+                        style={{ ...buttonStyle, ...emailButtonStyle }}
+                        onClick={() => handleEmail(issue)}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#218838'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#28a745'}
+                      >
+                        Email
                       </button>
                     </td>
                   </tr>
