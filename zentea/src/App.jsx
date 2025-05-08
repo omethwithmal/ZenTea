@@ -80,7 +80,7 @@ import Dashboard from "./components/Inventory/Dashboard";
 import AnalyzePage from "./components/Inventory/Analyzie";
 
 import QRCodeGenerator from "./components/QRCodeGenerator/QRCodeGenerator";
-
+import GoogleSheetTable from "./components/Employee/AttendanceDashboard/GoogleSheetTable";
 
 
 
@@ -124,6 +124,7 @@ function App() {
       <Route path="/QRAttendance" element={<QRAttendance/>} />
 
       <Route path="/QRCodeGenerator" element={<QRCodeGenerator/>} />
+      <Route path="/GoogleSheetTable" element={<GoogleSheetTable/>} />
 
 
   
