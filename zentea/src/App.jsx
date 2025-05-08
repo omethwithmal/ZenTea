@@ -79,6 +79,9 @@ import InventoryTable from "./components/Inventory/InventoryData";
 import Dashboard from "./components/Inventory/Dashboard";
 import AnalyzePage from "./components/Inventory/Analyzie";
 
+import QRCodeGenerator from "./components/QRCodeGenerator/QRCodeGenerator";
+
+
 
 
 
@@ -118,6 +121,8 @@ function App() {
       <Route path="/ZenTeaEmployeeTable" element={<ZenTeaEmployeeTable/>} />
       <Route path="/AttendanceRecordCard" element={<AttendanceRecordCard/>} />
       <Route path="/QRAttendance" element={<QRAttendance/>} />
+
+      <Route path="/QRCodeGenerator" element={<QRCodeGenerator/>} />
 
 
   
