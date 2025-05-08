@@ -44,7 +44,7 @@ const OrderManagementDashboard = () => {
                 if (data.orders) {
                     setOrders(data.orders);
                     setFilteredOrders(data.orders);
-                }
+                } 
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching orders:", error);

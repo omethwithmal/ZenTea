@@ -87,13 +87,18 @@ const EmployeeSalaryTable = () => {
   
     useEffect(() => {
       if (salary) {
+        // Properly format the date for the date input
+        const formattedDate = salary.date 
+          ? new Date(salary.date).toISOString().split('T')[0] 
+          : new Date().toISOString().split('T')[0];
+        
         setFormData({
           employeename: salary.employeename || '',
           employeeID: salary.employeeID || '',
           accountNumber: salary.accountNumber || '',
-          basicSalary: salary.basicSalary || '',
-          otHours: salary.otHours || '',
-          date: salary.date ? salary.date.split('T')[0] : ''
+          basicSalary: salary.basicSalary?.toString() || '',
+          otHours: salary.otHours?.toString() || '',
+          date: formattedDate
         });
       }
     }, [salary]);
@@ -112,9 +117,24 @@ const EmployeeSalaryTable = () => {
       setModalError('');
   
       try {
+        // Prepare the data with proper types
+        const updateData = {
+          employeename: formData.employeename,
+          employeeID: formData.employeeID,
+          accountNumber: formData.accountNumber,
+          basicSalary: parseFloat(formData.basicSalary),
+          otHours: parseInt(formData.otHours),
+          date: formData.date
+        };
+        
         const response = await axios.put(
           `http://localhost:8070/esalarys/update/${salary._id}`,
-          formData
+          updateData,
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
         );
         
         if (response.status === 200) {
@@ -122,7 +142,11 @@ const EmployeeSalaryTable = () => {
         }
       } catch (err) {
         console.error('Error updating salary:', err);
-        setModalError(err.response?.data?.message || 'Failed to update salary record');
+        const errorMessage = err.response?.data?.message || 
+                           err.response?.data?.error || 
+                           err.message || 
+                           'Failed to update salary record. Please try again.';
+        setModalError(errorMessage);
       } finally {
         setModalLoading(false);
       }
@@ -133,7 +157,11 @@ const EmployeeSalaryTable = () => {
         <div style={modalStyles.modal}>
           <div style={modalStyles.header}>
             <h2>Update Salary Record</h2>
-            <button onClick={onClose} style={modalStyles.closeButton}>
+            <button 
+              onClick={onClose} 
+              style={modalStyles.closeButton}
+              disabled={modalLoading}
+            >
               &times;
             </button>
           </div>
@@ -153,6 +181,8 @@ const EmployeeSalaryTable = () => {
                 value={formData.employeename}
                 onChange={handleChange}
                 required
+                style={modalStyles.input}
+                disabled={modalLoading}
               />
             </div>
   
@@ -164,6 +194,8 @@ const EmployeeSalaryTable = () => {
                 value={formData.employeeID}
                 onChange={handleChange}
                 required
+                style={modalStyles.input}
+                disabled={modalLoading}
               />
             </div>
   
@@ -175,6 +207,8 @@ const EmployeeSalaryTable = () => {
                 value={formData.accountNumber}
                 onChange={handleChange}
                 required
+                style={modalStyles.input}
+                disabled={modalLoading}
               />
             </div>
   
@@ -188,6 +222,8 @@ const EmployeeSalaryTable = () => {
                 step="0.01"
                 min="0"
                 required
+                style={modalStyles.input}
+                disabled={modalLoading}
               />
             </div>
   
@@ -200,6 +236,8 @@ const EmployeeSalaryTable = () => {
                 onChange={handleChange}
                 min="0"
                 required
+                style={modalStyles.input}
+                disabled={modalLoading}
               />
             </div>
   
@@ -211,6 +249,8 @@ const EmployeeSalaryTable = () => {
                 value={formData.date}
                 onChange={handleChange}
                 required
+                style={modalStyles.input}
+                disabled={modalLoading}
               />
             </div>
   
@@ -219,15 +259,28 @@ const EmployeeSalaryTable = () => {
                 type="button"
                 onClick={onClose}
                 style={modalStyles.cancelButton}
+                disabled={modalLoading}
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={modalLoading}
-                style={modalStyles.submitButton}
+                style={{
+                  ...modalStyles.submitButton,
+                  opacity: modalLoading ? 0.7 : 1
+                }}
               >
-                {modalLoading ? 'Updating...' : 'Update Salary'}
+                {modalLoading ? (
+                  <>
+                    <span style={{ marginRight: '8px' }}>
+                      <i className="fa fa-spinner fa-spin"></i>
+                    </span>
+                    Updating...
+                  </>
+                ) : (
+                  'Update Salary'
+                )}
               </button>
             </div>
           </form>
@@ -362,7 +415,7 @@ const EmployeeSalaryTable = () => {
                     <td style={{ padding: '15px' }}>{salary.employeename}</td>
                     <td style={{ padding: '15px' }}>{salary.employeeID}</td>
                     <td style={{ padding: '15px' }}>{salary.accountNumber}</td>
-                    <td style={{ padding: '15px' }}>${salary.basicSalary?.toFixed(2) || '0.00'}</td>
+                    <td style={{ padding: '15px' }}>${parseFloat(salary.basicSalary || 0).toFixed(2)}</td>
                     <td style={{ padding: '15px' }}>{salary.otHours || '0'}</td>
                     <td style={{ padding: '15px' }}>
                       {salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}
@@ -412,7 +465,7 @@ const EmployeeSalaryTable = () => {
         )}
       </div>
 
-      {showUpdateModal && (
+      {showUpdateModal && selectedSalary && (
         <UpdateSalaryModal
           salary={selectedSalary}
           onClose={() => setShowUpdateModal(false)}
@@ -458,19 +511,40 @@ const modalStyles = {
     border: 'none',
     fontSize: '24px',
     cursor: 'pointer',
-    color: '#666'
+    color: '#666',
+    '&:hover': {
+      color: '#333'
+    }
   },
   form: {
     padding: '20px'
   },
   formGroup: {
-    marginBottom: '15px'
+    marginBottom: '15px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '5px'
+  },
+  input: {
+    padding: '10px',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    fontSize: '16px',
+    '&:focus': {
+      outline: 'none',
+      borderColor: '#0a8700',
+      boxShadow: '0 0 0 2px rgba(10, 135, 0, 0.2)'
+    },
+    '&:disabled': {
+      backgroundColor: '#f5f5f5'
+    }
   },
   error: {
     color: 'red',
     padding: '10px 20px',
     backgroundColor: '#ffebee',
-    margin: '0 20px 20px'
+    margin: '0 20px 20px',
+    borderRadius: '4px'
   },
   footer: {
     padding: '20px',
@@ -484,7 +558,15 @@ const modalStyles = {
     backgroundColor: '#f5f5f5',
     border: 'none',
     borderRadius: '4px',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    fontSize: '14px',
+    '&:hover': {
+      backgroundColor: '#e0e0e0'
+    },
+    '&:disabled': {
+      opacity: 0.7,
+      cursor: 'not-allowed'
+    }
   },
   submitButton: {
     padding: '10px 20px',
@@ -492,7 +574,18 @@ const modalStyles = {
     color: 'white',
     border: 'none',
     borderRadius: '4px',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    fontSize: '14px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    '&:hover': {
+      backgroundColor: '#087700'
+    },
+    '&:disabled': {
+      backgroundColor: '#cccccc',
+      cursor: 'not-allowed'
+    }
   }
 };
 

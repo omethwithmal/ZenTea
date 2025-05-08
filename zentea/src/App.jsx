@@ -39,10 +39,9 @@ import CustomerOrderDashboard from "./components/CustomerOrderDashBoard/Customer
 // Dieepa
 
 import FinancialDashboard from "../src/components/FinancialDashBoard/FinancialDashBoard";
-import EmployeeSalary from "../src/components/Salary/EmployeeSalary";
 import ViewOrderDetails from "../src/components/ViewOrderDetails/ViewOrderDetails";
 import MaintenanceRevenue from "../src/components/MaintenanceRevebue/MaintenanceReveue";
-import EmployeeSalaryTable from "../src/components/FinnacePayment/EmployeSalarytable"
+import EmployeeSalaryTable from "../src/components/FinnacePayment/EmployeSalarytable";
 
 
 import SummaryTable from "../src/components/SummaryTable/SummaryTable";
@@ -57,9 +56,9 @@ import UpdateMaintenance from "./components/EquipmentMaintenance/UpdateMaintenan
 
 import EmployeeRegistrationForm from "./components/Employee_Home/EmployeeRegistrationForm";
 import ZenTeaEmployeeProfile from "./components/Employee_Home/ZenTeaEmployeeProfile";
-
-
-
+import EmployeeSalary from "./components/Salary/EmployeeSalary";
+import UpdateSalaryForm from "./components/Salary/UpdateSalaryForm";
+import Notifications from "./components/FinancialDashBoard/Notifications";
 
 
  
@@ -111,9 +110,14 @@ function App() {
                 <Route path="/FinancialDashboard" element={<FinancialDashboard />} />
                 <Route path="/EmployeeSalary" element={<EmployeeSalary />} />
                 <Route path="/ViewOrderDetails" element={<ViewOrderDetails/>} />
-                <Route path="/MaintenanceRevenue" element={<MaintenanceRevenue/>} />
+                <Route path="/MaintenanceRevenue" element={<MaintenanceRevenue/>} />    
                 <Route path="/SummaryTable"  element={<SummaryTable/>}/>
                 <Route path="/EmployeeSalaryTable" element={<EmployeeSalaryTable/>}/>
+                
+                <Route path="/update-employee/:id" element={<UpdateSalaryForm />} />
+                <Route path="/notifications" element={<Notifications />} />
+
+
 
 
 

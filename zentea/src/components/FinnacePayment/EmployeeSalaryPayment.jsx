@@ -10,7 +10,7 @@ const EmployeeSalaryPayment = () => {
 
   const [formData, setFormData] = useState({
     employeename: employeeData.firstName || '',
-    employeeID: employeeData.employeeID || '',
+    employeeID: employeeData.employeeID || '',    
     accountNumber: '',
     basicSalary: employeeData.finalSalary || '',
     otHours: employeeData.otHours || '',
@@ -22,7 +22,7 @@ const EmployeeSalaryPayment = () => {
 
   // Update form data when employeeData changes
   useEffect(() => {
-    if (employeeData) {
+    if (employeeData) {   
       setFormData(prev => ({
         ...prev,
         employeename: employeeData.firstName || '',
@@ -201,7 +201,7 @@ const EmployeeSalaryPayment = () => {
             value={formData.accountNumber}
             onChange={handleChange}
             placeholder="Enter Account Number"
-            required
+            required 
             style={{
               width: '100%',
               padding: '8px',
