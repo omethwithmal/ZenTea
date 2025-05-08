@@ -9,7 +9,6 @@ const MaintenanceRevenue = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
-  // Fetch all issues
   useEffect(() => {
     const fetchIssues = async () => {
       try {
@@ -28,9 +27,8 @@ const MaintenanceRevenue = () => {
     fetchIssues();
   }, []);
 
-  // Filter issues based on search term
   useEffect(() => {
-    const filtered = issues.filter(issue => 
+    const filtered = issues.filter(issue =>
       issue.issue_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       issue.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (issue.assign_technician && issue.assign_technician.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -39,15 +37,12 @@ const MaintenanceRevenue = () => {
     setFilteredIssues(filtered);
   }, [searchTerm, issues]);
 
-  // Handle back navigation to FinancialDashboard
   const handleBack = () => {
     navigate('/FinancialDashboard');
   };
 
-  // Generate PDF Report
   const generateReport = () => {
     const input = document.getElementById('report-table');
-    
     html2canvas(input, {
       scale: 2,
       logging: false,
@@ -71,31 +66,34 @@ const MaintenanceRevenue = () => {
         heightLeft -= pageHeight;
       }
 
-      pdf.save('issue-report.pdf');
+      pdf.save('maintenance-report.pdf');
       const pdfBlob = pdf.output('blob');
       const pdfUrl = URL.createObjectURL(pdfBlob);
       window.open(pdfUrl, '_blank');
     });
   };
 
-  // Styles
   const containerStyle = {
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
     minHeight: '100vh',
     backgroundColor: '#f5f7fa',
+    padding: '2rem',
   };
 
   const mainContentStyle = {
-    flex: '1',
+    width: '100%',
+    maxWidth: '1200px',
     padding: '2rem',
     fontFamily: "'Inter', sans-serif",
-    maxWidth: 'calc(100% - 250px)',
   };
 
   const headerStyle = {
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '1rem',
     marginBottom: '2rem',
   };
 
@@ -160,32 +158,34 @@ const MaintenanceRevenue = () => {
     boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
   };
 
-  const tableStyle = {
-    width: '100%',
-    borderCollapse: 'separate',
-    borderSpacing: '0',
+  const tableWrapperStyle = {
     borderRadius: '12px',
     overflow: 'hidden',
     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
   };
 
+  const tableStyle = {
+    width: '100%',
+    borderCollapse: 'collapse',
+  };
+
   const thStyle = {
-    backgroundColor: '#f8f9fa',
-    color: '#6c757d',
+    backgroundColor: '#343a40',
+    color: '#ffffff',
     padding: '1rem',
     textAlign: 'left',
     fontWeight: '600',
     fontSize: '0.875rem',
     textTransform: 'uppercase',
     letterSpacing: '0.5px',
-    borderBottom: '1px solid #e9ecef',
+    borderBottom: '2px solid #dee2e6',
   };
 
   const tdStyle = {
     padding: '1rem',
     textAlign: 'left',
     borderBottom: '1px solid #e9ecef',
-    backgroundColor: 'white',
+    backgroundColor: 'inherit',
     transition: 'background-color 0.2s ease',
   };
 
@@ -198,36 +198,35 @@ const MaintenanceRevenue = () => {
 
   return (
     <div style={containerStyle}>
-      {/* Main Content */}
       <div style={mainContentStyle}>
         <div style={headerStyle}>
-          <h2 style={titleStyle}>Issue Management</h2>
+          <h2 style={titleStyle}>Maintenance</h2>
           <div style={buttonGroupStyle}>
-            <button 
+            <button
               style={backButtonStyle}
               onClick={handleBack}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5a6268'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6c757d'}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                 <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               Back to Dashboard
             </button>
-            <button 
+            <button
               style={reportButtonStyle}
               onClick={generateReport}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2a75ff'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3a86ff'}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                 <path d="M9 17V7M9 7L5 11M9 7L13 11M15 7V17M15 17L19 13M15 17L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               Generate Report
             </button>
           </div>
         </div>
-        
+
         <div style={searchContainerStyle}>
           <input
             type="text"
@@ -237,8 +236,8 @@ const MaintenanceRevenue = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
-        <div id="report-table">
+
+        <div id="report-table" style={tableWrapperStyle}>
           <table style={tableStyle}>
             <thead>
               <tr>
@@ -248,33 +247,43 @@ const MaintenanceRevenue = () => {
                 <th style={thStyle}>Description</th>
                 <th style={thStyle}>Priority</th>
                 <th style={thStyle}>Technician</th>
-                <th style={thStyle}>Cost</th>
+                <th style={thStyle}>Cost (Rs.)</th>
               </tr>
             </thead>
             <tbody>
               {filteredIssues.length > 0 ? (
                 filteredIssues.map((issue, index) => (
-                  <tr key={issue._id} style={{ ':hover': { backgroundColor: '#f8f9fa' } }}>
+                  <tr
+                    key={issue._id}
+                    style={{
+                      backgroundColor: index % 2 === 0 ? '#ffffff' : '#f1f3f5',
+                      transition: 'background-color 0.3s ease',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e3f2fd'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#f1f3f5'}
+                  >
                     <td style={tdStyle}>{index + 1}</td>
                     <td style={tdStyle}>{issue.serial_number}</td>
                     <td style={{ ...tdStyle, fontWeight: '500' }}>{issue.issue_title}</td>
                     <td style={tdStyle}>{issue.description}</td>
                     <td style={{
                       ...tdStyle,
-                      color: issue.priority_level === 'High' ? '#ff6b6b' : 
-                            issue.priority_level === 'Medium' ? '#ff922b' : '#51cf66',
-                      fontWeight: '500'
+                      color: issue.priority_level === 'High' ? '#ff6b6b' :
+                             issue.priority_level === 'Medium' ? '#ffa94d' : '#38d9a9',
+                      fontWeight: '600'
                     }}>
                       {issue.priority_level}
                     </td>
                     <td style={tdStyle}>{issue.assign_technician || 'Not Assigned'}</td>
-                    <td style={{ ...tdStyle, fontWeight: '500' }}>${issue.maintenance_cost}</td>
+                    <td style={{ ...tdStyle, fontWeight: '600', color: '#198754' }}>
+                      Rs. {Number(issue.maintenance_cost).toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td colSpan="7" style={noResultsStyle}>
-                    {searchTerm ? 'No issues match your search.' : 'No issues found.'}
+                    {searchTerm ? 'No maintenance records match your search.' : 'No maintenance records found.'}
                   </td>
                 </tr>
               )}

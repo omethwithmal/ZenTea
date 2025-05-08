@@ -10,7 +10,6 @@ const ViewOrderDetails = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
 
-    // Fetch orders from backend
     useEffect(() => {
         const fetchOrders = async () => {
             try {
@@ -29,7 +28,6 @@ const ViewOrderDetails = () => {
         fetchOrders();
     }, []);
 
-    // Handle search functionality
     useEffect(() => {
         const results = orders.filter(order =>
             Object.values(order).some(val =>
@@ -39,7 +37,7 @@ const ViewOrderDetails = () => {
     }, [searchTerm, orders]);
 
     const handleGoBack = () => {
-        navigate(-1); // Go back to previous page
+        navigate(-1);
     };
 
     if (loading) {
@@ -67,9 +65,7 @@ const ViewOrderDetails = () => {
             backgroundColor: '#f8f9fa',
             minHeight: '100vh',
             marginLeft: '350px',
-
         }}>
-            {/* Header with Back Button */}
             <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -111,7 +107,6 @@ const ViewOrderDetails = () => {
                 </h1>
             </div>
 
-            {/* Search Bar */}
             <div style={{
                 display: 'flex',
                 justifyContent: 'flex-end',
@@ -152,7 +147,6 @@ const ViewOrderDetails = () => {
                 </div>
             </div>
 
-            {/* Orders Table */}
             <div style={{
                 backgroundColor: '#fff',
                 borderRadius: '8px',
@@ -170,41 +164,13 @@ const ViewOrderDetails = () => {
                             backgroundColor: '#28a745',
                             color: 'white'
                         }}>
-                            <th style={{
-                                padding: '15px',
-                                textAlign: 'left',
-                                fontWeight: '600'
-                            }}>Full Name</th>
-                            <th style={{
-                                padding: '15px',
-                                textAlign: 'left',
-                                fontWeight: '600'
-                            }}>Delivery Address</th>
-                            <th style={{
-                                padding: '15px',
-                                textAlign: 'left',
-                                fontWeight: '600'
-                            }}>Contact</th>
-                            <th style={{
-                                padding: '15px',
-                                textAlign: 'left',
-                                fontWeight: '600'
-                            }}>Email</th>
-                            <th style={{
-                                padding: '15px',
-                                textAlign: 'left',
-                                fontWeight: '600'
-                            }}>Tea Type</th>
-                            <th style={{
-                                padding: '15px',
-                                textAlign: 'left',
-                                fontWeight: '600'
-                            }}>Quantity</th>
-                            <th style={{
-                                padding: '15px',
-                                textAlign: 'left',
-                                fontWeight: '600'
-                            }}>Price</th>
+                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Full Name</th>
+                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Delivery Address</th>
+                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Contact</th>
+                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Email</th>
+                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Tea Type</th>
+                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Quantity</th>
+                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Price</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -215,37 +181,15 @@ const ViewOrderDetails = () => {
                                     backgroundColor: index % 2 === 0 ? '#f8f9fa' : 'white',
                                     transition: 'background 0.2s'
                                 }}>
-                                    <td style={{
-                                        padding: '15px',
-                                        color: '#495057',
-                                        fontWeight: '500'
-                                    }}>{order.Full_Name}</td>
-                                    <td style={{
-                                        padding: '15px',
-                                        color: '#495057'
-                                    }}>{order.Delivery_Address}</td>
-                                    <td style={{
-                                        padding: '15px',
-                                        color: '#495057'
-                                    }}>{order.Contact_Number}</td>
-                                    <td style={{
-                                        padding: '15px',
-                                        color: '#495057'
-                                    }}>{order.Email_Address}</td>
-                                    <td style={{
-                                        padding: '15px',
-                                        color: '#495057'
-                                    }}>{order.Select_Tea_Type}</td>
-                                    <td style={{
-                                        padding: '15px',
-                                        color: '#495057',
-                                        textAlign: 'center'
-                                    }}>{order.Quantity}</td>
-                                    <td style={{
-                                        padding: '15px',
-                                        color: '#28a745',
-                                        fontWeight: '600'
-                                    }}>${order.Price}</td>
+                                    <td style={{ padding: '15px', color: '#495057', fontWeight: '500' }}>{order.Full_Name}</td>
+                                    <td style={{ padding: '15px', color: '#495057' }}>{order.Delivery_Address}</td>
+                                    <td style={{ padding: '15px', color: '#495057' }}>{order.Contact_Number}</td>
+                                    <td style={{ padding: '15px', color: '#495057' }}>{order.Email_Address}</td>
+                                    <td style={{ padding: '15px', color: '#495057' }}>{order.Select_Tea_Type}</td>
+                                    <td style={{ padding: '15px', color: '#495057', textAlign: 'center' }}>{order.Quantity}</td>
+                                    <td style={{ padding: '15px', color: '#28a745', fontWeight: '600' }}>
+                                        Rs. {Number(order.Price).toLocaleString()}
+                                    </td>
                                 </tr>
                             ))
                         ) : (
@@ -265,7 +209,6 @@ const ViewOrderDetails = () => {
                 </table>
             </div>
 
-            {/* Results Count */}
             <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
