@@ -72,6 +72,8 @@ import EmployeeDetailsCart from "./components/Employee/EmployeeDetailsTable/Empl
 import ZenTeaEmployeeTable from "./components/Employee/EmployeeDetailsTable/ZenTeaEmployeeTable";
 import AttendanceRecordCard from "./components/Employee/AttendanceDashboard/AttendanceRecordCard";
 import QRAttendance from "./components/Employee/AttendanceDashboard/QRAttendance";
+import TeaItemForm from "./components/itemManagement/Additem";
+import TeaCartPage from "./components/itemManagement/cart";
 
 
 
@@ -152,6 +154,9 @@ function App() {
       <Route path="/AddIssue" element={<AddIssue />} />
       <Route path="/UpdateIssue" element={<UpdateIssue />} />
       <Route path="/issues/update/:id" element={<UpdateIssue />} />
+
+      <Route path="/add-tea-item" element={<TeaItemForm />} />
+            <Route path="/TeaCartPage" element={<TeaCartPage/>}/>
      
 
 

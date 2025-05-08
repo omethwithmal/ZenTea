@@ -8,7 +8,7 @@ const getItem = (req, res) => {
             // Format image paths for frontend
             const formattedItems = items.map(item => ({
                 ...item._doc,
-                image: item.image ? `http://localhost:3001/uploads/${path.basename(item.image)}` : null
+                image: item.image ? `http://localhost:8070/uploads/${path.basename(item.image)}` : null
             }));
             res.json(formattedItems);
         })
@@ -26,7 +26,7 @@ const addItem = (req, res) => {
     item.save()
         .then(response => res.json({
             ...response._doc,
-            image: response.image ? `http://localhost:3001/uploads/${response.image}` : null
+            image: response.image ? `http://localhost:8070/uploads/${response.image}` : null
         }))
         .catch(error => res.status(500).json({ error }));
 };
@@ -49,7 +49,7 @@ const updateItem = (req, res) => {
         .then(updatedItem => {
             res.json({
                 ...updatedItem._doc,
-                image: updatedItem.image ? `http://localhost:3001/uploads/${updatedItem.image}` : null
+                image: updatedItem.image ? `http://localhost:8070/uploads/${updatedItem.image}` : null
             });
         })
         .catch(error => res.status(500).json({ error }));
