@@ -124,7 +124,7 @@ function App() {
                 <Route path="/Orderdash" element={<OrderManagementDashboard />} />
                 <Route path="/CustomerDash" element={<CustomerOrderDashboard />} />
                 <Route path="/PaymentDash" element={<PaymentDashboard />} />
-                <Route path="/CustomerDashboard1" element={<OrderDashboard1 />} />
+                <Route path="/OrderDashboard1" element={<OrderDashboard1 />} />
 
 
                 

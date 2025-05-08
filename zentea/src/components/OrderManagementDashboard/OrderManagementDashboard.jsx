@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from "chart.js";
 import { Doughnut, Bar, Pie } from "react-chartjs-2";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FaWhatsapp } from "react-icons/fa";
 import { 
   faEdit, 
   faTrashAlt, 
@@ -17,25 +18,22 @@ import {
   faChartBar,
   faCog,
   faSearch,
-  faShare // Added Share Icon
+  faShare
 } from '@fortawesome/free-solid-svg-icons';
 import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
+
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 const OrderManagementDashboard = () => {
-
     const navigate = useNavigate();
-
     const [orders, setOrders] = useState([]);
     const [filteredOrders, setFilteredOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingOrder, setEditingOrder] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-
-
 
     // Fetch orders from backend
     useEffect(() => {
@@ -129,7 +127,6 @@ const OrderManagementDashboard = () => {
                 body: JSON.stringify(editingOrder)
             });
             if (response.ok) {
-                // Update the order in state
                 const updatedOrders = orders.map(order => 
                     order._id === editingOrder._id ? editingOrder : order
                 );
@@ -164,7 +161,6 @@ const OrderManagementDashboard = () => {
                     method: 'DELETE'
                 });
                 if (response.ok) {
-                    // Remove the order from state
                     const updatedOrders = orders.filter(order => order._id !== orderId);
                     setOrders(updatedOrders);
                     setFilteredOrders(updatedOrders);
@@ -181,10 +177,18 @@ const OrderManagementDashboard = () => {
     };
 
     // WhatsApp Share Functionality
-    const handleShare = (order) => {
-        const message = `Order Details:\n\nName: ${order.Full_Name}\nAddress: ${order.Delivery_Address}\nContact: ${order.Contact_Number}\nEmail: ${order.Email_Address}\nTea Type: ${order.Select_Tea_Type}\nQuantity: ${order.Quantity}\nPrice: $${order.Price}\nStatus: ${order.status}`;
-        const encodedMessage = encodeURIComponent(message);
-        window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+    const shareOnWhatsApp = (order) => {
+        const message = `Order Details:\n\n` +
+          `Name: ${order.Full_Name}\n` +
+          `Address: ${order.Delivery_Address}\n` +
+          `Contact: ${order.Contact_Number}\n` +
+          `Email: ${order.Email_Address}\n` +
+          `Tea Type: ${order.Select_Tea_Type}\n` +
+          `Quantity: ${order.Quantity}\n` +
+          `Price: ${order.Price}`;
+        
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
     };
 
     // Data for the Doughnut Chart (Order Status)
@@ -310,22 +314,11 @@ const OrderManagementDashboard = () => {
                         textDecoration: 'none',
                         borderLeft: '4px solid transparent'
                     }}
-
+                        onClick={() => navigate("/OrderDashboard1")}
                     >
                         <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
                         <span>Orders</span>
-                    </a>
-                    <a href="#" style={{
-                        display: 'block',
-                        padding: '15px 20px',
-                        color: 'white',
-                        textDecoration: 'none',
-                        borderLeft: '4px solid transparent',
-                    }}
-                   
-                    >
-                        <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
-                        <span>Customers</span>
+
                     </a>
                     <a
                         href="#"
@@ -336,26 +329,10 @@ const OrderManagementDashboard = () => {
                             textDecoration: 'none',
                             borderLeft: '4px solid transparent'
                         }}
-
                         onClick={() => navigate('/PaymentDash')}
-                        
                     >
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Payments</span>
-                    </a>
-                    <a href="#" style={{
-                        display: 'block',
-                        padding: '15px 20px',
-                        color: 'white',
-                        textDecoration: 'none',
-                        borderLeft: '4px solid transparent'
-                    }}
-                    
-                        
-                    
-                    >
-                        <i className="fas fa-boxes" style={{ marginRight: '10px' }}></i>
-                        <span>Analytics</span>
                     </a>
                     <a href="#" style={{
                         display: 'block',
@@ -399,8 +376,8 @@ const OrderManagementDashboard = () => {
                             Download PDF Report
                         </button>
                         <div style={{ marginLeft: "20px", display: "flex", alignItems: "center" }}>
-                            <img src="profile.jpg" alt="Profile Picture" style={{ width: "40px", height: "40px", borderRadius: "50%" }} />
-                            <span style={{ marginLeft: "10px", fontSize: "16px" }}>John Doe</span>
+                            <img src="About.jsp" alt="" style={{ width: "40px", height: "40px", borderRadius: "50%" }} />
+                            
                         </div>
                     </div>
                 </header>
@@ -552,19 +529,16 @@ const OrderManagementDashboard = () => {
                                             >
                                                 <FontAwesomeIcon icon={faTrashAlt} />
                                             </button>
-                                            <button 
-                                                onClick={() => handleShare(order)}
-                                                style={{
-                                                    background: "none",
-                                                    border: "none",
-                                                    color: "#2ecc71",
-                                                    cursor: "pointer",
-                                                    fontSize: "16px"
-                                                }}
-                                                title="Share Order via WhatsApp"
+                                           <a
+                                                href={`https://wa.me/?text=${encodeURIComponent(
+                                                `Order Details:\nName: ${order.Full_Name}\nAddress: ${order.Delivery_Address}\nContact: ${order.Contact_Number}\nEmail: ${order.Email_Address}\nTea Type: ${order.Select_Tea_Type}\nQuantity: ${order.Quantity}\nPrice: ${order.Price}`
+                                                )}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                style={{ marginLeft: "5px", color: "#25D366", fontSize: "1.5em" }}
                                             >
-                                                <FontAwesomeIcon icon={faShare} />
-                                            </button>
+                                                <FaWhatsapp />
+                                            </a>
                                         </td>
                                     </tr>
                                 ))

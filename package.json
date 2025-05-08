@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/omethwithmal/ZenTea/issues"
   },
-  "homepage": "https://github.com/omethwithmal/ZenTea#readme"
+  "homepage": "https://github.com/omethwithmal/ZenTea#readme",
+  "dependencies": {
+    "react-icons": "^5.5.0"
+  }
 }
