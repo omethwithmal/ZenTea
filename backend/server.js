@@ -2,7 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-require("dotenv").config(); // Load environment variables
+require("dotenv").config();
+const path = require('path'); // Load environment variables
 
 const app = express();
 
@@ -16,6 +17,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Middleware
 app.use(bodyParser.json());
 
@@ -60,7 +62,10 @@ const loginSignRoutes = require("./LoginSignup/router");
 app.use("/login", loginSignRoutes);
 
 const EmployeeLoginSignupRoutes = require("./EmployeeLoginSignup/router");
-app.use("/employee", EmployeeLoginSignupRoutes); // Changed to avoid conflict with /login
+app.use("/employee", EmployeeLoginSignupRoutes);
+
+const router3 = require('./itemManagement/router');
+app.use('/api',router3);
 
 // Default Route
 app.get("/", (req, res) => {
