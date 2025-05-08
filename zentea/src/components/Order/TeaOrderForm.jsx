@@ -526,7 +526,7 @@ const styles = `
     cursor: pointer;
   }
 `;
-
+      
 // Add styles to the document
 const styleSheet = document.createElement("style");
 styleSheet.type = "text/css";
