@@ -308,7 +308,7 @@ const AttendanceDashboard = () => {
                             Generate CSV
                         </button>
                         <button
-                            onClick={() => window.location.href = '/QRAttendance'}
+                            onClick={() => window.location.href = '/GoogleSheetTable'}
                             style={{
                                 padding: '10px 20px',
                                 backgroundColor: '#2c3e50',
