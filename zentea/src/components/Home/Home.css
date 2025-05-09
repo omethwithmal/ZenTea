@@ -30,8 +30,8 @@ ul{
 }
 .IT22090508-Home-navbar{
     position: absolute;
-    top: 0;
-    left: 0;
+    top:0;
+    left:0;
     display: flex;
     width: 100%;
     height: 11%;
@@ -39,6 +39,25 @@ ul{
     padding: 30px;
     color: rgb(255, 255, 255);
     background-color: #119400;
+}
+
+
+.IT22090508-Home-ctn button {
+    padding: 10px 25px;
+    background: linear-gradient(135deg, #119400, #0a5c00);
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-left: 3px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
 }
 
 .IT22090508-Home-navbar li a{
@@ -49,6 +68,7 @@ ul{
 
 .IT22090508-Home-navbar li a:hover{
     color: rgb(85, 255, 0);
+    
 }
 
 .IT22090508-Home-navbar h1{
@@ -78,6 +98,7 @@ ul{
  color: #ffffff;
 
 }
+
 /* Header */
 .header {
     width: 100vw;
