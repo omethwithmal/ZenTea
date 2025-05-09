@@ -11,11 +11,11 @@ const CheckoutForm = () => {
   const [expiry, setExpiry] = useState("");
   const [amount, setAmount] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
-  const navigate = useNavigate(); // Popup state
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     if (location.state?.orderData?.Price) {
-      // Directly use the LKR amount without conversion
+     
       setAmount(parseFloat(location.state.orderData.Price).toFixed(2));
     }
   }, [location.state]);
@@ -34,7 +34,7 @@ const CheckoutForm = () => {
     const existingPayments = JSON.parse(localStorage.getItem("payments")) || [];
     localStorage.setItem("payments", JSON.stringify([...existingPayments, newPayment]));
     setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
+    setTimeout(() => setShowPopup(false), 3000); 
    
    };
     

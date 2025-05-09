@@ -23,7 +23,7 @@ import {
 import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
 
-// Register Chart.js components
+
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 const OrderManagementDashboard = () => {
@@ -35,7 +35,7 @@ const OrderManagementDashboard = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // Fetch orders from backend
+    
     useEffect(() => {
         const fetchOrders = async () => {
             try {
@@ -54,7 +54,7 @@ const OrderManagementDashboard = () => {
         fetchOrders();
     }, []);
 
-    // Handle search functionality
+   
     useEffect(() => {
         const results = orders.filter(order =>
             Object.values(order).some(val =>
@@ -63,16 +63,16 @@ const OrderManagementDashboard = () => {
         setFilteredOrders(results);
     }, [searchTerm, orders]);
 
-    // Handle PDF report download
+   
     const handleDownloadPDFReport = () => {
         const doc = new jsPDF();
-        // Add title
+       
         doc.setFontSize(20);
         doc.text('Order Management Report', 105, 15, { align: 'center' });
-        // Add date
+       
         doc.setFontSize(12);
         doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, 25, { align: 'center' });
-        // Add summary statistics
+        
         doc.setFontSize(14);
         doc.text('Summary Statistics', 14, 40);
         doc.setFontSize(12);
@@ -80,10 +80,10 @@ const OrderManagementDashboard = () => {
         doc.text(`Pending Orders: ${orders.filter(o => o.status === 'Pending').length}`, 14, 60);
         doc.text(`Completed Orders: ${orders.filter(o => o.status === 'Completed').length}`, 14, 70);
         doc.text(`Delayed Orders: ${orders.filter(o => o.status === 'Delayed').length}`, 14, 80);
-        // Add order table
+       
         doc.setFontSize(14);
         doc.text('Order Details', 14, 100);
-        // Prepare data for the table
+        
         const tableData = filteredOrders.map(order => [
             order.Full_Name,
             order.Delivery_Address,
@@ -94,7 +94,7 @@ const OrderManagementDashboard = () => {
             order.Price,
             order.status
         ]);
-        // Add the table using autoTable
+       
         autoTable(doc, {
             head: [['Name', 'Address', 'Contact', 'Email', 'Tea Type', 'Quantity', 'Price', 'Status']],
             body: tableData,
@@ -102,11 +102,11 @@ const OrderManagementDashboard = () => {
             styles: { fontSize: 8 },
             headStyles: { fillColor: [52, 152, 219] }
         });
-        // Save the PDF
+       
         doc.save('order_management_report.pdf');
     };
 
-    // Handle update order
+   
     const handleUpdate = (orderId) => {
         const orderToUpdate = orders.find(order => order._id === orderId);
         if (orderToUpdate) {
@@ -115,7 +115,7 @@ const OrderManagementDashboard = () => {
         }
     };
 
-    // Handle update form submission
+    
     const handleUpdateSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -144,7 +144,6 @@ const OrderManagementDashboard = () => {
         }
     };
 
-    // Handle input changes in edit form
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setEditingOrder({
@@ -153,7 +152,7 @@ const OrderManagementDashboard = () => {
         });
     };
 
-    // Handle delete order
+  
     const handleDelete = async (orderId) => {
         if (window.confirm("Are you sure you want to delete this order?")) {
             try {
@@ -176,7 +175,7 @@ const OrderManagementDashboard = () => {
         }
     };
 
-    // WhatsApp Share Functionality
+  
     const shareOnWhatsApp = (order) => {
         const message = `Order Details:\n\n` +
           `Name: ${order.Full_Name}\n` +
@@ -191,7 +190,7 @@ const OrderManagementDashboard = () => {
         window.open(whatsappUrl, '_blank');
     };
 
-    // Data for the Doughnut Chart (Order Status)
+    
     const orderStatusData = {
         labels: ["Completed", "Pending", "Delayed"],
         datasets: [
@@ -208,7 +207,7 @@ const OrderManagementDashboard = () => {
         ],
     };
 
-    // Data for the Bar Chart (Monthly Orders)
+    
     const monthlyOrdersData = {
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
         datasets: [
@@ -222,7 +221,7 @@ const OrderManagementDashboard = () => {
         ],
     };
 
-    // Data for Tea Type Distribution
+    
     const teaTypeData = {
         labels: ["Green Tea", "Black Tea", "Oolong Tea", "White Tea"],
         datasets: [
@@ -245,7 +244,7 @@ const OrderManagementDashboard = () => {
         ],
     };
 
-    // Data for Price Analysis
+   
     const priceAnalysisData = {
         labels: ["< $10", "$10-$20", "$20-$30", "$30+"],
         datasets: [

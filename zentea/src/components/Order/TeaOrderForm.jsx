@@ -46,7 +46,7 @@ const TeaOrderForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
-  // Initialize form with product data from navigation state
+  
   useEffect(() => {
     if (location.state?.tea) {
       const { teaType, price, basePrice } = location.state.tea;
@@ -59,7 +59,7 @@ const TeaOrderForm = () => {
     }
   }, [location.state]);
 
-  // Update price when quantity changes
+ 
   useEffect(() => {
     if (formData.basePrice && formData.Quantity) {
       const calculatedPrice = (parseFloat(formData.basePrice) * formData.Quantity).toFixed(2);
@@ -331,7 +331,7 @@ const TeaOrderForm = () => {
 
 export default TeaOrderForm;
 
-// CSS Styles
+
 const styles = `
   .tea-order-container {
     display: flex;
@@ -531,7 +531,7 @@ const styles = `
   }
 `;
 
-// Add styles to the document
+
 const styleSheet = document.createElement("style");
 styleSheet.type = "text/css";
 styleSheet.innerText = styles;
