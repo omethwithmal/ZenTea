@@ -29,7 +29,7 @@ const EquipmentDashboard = () => {
 
     const fetchEquipments = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/equipments');
+            const response = await axios.get('http://localhost:8070/equipments');
             if (response.data?.equipments) {
                 setEquipments(response.data.equipments);
             } else {
@@ -92,10 +92,10 @@ const EquipmentDashboard = () => {
         e.preventDefault();
         try {
             if (isAdding) {
-                await axios.post('http://localhost:5000/equipments/addEquipment', editFormData);
+                await axios.post('http://localhost:8070/equipments/addEquipment', editFormData);
             } else {
                 await axios.put(
-                    `http://localhost:5000/equipments/updateEquipment/${editingId}`,
+                    `http://localhost:8070/equipments/updateEquipment/${editingId}`,
                     editFormData
                 );
             }
@@ -111,7 +111,7 @@ const EquipmentDashboard = () => {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this equipment?")) {
             try {
-                await axios.delete(`http://localhost:5000/equipments/deleteEquipment/${id}`);
+                await axios.delete(`http://localhost:8070/equipments/deleteEquipment/${id}`);
                 fetchEquipments();
             } catch (error) {
                 console.error("Delete error:", error);

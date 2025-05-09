@@ -3,7 +3,10 @@ const router = express.Router();
 //insert model
 const Equipment = require('../Model/EquipmentModel');
 //insert equipment controller
-const EquipmentController = require('../Controller/EuipmentController'); 
+
+const EquipmentController = require('../Controller/EquipmentController'); 
+
+
 
 
 router.get("/",EquipmentController.getAllEquipments);
