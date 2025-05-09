@@ -60,7 +60,7 @@ const ManagementDashboard = () => {
                         <span>📦Inventory</span>
                     </a>
                     <a href="#" className="IT22090508-admindashbord-nav-link"
-                    onClick={() =>navigate('/MaintenanceSchedule')}
+                    onClick={() =>navigate('/EquipmentDashboard')}
                     >
                         <i className="fas fa-tools"></i>
                         <span>🛠 Equipment</span>

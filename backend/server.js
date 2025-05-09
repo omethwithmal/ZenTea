@@ -67,6 +67,11 @@ app.use("/employee", EmployeeLoginSignupRoutes);
 const router3 = require('./itemManagement/router');
 app.use('/api',router3);
 
+
+const router = require("./EquipmentMaintenanceManagement/Routes/EquipmentRoutes");
+app.use("/equipments", router);
+
+
 // Default Route
 app.get("/", (req, res) => {
   res.send("Welcome to the ZenTea Task Management API");

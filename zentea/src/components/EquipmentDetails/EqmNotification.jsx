@@ -149,10 +149,7 @@ const EqmNotification = () => {
         color: '#ff6b6b',
     };
 
-    const emailButtonStyle = {
-        backgroundColor: '#28a745',
-        color: 'white',
-    };
+    
 
     const noResultsStyle = {
         padding: '2rem',
