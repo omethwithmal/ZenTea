@@ -1,26 +1,20 @@
-// models/EmployeeSalary.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const employeeSalarySchema = new Schema({
   employeename: {
     type: String,
-    required: false,
-    trim: true,
-  },
-  employeeID: {
-    type: String,
-    required: false,
+    required: true,
     trim: true,
   },
   accountNumber: {
     type: String,
-    required: false,
+    required: true,
     trim: true,
   },
   basicSalary: {
     type: Number,
-    required: false,
+    required: true,
   },
   date: {
     type: Date,
