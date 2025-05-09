@@ -6,7 +6,7 @@ import { faUser, faEnvelope, faVenusMars, faKey, faUserTag, faSignOutAlt } from 
 const ProfilePage = () => {
   const navigate = useNavigate();
   
-  // Sample user data (replace with data from your backend/context)
+ 
   const user = {
     fullName: "Alex Johnson",
     email: "alex.johnson@example.com",
@@ -16,7 +16,7 @@ const ProfilePage = () => {
   };
 
   const handleLogout = () => {
-    // Add your logout logic here (clear tokens, context, etc.)
+   
     console.log("User logged out");
     navigate('/login');
   };
@@ -87,7 +87,7 @@ const ProfilePage = () => {
   );
 };
 
-// Modern 2025 styling with glassmorphism and neumorphism effects
+
 const styles = {
   container: {
     display: 'flex',
@@ -97,7 +97,7 @@ const styles = {
     background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
     padding: '20px',
     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-    marginLeft: "550px",
+    marginLeft: "",
   },
   profileCard: {
     width: '100%',

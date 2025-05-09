@@ -1,7 +1,7 @@
 import React from "react";
 
 const CustomerOrderManagement = () => {
-  // Sample data for the table
+ 
   const orders = [
     {
       id: 1,
@@ -148,18 +148,18 @@ const styles = {
   },
   actionButton: {
     padding: "5px 10px",
-    backgroundColor: "#28a745", // Green color
+    backgroundColor: "#28a745", 
     color: "#fff",
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
     fontSize: "12px",
-    margin: "2px 0", // Add spacing between buttons
+    margin: "2px 0", 
   },
   actionContainer: {
     display: "flex",
-    flexDirection: "column", // Stack buttons vertically
-    alignItems: "center", // Center-align buttons horizontally
+    flexDirection: "column", 
+    alignItems: "center", 
   },
 };
 
