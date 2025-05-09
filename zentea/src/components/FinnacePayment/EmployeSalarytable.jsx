@@ -589,4 +589,4 @@ const modalStyles = {
   }
 };
 
-export default EmployeeSalaryTable;4
+export default EmployeeSalaryTable;
