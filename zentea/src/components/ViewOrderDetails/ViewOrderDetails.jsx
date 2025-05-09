@@ -75,7 +75,7 @@ const ViewOrderDetails = () => {
             padding: '40px 20px',
             backgroundColor: '#f2f4f7',
             minHeight: '100vh',
-            marginLeft: '350px',
+            marginLeft: '120px',
         }}>
             <div style={{
                 display: 'flex',
@@ -219,7 +219,7 @@ const ViewOrderDetails = () => {
                                     fontStyle: 'italic'
                                 }}>
                                     No orders found matching your search criteria.
-                                </td>
+                                </td> 
                             </tr>
                         )}
                     </tbody>
