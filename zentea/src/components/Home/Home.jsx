@@ -24,7 +24,7 @@ function Home() {
           <li><a href="OrderDashboard1">Orders</a></li>
           <li><a href="cart"> Products</a></li>
           <li><a href="#">Contact Us</a></li>
-          <li><a href="#">Profile</a></li>
+          <li><a href="/ProfilePage">Profile</a></li>
           <li className="IT22090508-Home-ctn">
           <button onClick={() => navigate("/login")}>Log In</button>
         </li>
