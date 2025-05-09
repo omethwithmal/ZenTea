@@ -78,7 +78,7 @@ const EmployeeSalaryTable = () => {
       employeename: '',
       employeeID: '',
       accountNumber: '',
-      basicSalary: '',
+      finalSalary: '',
       otHours: '',
       date: ''
     });
@@ -96,7 +96,7 @@ const EmployeeSalaryTable = () => {
           employeename: salary.employeename || '',
           employeeID: salary.employeeID || '',
           accountNumber: salary.accountNumber || '',
-          basicSalary: salary.basicSalary?.toString() || '',
+          basicSalary: salary.finalSalarySalary?.toString() || '',
           otHours: salary.otHours?.toString() || '',
           date: formattedDate
         });
@@ -122,7 +122,7 @@ const EmployeeSalaryTable = () => {
           employeename: formData.employeename,
           employeeID: formData.employeeID,
           accountNumber: formData.accountNumber,
-          basicSalary: parseFloat(formData.basicSalary),
+          basicSalary: parseFloat(formData.finalSalarySalary),
           otHours: parseInt(formData.otHours),
           date: formData.date
         };
@@ -415,7 +415,7 @@ const EmployeeSalaryTable = () => {
                     <td style={{ padding: '15px' }}>{salary.employeename}</td>
                     <td style={{ padding: '15px' }}>{salary.employeeID}</td>
                     <td style={{ padding: '15px' }}>{salary.accountNumber}</td>
-                    <td style={{ padding: '15px' }}>${parseFloat(salary.basicSalary || 0).toFixed(2)}</td>
+                    <td style={{ padding: '15px' }}>${parseFloat(salary.finalSalary || 0).toFixed(2)}</td>
                     <td style={{ padding: '15px' }}>{salary.otHours || '0'}</td>
                     <td style={{ padding: '15px' }}>
                       {salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}
@@ -589,4 +589,4 @@ const modalStyles = {
   }
 };
 
-export default EmployeeSalaryTable;
+export default EmployeeSalaryTable;4
