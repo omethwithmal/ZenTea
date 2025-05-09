@@ -29,7 +29,7 @@ function Home() {
           <button onClick={() => navigate("/login")}>Log In</button>
         </li>
         <li className="IT22090508-Home-ctn">
-          <button onClick={() => navigate("/signup")}>Sign Ups</button>
+          <button onClick={() => navigate("/signup")}>Sign Up</button>
         </li>
         </ul>
       </nav>
