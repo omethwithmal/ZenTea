@@ -12,8 +12,8 @@ const EmployeeSalaryPayment = () => {
     employeename: employeeData.firstName || '',
     employeeID: employeeData.employeeID || '',    
     accountNumber: '',
-    basicSalary: employeeData.finalSalary || '',
-    otHours: employeeData.otHours || '',
+    finalSalary: employeeData.finalSalary || '',
+   
     date: new Date().toISOString().split('T')[0], // Default to today's date
   });
 
@@ -28,7 +28,7 @@ const EmployeeSalaryPayment = () => {
         employeename: employeeData.firstName || '',
         employeeID: employeeData.employeeID || '',
         basicSalary: employeeData.finalSalary || '',
-        otHours: employeeData.otHours || ''
+        
       }));
     }
   }, [employeeData]);
@@ -74,7 +74,7 @@ const EmployeeSalaryPayment = () => {
       setError(err.response?.data?.error || err.message || 'Failed to record salary payment');
     }
   };
-
+             
   return (
     <div
       style={{
