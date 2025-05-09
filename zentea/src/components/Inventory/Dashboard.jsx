@@ -24,15 +24,15 @@ const Dashboard = () => {
       description: "View inventory analytics and reports",
       stats: "15 reports",
       color: "#28a745",
-      path: "/analytics"
+      path: "/analyze"
     },
     {
-      title: "System Settings",
+      title: "add item cart",
       icon: <FaCog size={24} />,
       description: "Configure inventory preferences",
       stats: "8 categories",
       color: "#28a745",
-      path: "/settings"
+      path: "/add-tea-item"
     },
     {
       title: "Alerts",
