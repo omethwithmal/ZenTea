@@ -8,6 +8,7 @@ const ViewOrderDetails = () => {
     const [filteredOrders, setFilteredOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
+    const [totalPrice, setTotalPrice] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,6 +19,11 @@ const ViewOrderDetails = () => {
                 if (data.orders) {
                     setOrders(data.orders);
                     setFilteredOrders(data.orders);
+                    // Calculate initial total price
+                    const sum = data.orders.reduce((acc, order) => acc + Number(order.Price), 0);
+                    setTotalPrice(sum);
+                    // Store in localStorage
+                    localStorage.setItem('orderTotalIncome', sum.toString());
                 }
                 setLoading(false);
             } catch (error) {
@@ -34,6 +40,11 @@ const ViewOrderDetails = () => {
                 String(val).toLowerCase().includes(searchTerm.toLowerCase()))
         );
         setFilteredOrders(results);
+        // Recalculate total price when filtered results change
+        const sum = results.reduce((acc, order) => acc + Number(order.Price), 0);
+        setTotalPrice(sum);
+        // Update localStorage
+        localStorage.setItem('orderTotalIncome', sum.toString());
     }, [searchTerm, orders]);
 
     const handleGoBack = () => {
@@ -48,8 +59,8 @@ const ViewOrderDetails = () => {
                 alignItems: 'center',
                 height: '100vh',
                 fontSize: '18px',
-                fontFamily: 'Arial, sans-serif',
-                backgroundColor: '#f8f9fa'
+                fontFamily: 'Inter, sans-serif',
+                backgroundColor: '#f2f4f7'
             }}>
                 Loading orders...
             </div>
@@ -58,11 +69,11 @@ const ViewOrderDetails = () => {
 
     return (
         <div style={{
-            fontFamily: 'Arial, sans-serif',
+            fontFamily: 'Inter, sans-serif',
             maxWidth: '1200px',
             margin: '0 auto',
-            padding: '20px',
-            backgroundColor: '#f8f9fa',
+            padding: '40px 20px',
+            backgroundColor: '#f2f4f7',
             minHeight: '100vh',
             marginLeft: '350px',
         }}>
@@ -70,47 +81,46 @@ const ViewOrderDetails = () => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: '25px',
-                paddingBottom: '15px',
-                borderBottom: '2px solid #e0e0e0'
+                marginBottom: '30px'
             }}>
-                <button 
+                <button
                     onClick={handleGoBack}
                     style={{
                         display: 'flex',
                         alignItems: 'center',
-                        padding: '8px 15px',
-                        backgroundColor: '#6c757d',
-                        color: 'white',
+                        backgroundColor: '#dee2e6',
+                        color: '#212529',
                         border: 'none',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
+                        borderRadius: '8px',
+                        padding: '10px 18px',
                         fontSize: '14px',
-                        transition: 'background-color 0.3s'
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease'
                     }}
-                    onMouseOver={(e) => e.target.style.backgroundColor = '#5a6268'}
-                    onMouseOut={(e) => e.target.style.backgroundColor = '#6c757d'}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#ced4da'}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#dee2e6'}
                 >
                     <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: '8px' }} />
                     Back
                 </button>
-                
+
                 <h1 style={{
-                    fontSize: '28px',
-                    fontWeight: '600',
-                    color: '#343a40',
-                    margin: 0,
+                    flex: 1,
                     textAlign: 'center',
-                    flex: 1
+                    fontSize: '30px',
+                    fontWeight: '700',
+                    color: '#2c3e50',
+                    margin: 0
                 }}>
-                    Recent Orders
+                    Customer Orders
                 </h1>
             </div>
 
             <div style={{
                 display: 'flex',
                 justifyContent: 'flex-end',
-                marginBottom: '20px'
+                marginBottom: '25px'
             }}>
                 <div style={{
                     position: 'relative',
@@ -123,36 +133,34 @@ const ViewOrderDetails = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{
                             width: '100%',
-                            padding: '12px 15px 12px 40px',
-                            borderRadius: '6px',
-                            border: '1px solid #ced4da',
+                            padding: '12px 16px 12px 42px',
+                            borderRadius: '10px',
+                            border: '1px solid #ccc',
                             fontSize: '15px',
-                            boxSizing: 'border-box',
                             outline: 'none',
-                            transition: 'all 0.3s',
-                            boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+                            backgroundColor: '#fff',
+                            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.04)'
                         }}
                     />
-                    <FontAwesomeIcon 
-                        icon={faSearch} 
+                    <FontAwesomeIcon
+                        icon={faSearch}
                         style={{
                             position: 'absolute',
-                            left: '15px',
+                            left: '14px',
                             top: '50%',
                             transform: 'translateY(-50%)',
                             color: '#6c757d',
                             fontSize: '16px'
-                        }} 
+                        }}
                     />
                 </div>
             </div>
 
             <div style={{
-                backgroundColor: '#fff',
-                borderRadius: '8px',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                overflow: 'hidden',
-                marginBottom: '20px'
+                backgroundColor: '#ffffff',
+                borderRadius: '12px',
+                boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
+                overflow: 'hidden'
             }}>
                 <table style={{
                     width: '100%',
@@ -160,48 +168,57 @@ const ViewOrderDetails = () => {
                     fontSize: '15px'
                 }}>
                     <thead>
-                        <tr style={{
-                            backgroundColor: '#28a745',
-                            color: 'white'
-                        }}>
-                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Full Name</th>
-                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Delivery Address</th>
-                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Contact</th>
-                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Email</th>
-                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Tea Type</th>
-                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Quantity</th>
-                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Price</th>
+                        <tr style={{ backgroundColor: '#198754', color: 'white' }}>
+                            <th style={headerStyle}>Full Name</th>
+                            <th style={headerStyle}>Address</th>
+                            <th style={headerStyle}>Contact</th>
+                            <th style={headerStyle}>Email</th>
+                            <th style={headerStyle}>Tea Type</th>
+                            <th style={headerStyle}>Quantity</th>
+                            <th style={headerStyle}>Price</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredOrders.length > 0 ? (
-                            filteredOrders.map((order, index) => (
-                                <tr key={order._id} style={{
-                                    borderBottom: '1px solid #e9ecef',
-                                    backgroundColor: index % 2 === 0 ? '#f8f9fa' : 'white',
-                                    transition: 'background 0.2s'
-                                }}>
-                                    <td style={{ padding: '15px', color: '#495057', fontWeight: '500' }}>{order.Full_Name}</td>
-                                    <td style={{ padding: '15px', color: '#495057' }}>{order.Delivery_Address}</td>
-                                    <td style={{ padding: '15px', color: '#495057' }}>{order.Contact_Number}</td>
-                                    <td style={{ padding: '15px', color: '#495057' }}>{order.Email_Address}</td>
-                                    <td style={{ padding: '15px', color: '#495057' }}>{order.Select_Tea_Type}</td>
-                                    <td style={{ padding: '15px', color: '#495057', textAlign: 'center' }}>{order.Quantity}</td>
-                                    <td style={{ padding: '15px', color: '#28a745', fontWeight: '600' }}>
-                                        Rs. {Number(order.Price).toLocaleString()}
+                            <>
+                                {filteredOrders.map((order, index) => (
+                                    <tr
+                                        key={order._id}
+                                        style={{
+                                            backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#ffffff',
+                                            borderBottom: '1px solid #e5e5e5'
+                                        }}
+                                    >
+                                        <td style={cellStyle}>{order.Full_Name}</td>
+                                        <td style={cellStyle}>{order.Delivery_Address}</td>
+                                        <td style={cellStyle}>{order.Contact_Number}</td>
+                                        <td style={cellStyle}>{order.Email_Address}</td>
+                                        <td style={cellStyle}>{order.Select_Tea_Type}</td>
+                                        <td style={{ ...cellStyle, textAlign: 'center' }}>{order.Quantity}</td>
+                                        <td style={{ ...cellStyle, color: '#28a745', fontWeight: '600' }}>
+                                            Rs. {Number(order.Price).toLocaleString()}
+                                        </td>
+                                    </tr>
+                                ))}
+                                <tr style={{ backgroundColor: '#f8f9fa', fontWeight: 'bold' }}>
+                                    <td colSpan="6" style={{ ...cellStyle, textAlign: 'right' }}>
+                                        Total:
+                                    </td>
+                                    <td style={{ ...cellStyle, color: '#28a745', fontWeight: '700' }}>
+                                        Rs. {totalPrice.toLocaleString()}
                                     </td>
                                 </tr>
-                            ))
+                            </>
                         ) : (
                             <tr>
                                 <td colSpan="7" style={{
                                     padding: '25px',
                                     textAlign: 'center',
                                     color: '#6c757d',
-                                    fontStyle: 'italic',
-                                    backgroundColor: '#f8f9fa'
+                                    backgroundColor: '#f2f2f2',
+                                    fontStyle: 'italic'
                                 }}>
-                                    No orders found matching your search criteria
+                                    No orders found matching your search criteria.
                                 </td>
                             </tr>
                         )}
@@ -213,9 +230,10 @@ const ViewOrderDetails = () => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                padding: '10px 15px',
+                padding: '16px 24px',
+                marginTop: '20px',
                 backgroundColor: '#e9ecef',
-                borderRadius: '5px',
+                borderRadius: '10px',
                 fontSize: '14px',
                 color: '#495057'
             }}>
@@ -228,6 +246,19 @@ const ViewOrderDetails = () => {
             </div>
         </div>
     );
+};
+
+const headerStyle = {
+    padding: '16px',
+    textAlign: 'left',
+    fontWeight: '600',
+    fontSize: '14px'
+};
+
+const cellStyle = {
+    padding: '16px',
+    color: '#34495e',
+    fontWeight: '500'
 };
 
 export default ViewOrderDetails;

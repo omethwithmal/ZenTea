@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import axios from 'axios';
 
 const MaintenanceRevenue = () => {
   const [issues, setIssues] = useState([]);
@@ -10,15 +11,11 @@ const MaintenanceRevenue = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchIssues = async () => {
+    const fetchIssues = async () => {     
       try {
-        const response = await fetch('http://localhost:8070/issues');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setIssues(data.issue || []);
-        setFilteredIssues(data.issue || []);
+        const response = await axios.get('http://localhost:8070/issues');
+        setIssues(response.data.issue || []);
+        setFilteredIssues(response.data.issue || []);
       } catch (err) {
         console.error('Error fetching issues:', err);
         alert('Failed to connect to server. Please make sure the backend is running.');
@@ -43,11 +40,7 @@ const MaintenanceRevenue = () => {
 
   const generateReport = () => {
     const input = document.getElementById('report-table');
-    html2canvas(input, {
-      scale: 2,
-      logging: false,
-      useCORS: true,
-    }).then((canvas) => {
+    html2canvas(input, { scale: 2, logging: false, useCORS: true }).then(canvas => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgWidth = 210;
@@ -73,172 +66,130 @@ const MaintenanceRevenue = () => {
     });
   };
 
-  const containerStyle = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    minHeight: '100vh',
-    backgroundColor: '#f5f7fa',
-    padding: '2rem',
-  };
-
-  const mainContentStyle = {
-    width: '100%',
-    maxWidth: '1200px',
-    padding: '2rem',
-    fontFamily: "'Inter', sans-serif",
-  };
-
-  const headerStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: '1rem',
-    marginBottom: '2rem',
-  };
-
-  const titleStyle = {
-    fontSize: '2rem',
-    fontWeight: '700',
-    color: '#1a1a1a',
-    margin: '0',
-  };
-
-  const buttonGroupStyle = {
-    display: 'flex',
-    gap: '1rem',
-  };
-
-  const backButtonStyle = {
-    backgroundColor: '#6c757d',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    padding: '0.75rem 1.5rem',
-    fontSize: '1rem',
-    fontWeight: '600',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    boxShadow: '0 2px 8px rgba(108, 117, 125, 0.3)',
-    transition: 'all 0.2s ease',
-  };
-
-  const reportButtonStyle = {
-    backgroundColor: '#3a86ff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    padding: '0.75rem 1.5rem',
-    fontSize: '1rem',
-    fontWeight: '600',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    boxShadow: '0 2px 8px rgba(58, 134, 255, 0.3)',
-    transition: 'all 0.2s ease',
-  };
-
-  const searchContainerStyle = {
-    marginBottom: '1.5rem',
-    display: 'flex',
-    gap: '1rem',
-  };
-
-  const searchInputStyle = {
-    flex: '1',
-    padding: '0.875rem 1rem',
-    border: '1px solid #e9ecef',
-    borderRadius: '8px',
-    fontSize: '1rem',
-    transition: 'all 0.2s ease',
-    backgroundColor: '#f8f9fa',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-  };
-
-  const tableWrapperStyle = {
-    borderRadius: '12px',
-    overflow: 'hidden',
-    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-  };
-
-  const tableStyle = {
-    width: '100%',
-    borderCollapse: 'collapse',
-  };
-
-  const thStyle = {
-    backgroundColor: '#343a40',
-    color: '#ffffff',
-    padding: '1rem',
-    textAlign: 'left',
-    fontWeight: '600',
-    fontSize: '0.875rem',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    borderBottom: '2px solid #dee2e6',
-  };
-
-  const tdStyle = {
-    padding: '1rem',
-    textAlign: 'left',
-    borderBottom: '1px solid #e9ecef',
-    backgroundColor: 'inherit',
-    transition: 'background-color 0.2s ease',
-  };
-
-  const noResultsStyle = {
-    padding: '2rem',
-    textAlign: 'center',
-    color: '#6c757d',
-    backgroundColor: 'white',
-  };
+  // Calculate total maintenance
+  const totalMaintenance = filteredIssues.reduce((total, issue) => 
+    total + Number(issue.maintenance_cost || 0), 0);
 
   return (
-    <div style={containerStyle}>
-      <div style={mainContentStyle}>
-        <div style={headerStyle}>
-          <h2 style={titleStyle}>Maintenance</h2>
-          <div style={buttonGroupStyle}>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      minHeight: '100vh',
+      backgroundColor: '#f0f2f5',
+      padding: '2rem',
+      fontFamily: "'Inter', sans-serif"
+    }}>
+      <div style={{ width: '100%', maxWidth: '1200px' }}>
+        {/* Header */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '1.5rem',
+          flexWrap: 'wrap',
+        }}>
+          <h2 style={{
+            fontSize: '2rem',
+            fontWeight: '700',
+            color: '#1a1a1a',
+            margin: 0
+          }}>Maintenance</h2>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
             <button
-              style={backButtonStyle}
               onClick={handleBack}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5a6268'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6c757d'}
+              style={{
+                backgroundColor: '#6c757d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '0.75rem 1.5rem',
+                fontSize: '1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                transition: '0.3s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#5a6268'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#6c757d'}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              Back to Dashboard
+              ← Back
             </button>
             <button
-              style={reportButtonStyle}
               onClick={generateReport}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2a75ff'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3a86ff'}
+              style={{
+                backgroundColor: '#3a86ff',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '0.75rem 1.5rem',
+                fontSize: '1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                transition: '0.3s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#2a75ff'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#3a86ff'}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M9 17V7M9 7L5 11M9 7L13 11M15 7V17M15 17L19 13M15 17L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
               Generate Report
             </button>
           </div>
         </div>
 
-        <div style={searchContainerStyle}>
+        {/* Income Summary */}
+        <div style={{
+          backgroundColor: '#ffffff',
+          borderRadius: '16px',
+          padding: '1.5rem 2rem',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
+          marginBottom: '2rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }}>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#1a1a1a', margin: 0 }}>
+            Total Maintenance 
+          </h3>
+          <span style={{
+            fontSize: '1.5rem',
+            fontWeight: '700',
+            color: '#28a745',
+            marginTop: '0.25rem'
+          }}>
+            Rs. {totalMaintenance.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </span>
+        </div>
+
+        {/* Search */}
+        <div style={{ marginBottom: '1.5rem' }}>
           <input
             type="text"
-            placeholder="Search here..."
-            style={searchInputStyle}
+            placeholder="Search maintenance records..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '1rem',
+              borderRadius: '12px',
+              border: '1px solid #e0e0e0',
+              backgroundColor: '#fff',
+              boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
+              fontSize: '1rem',
+              outline: 'none'
+            }}
           />
         </div>
 
-        <div id="report-table" style={tableWrapperStyle}>
-          <table style={tableStyle}>
+        {/* Table */}
+        <div id="report-table" style={{
+          overflow: 'auto',
+          backgroundColor: '#ffffff',
+          borderRadius: '16px',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)'
+        }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
                 <th style={thStyle}>#</th>
@@ -256,11 +207,11 @@ const MaintenanceRevenue = () => {
                   <tr
                     key={issue._id}
                     style={{
-                      backgroundColor: index % 2 === 0 ? '#ffffff' : '#f1f3f5',
-                      transition: 'background-color 0.3s ease',
+                      backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafc',
+                      transition: 'background-color 0.3s ease'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e3f2fd'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#f1f3f5'}
+                    onMouseEnter={e => e.currentTarget.style.backgroundColor = '#e3f2fd'}
+                    onMouseLeave={e => e.currentTarget.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#f9fafc'}
                   >
                     <td style={tdStyle}>{index + 1}</td>
                     <td style={tdStyle}>{issue.serial_number}</td>
@@ -276,13 +227,21 @@ const MaintenanceRevenue = () => {
                     </td>
                     <td style={tdStyle}>{issue.assign_technician || 'Not Assigned'}</td>
                     <td style={{ ...tdStyle, fontWeight: '600', color: '#198754' }}>
-                      Rs. {Number(issue.maintenance_cost).toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      Rs. {Number(issue.maintenance_cost || 0).toLocaleString('en-LK', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                      })}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" style={noResultsStyle}>
+                  <td colSpan="7" style={{
+                    padding: '2rem',
+                    textAlign: 'center',
+                    color: '#6c757d',
+                    backgroundColor: '#ffffff'
+                  }}>
                     {searchTerm ? 'No maintenance records match your search.' : 'No maintenance records found.'}
                   </td>
                 </tr>
@@ -293,6 +252,25 @@ const MaintenanceRevenue = () => {
       </div>
     </div>
   );
+};
+
+// Style for table headers and cells
+const thStyle = {
+  background: 'linear-gradient(90deg, #2a2f45, #3b3f5c)',
+  color: '#ffffff',
+  padding: '1rem',
+  textAlign: 'left',
+  fontWeight: '600',
+  fontSize: '0.875rem',
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+  borderBottom: '2px solid #dee2e6',
+};
+
+const tdStyle = {
+  padding: '1rem',
+  textAlign: 'left',
+  borderBottom: '1px solid #e9ecef',
 };
 
 export default MaintenanceRevenue;

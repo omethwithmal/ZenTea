@@ -14,7 +14,7 @@ const EmployeeSalary = () => {
     jobTitle: "",
     department: "",
     workHours: 160,
-    otHours: 0,
+    otHours: 3,
     basicSalary: 0
   });
   const [isUpdating, setIsUpdating] = useState(false);
@@ -26,7 +26,7 @@ const EmployeeSalary = () => {
     const fetchEmployees = async () => {
       try {
         const response = await axios.get("http://localhost:8070/user/display");
-        
+
         // Transform the API data to match our expected structure
         const transformedData = response.data.map(employee => ({
           _id: employee._id || employee.id,
@@ -35,7 +35,7 @@ const EmployeeSalary = () => {
           jobTitle: employee.position || employee.jobTitle || "",
           department: employee.department || "",
           workHours: employee.workHours || 160,
-          otHours: employee.otHours || 0,
+          otHours: employee.otHours || 3,
           basicSalary: employee.basicSalary || employee.salary || 0
         }));
         
@@ -61,15 +61,16 @@ const EmployeeSalary = () => {
       localStorage.setItem('employeeSalaries', JSON.stringify(employees));
     }
   }, [employees]);
-
+   
   // Calculate salary components
   const calculateSalaries = (employee) => {
     const workHours = parseFloat(employee.workHours) || 160;
-    const otHours = parseFloat(employee.otHours) || 0;
+    const otHours = parseFloat(employee.otHours) || 3;
     const basicSalary = parseFloat(employee.basicSalary) || 0;
 
     const calculatedBaseSalary = ((basicSalary / 160) * workHours).toFixed(2);
-    const otPayment = (otHours * 250).toFixed(2);
+    const otRate = 250; // 1Hour OT rate
+    const otPayment = (otHours * otRate).toFixed(2);
     const grossSalary = (parseFloat(calculatedBaseSalary) + parseFloat(otPayment)).toFixed(2);
     const epf = (grossSalary * 0.08).toFixed(2);
     const etf = (grossSalary * 0.03).toFixed(2);
@@ -78,6 +79,7 @@ const EmployeeSalary = () => {
     return {
       workHours,
       otHours,
+      otRate,
       calculatedBaseSalary,
       otPayment,
       grossSalary,
@@ -96,7 +98,7 @@ const EmployeeSalary = () => {
       jobTitle: employee.jobTitle || "",
       department: employee.department || "",
       workHours: employee.workHours || 160,
-      otHours: employee.otHours || 0,
+      otHours: employee.otHours || 3,
       basicSalary: employee.basicSalary || 0
     });
     setShowUpdateModal(true);
@@ -108,8 +110,8 @@ const EmployeeSalary = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: name === 'firstName' || name === 'employeeID' || name === 'jobTitle' || name === 'department' 
-        ? value 
+      [name]: name === 'firstName' || name === 'employeeID' || name === 'jobTitle' || name === 'department' || name ==='Work Hours'
+        ? value
         : parseFloat(value) || 0
     });
   };
@@ -132,14 +134,14 @@ const EmployeeSalary = () => {
         ...formData,
         ...salaryDetails
       };
-
+                
       // Try API update first
       try {
         await axios.put(`http://localhost:8070/user/update/${selectedEmployee._id}`, updatedEmployee);
       } catch (apiError) {
         console.error("API update failed, using local storage:", apiError);
       }
-
+            
       // Update local state
       const updatedEmployees = employees.map(emp => 
         emp._id === selectedEmployee._id ? updatedEmployee : emp
@@ -189,23 +191,6 @@ const EmployeeSalary = () => {
         },
       },
     });
-  };
-
-  // Add new employee
-  const addNewEmployee = () => {
-    const newEmployee = {
-      _id: Date.now().toString(),
-      firstName: 'New Employee',
-      employeeID: `EMP${employees.length + 1000}`,
-      jobTitle: '',
-      department: '',
-      workHours: 160,
-      otHours: 0,
-      basicSalary: 0
-    };
-
-    setEmployees([...employees, newEmployee]);
-    handleUpdateClick(newEmployee);
   };
 
   // Filter employees based on search term
@@ -338,6 +323,7 @@ const EmployeeSalary = () => {
             <div style={modalStyles.calculations}>
               <h3>Calculated Values:</h3>
               <p>Base Salary: Rs {calculatedValues.calculatedBaseSalary}</p>
+              <p>1Hour OT Rate: Rs {calculatedValues.otRate}</p>
               <p>OT Payment: Rs {calculatedValues.otPayment}</p>
               <p>Gross Salary: Rs {calculatedValues.grossSalary}</p>
               <p>EPF (8%): Rs {calculatedValues.epf}</p>
@@ -379,7 +365,7 @@ const EmployeeSalary = () => {
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>Employee Salary Management</h2>
-      
+
       {errorMessage && !showUpdateModal && (
         <div style={styles.error}>{errorMessage}</div>
       )}
@@ -394,12 +380,6 @@ const EmployeeSalary = () => {
             style={styles.searchInput}
           />
         </div>
-        <button 
-          onClick={addNewEmployee}
-          style={styles.addButton}
-        >
-          + Add New Employee
-        </button>
       </div>
 
       <div style={styles.tableContainer}>
@@ -412,12 +392,13 @@ const EmployeeSalary = () => {
               <th style={styles.th}>Department</th>
               <th style={styles.th}>Work Hours</th>
               <th style={styles.th}>OT Hours</th>
-              <th style={styles.th}>OT Payment</th>
-              <th style={styles.th}>Basic Salary</th>
-              <th style={styles.th}>Gross Salary</th>
-              <th style={styles.th}>EPF (8%)</th>
-              <th style={styles.th}>ETF (3%)</th>
-              <th style={styles.th}>Final Salary</th>
+              <th style={styles.th}>1Hour OT Rate (Rs)</th>
+              <th style={styles.th}>OT Payment (Rs)</th>
+              <th style={styles.th}>Basic Salary (Rs)</th>
+              <th style={styles.th}>Gross Salary (Rs)</th>
+              <th style={styles.th}>EPF (8%) (Rs)</th>
+              <th style={styles.th}>ETF (3%) (Rs)</th>
+              <th style={styles.th}>Final Salary (Rs)</th>
               <th style={styles.th}>Actions</th>
             </tr>
           </thead>
@@ -435,13 +416,14 @@ const EmployeeSalary = () => {
                     <td style={styles.td}>{emp.department}</td>
                     <td style={styles.td}>{salaryDetails.workHours}</td>
                     <td style={styles.td}>{salaryDetails.otHours}</td>
-                    <td style={styles.td}>Rs {salaryDetails.otPayment}</td>
-                    <td style={styles.td}>Rs {emp.basicSalary}</td>
-                    <td style={styles.td}>Rs {salaryDetails.grossSalary}</td>
-                    <td style={styles.td}>Rs {salaryDetails.epf}</td>
-                    <td style={styles.td}>Rs {salaryDetails.etf}</td>
+                    <td style={styles.td}>{salaryDetails.otRate}</td>
+                    <td style={styles.td}>{salaryDetails.otPayment}</td>
+                    <td style={styles.td}>{emp.basicSalary}</td>
+                    <td style={styles.td}>{salaryDetails.grossSalary}</td>
+                    <td style={styles.td}>{salaryDetails.epf}</td>
+                    <td style={styles.td}>{salaryDetails.etf}</td>
                     <td style={{ ...styles.td, ...styles.finalSalary }}>
-                      Rs {salaryDetails.finalSalary}
+                      {salaryDetails.finalSalary}
                     </td>
                     <td style={styles.td}>
                       <div style={styles.actionButtons}>
@@ -470,7 +452,7 @@ const EmployeeSalary = () => {
               })
             ) : (
               <tr>
-                <td colSpan="13" style={styles.noResults}>
+                <td colSpan="14" style={styles.noResults}>
                   {searchTerm ? 'No matching employees found' : 'No employee data available'}
                 </td>
               </tr>
@@ -536,15 +518,6 @@ const styles = {
     padding: "10px",
     borderRadius: "4px",
     border: "1px solid #ddd",
-    fontSize: "16px"
-  },
-  addButton: {
-    padding: "10px 20px",
-    backgroundColor: "#0a8700",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
     fontSize: "16px"
   },
   tableContainer: {
