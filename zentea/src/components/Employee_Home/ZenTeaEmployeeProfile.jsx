@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencilAlt, faBell, faSave, faPlay, faCheck } from '@fortawesome/free-solid-svg-icons';
-
+import { faPencilAlt, faBell, faSave, faPlay, faCheck, faSearch } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 import Navbar from "./naveBar";
 
 function ZenTeaEmployeeProfile() {
@@ -34,40 +34,65 @@ function ZenTeaEmployeeProfile() {
     nationalId: '',
     startDate: '',
   });
-  const [notifications, setNotifications] = useState([
-    {
-      taskId: 'T001',
-      title: 'Quality Check',
-      description: 'Inspect batch #123 for quality standards.',
-      employeeName: 'John Doe',
-      department: 'Quality Control',
-      date: '2025-05-03',
-      timePeriod: '2hrs',
-      status: 'Pending',
-    },
-    {
-      taskId: 'T002',
-      title: 'Packaging Review',
-      description: 'Review packaging process for efficiency.',
-      employeeName: 'John Doe',
-      department: 'Packaging',
-      date: '2025-05-04',
-      timePeriod: '3hrs',
-      status: 'Started',
-    },
-    {
-      taskId: 'T003',
-      title: 'Tea Cultivation',
-      description: 'Oversee tea planting schedule.',
-      employeeName: 'John Doe',
-      department: 'Tea Cultivation',
-      date: '2025-05-02',
-      timePeriod: '4hrs',
-      status: 'Finished',
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  const [filteredNotifications, setFilteredNotifications] = useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
-  const [currentTask, setCurrentTask] = useState('T002'); // Mock: T002 is started for testing
+  const [currentTask, setCurrentTask] = useState(null);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const [errorLoadingNotifications, setErrorLoadingNotifications] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Fetch notifications from the database
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        setLoadingNotifications(true);
+        const response = await axios.get('http://localhost:8070/task/display');
+        // Transform the data to match our expected format
+        const transformedData = response.data.map(task => ({
+          taskId: task.taskID,
+          title: task.title,
+          description: task.description,
+          employeeName: task.employeeName,
+          department: task.department,
+          date: task.date,
+          timePeriod: `${task.timePeriodHours}hrs`,
+          status: task.status,
+        }));
+        setNotifications(transformedData);
+        setFilteredNotifications(transformedData);
+        
+        // Find if any task is in 'Started' status
+        const startedTask = transformedData.find(task => task.status === 'Started');
+        if (startedTask) {
+          setCurrentTask(startedTask.taskId);
+        }
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+        setErrorLoadingNotifications('Failed to load notifications. Please try again later.');
+      } finally {
+        setLoadingNotifications(false);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  // Filter notifications based on search term
+  useEffect(() => {
+    if (searchTerm.trim() === '') {
+      setFilteredNotifications(notifications);
+    } else {
+      const filtered = notifications.filter(notification => 
+        notification.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        notification.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        notification.taskId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        notification.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        notification.status.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredNotifications(filtered);
+    }
+  }, [searchTerm, notifications]);
 
   const validateFirstLastName = (value) => {
     const regex = /^[a-zA-Z\s]*$/;
@@ -219,22 +244,58 @@ function ZenTeaEmployeeProfile() {
     }
   };
 
-  const handleStartTask = (taskId) => {
-    setNotifications((prev) =>
-      prev.map((task) =>
-        task.taskId === taskId ? { ...task, status: 'Started' } : task
-      )
-    );
-    setCurrentTask(taskId);
+  const handleStartTask = async (taskId) => {
+    try {
+      // Update task status in the database
+      await axios.put(`http://localhost:8070/task/update-status/${taskId}`, {
+        status: 'Started'
+      });
+      
+      // Update local state
+      setNotifications(prev =>
+        prev.map(task =>
+          task.taskId === taskId ? { ...task, status: 'Started' } : task
+        )
+      );
+      setFilteredNotifications(prev =>
+        prev.map(task =>
+          task.taskId === taskId ? { ...task, status: 'Started' } : task
+        )
+      );
+      setCurrentTask(taskId);
+    } catch (error) {
+      console.error('Error updating task status:', error);
+      alert('Failed to start task. Please try again.');
+    }
   };
 
-  const handleFinishTask = (taskId) => {
-    setNotifications((prev) =>
-      prev.map((task) =>
-        task.taskId === taskId ? { ...task, status: 'Finished' } : task
-      )
-    );
-    setCurrentTask(null);
+  const handleFinishTask = async (taskId) => {
+    try {
+      // Update task status in the database
+      await axios.put(`http://localhost:8070/task/update-status/${taskId}`, {
+        status: 'Finished'
+      });
+      
+      // Update local state
+      setNotifications(prev =>
+        prev.map(task =>
+          task.taskId === taskId ? { ...task, status: 'Finished' } : task
+        )
+      );
+      setFilteredNotifications(prev =>
+        prev.map(task =>
+          task.taskId === taskId ? { ...task, status: 'Finished' } : task
+        )
+      );
+      setCurrentTask(null);
+    } catch (error) {
+      console.error('Error updating task status:', error);
+      alert('Failed to finish task. Please try again.');
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
   return (
@@ -608,62 +669,88 @@ function ZenTeaEmployeeProfile() {
           <div style={styles.modalOverlay}>
             <div style={styles.modal}>
               <h3 style={styles.modalTitle}>Task Notifications</h3>
-              <div style={styles.notificationList}>
-                {notifications.map((notification) => (
-                  <div key={notification.taskId} style={styles.notificationItem}>
-                    <div style={styles.notificationHeader}>
-                      <span style={styles.notificationTitle}>{notification.title}</span>
-                      <span
-                        style={{
-                          ...styles.statusBadge,
-                          backgroundColor:
-                            notification.status === 'Pending'
-                              ? '#f5c6a5'
-                              : notification.status === 'Started'
-                              ? '#4a8b6a'
-                              : '#1a3b2e',
-                        }}
-                      >
-                        {notification.status}
-                      </span>
-                    </div>
-                    <div style={styles.notificationDetails}>
-                      <p><strong>Task ID:</strong> {notification.taskId}</p>
-                      <p><strong>Description:</strong> {notification.description}</p>
-                      <p><strong>Employee:</strong> {notification.employeeName}</p>
-                      <p><strong>Department:</strong> {notification.department}</p>
-                      <p><strong>Date:</strong> {notification.date}</p>
-                      <p><strong>Time Period:</strong> {notification.timePeriod}</p>
-                    </div>
-                    <div style={styles.notificationActions}>
-                      {notification.status === 'Pending' && (
-                        <button
-                          style={{
-                            ...styles.actionButton,
-                            opacity: currentTask ? 0.5 : 1,
-                            cursor: currentTask ? 'not-allowed' : 'pointer',
-                          }}
-                          onClick={() => handleStartTask(notification.taskId)}
-                          disabled={!!currentTask}
-                        >
-                          <FontAwesomeIcon icon={faPlay} /> Start Task
-                        </button>
-                      )}
-                      {notification.status === 'Started' && (
-                        <button
-                          style={styles.actionButton}
-                          onClick={() => handleFinishTask(notification.taskId)}
-                        >
-                          <FontAwesomeIcon icon={faCheck} /> Finish Task
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
+              
+              {/* Search Bar */}
+              <div style={styles.searchContainer}>
+                <FontAwesomeIcon icon={faSearch} style={styles.searchIcon} />
+                <input
+                  type="text"
+                  placeholder="Search tasks..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  style={styles.searchInput}
+                />
               </div>
+              
+              {loadingNotifications ? (
+                <div style={styles.loadingMessage}>Loading notifications...</div>
+              ) : errorLoadingNotifications ? (
+                <div style={styles.errorMessage}>{errorLoadingNotifications}</div>
+              ) : filteredNotifications.length === 0 ? (
+                <div style={styles.noTasksMessage}>
+                  {searchTerm.trim() === '' ? 'No tasks assigned' : 'No tasks match your search'}
+                </div>
+              ) : (
+                <div style={styles.notificationList}>
+                  {filteredNotifications.map((notification) => (
+                    <div key={notification.taskId} style={styles.notificationItem}>
+                      <div style={styles.notificationHeader}>
+                        <span style={styles.notificationTitle}>{notification.title}</span>
+                        <span
+                          style={{
+                            ...styles.statusBadge,
+                            backgroundColor:
+                              notification.status === 'Pending'
+                                ? '#f5c6a5'
+                                : notification.status === 'Started'
+                                ? '#4a8b6a'
+                                : '#1a3b2e',
+                          }}
+                        >
+                          {notification.status}
+                        </span>
+                      </div>
+                      <div style={styles.notificationDetails}>
+                        <p><strong>Task ID:</strong> {notification.taskId}</p>
+                        <p><strong>Description:</strong> {notification.description}</p>
+                        <p><strong>Employee:</strong> {notification.employeeName}</p>
+                        <p><strong>Department:</strong> {notification.department}</p>
+                        <p><strong>Date:</strong> {notification.date}</p>
+                        <p><strong>Time Period:</strong> {notification.timePeriod}</p>
+                      </div>
+                      <div style={styles.notificationActions}>
+                        {notification.status === 'Pending' && (
+                          <button
+                            style={{
+                              ...styles.actionButton,
+                              opacity: currentTask ? 0.5 : 1,
+                              cursor: currentTask ? 'not-allowed' : 'pointer',
+                            }}
+                            onClick={() => handleStartTask(notification.taskId)}
+                            disabled={!!currentTask}
+                          >
+                            <FontAwesomeIcon icon={faPlay} /> Start Task
+                          </button>
+                        )}
+                        {notification.status === 'Started' && (
+                          <button
+                            style={styles.actionButton}
+                            onClick={() => handleFinishTask(notification.taskId)}
+                          >
+                            <FontAwesomeIcon icon={faCheck} /> Finish Task
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
               <button
                 style={styles.modalButton}
-                onClick={() => setShowNotificationModal(false)}
+                onClick={() => {
+                  setShowNotificationModal(false);
+                  setSearchTerm('');
+                }}
               >
                 Close
               </button>
@@ -830,7 +917,7 @@ const styles = {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
     gap: '1.5rem',
-    '@media (max-width: 768px)': {
+    '@media (maxwidth: 768px)': {
       gridTemplateColumns: '1fr',
     },
   },
@@ -978,6 +1065,51 @@ const styles = {
     color: '#1a3b2e',
     marginBottom: '1.5rem',
     fontWeight: '700',
+  },
+  searchContainer: {
+    position: 'relative',
+    marginBottom: '1.5rem',
+  },
+  searchIcon: {
+    position: 'absolute',
+    left: '12px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    color: '#4a8b6a',
+  },
+  searchInput: {
+    width: '100%',
+    padding: '0.75rem 1rem 0.75rem 2.5rem',
+    fontSize: '1rem',
+    border: '1px solid #e1e8e3',
+    borderRadius: '12px',
+    outline: 'none',
+    background: 'rgba(255, 255, 255, 0.8)',
+    color: '#333',
+    transition: 'border 0.3s ease, box-shadow 0.3s ease',
+    boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.05)',
+    ':focus': {
+      border: '2px solid #4a8b6a',
+      boxShadow: '0 0 8px rgba(74, 139, 106, 0.3)',
+    },
+  },
+  loadingMessage: {
+    textAlign: 'center',
+    padding: '2rem',
+    color: '#4a8b6a',
+    fontSize: '1.1rem',
+  },
+  errorMessage: {
+    textAlign: 'center',
+    padding: '2rem',
+    color: '#d32f2f',
+    fontSize: '1.1rem',
+  },
+  noTasksMessage: {
+    textAlign: 'center',
+    padding: '2rem',
+    color: '#666',
+    fontSize: '1.1rem',
   },
   notificationList: {
     maxHeight: '400px',

@@ -28,6 +28,12 @@ const EmployeeDashboard = () => {
         }
     };
 
+    const generateTaskID = () => {
+        if (tasks.length === 0) return '001';
+        const maxID = Math.max(...tasks.map(task => parseInt(task.taskID, 10)));
+        return (maxID + 1).toString().padStart(3, '0');
+    };
+
     const showTab = (tabName) => {
         setActiveTab(tabName);
     };
@@ -36,7 +42,6 @@ const EmployeeDashboard = () => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
-        const taskID = formData.get('task-id').trim();
         const title = formData.get('title').trim();
         const description = formData.get('description').trim();
         const employeeName = formData.get('employee').trim();
@@ -47,14 +52,12 @@ const EmployeeDashboard = () => {
 
         setErrors({});
 
-        const taskIdRegex = /^[0-9]+$/;
         const titleRegex = /^[A-Za-z\s]+$/;
         const employeeNameRegex = /^[A-Za-z\s]+$/;
         const timePeriodRegex = /^[0-9]+(\.[0-9]+)?$/;
 
         const newErrors = {};
 
-        if (!taskIdRegex.test(taskID)) newErrors['task-id'] = 'Task ID must contain only numbers.';
         if (!titleRegex.test(title)) newErrors['title'] = 'Title must contain only letters.';
         if (!employeeNameRegex.test(employeeName)) newErrors['employee'] = 'Employee Name must contain only words.';
         if (!department) newErrors['department'] = 'Please select a department.';
@@ -68,7 +71,7 @@ const EmployeeDashboard = () => {
         }
 
         const newTask = {
-            taskID,
+            taskID: editingTask ? editingTask.taskID : generateTaskID(),
             title,
             description,
             employeeName,
@@ -120,7 +123,6 @@ const EmployeeDashboard = () => {
     const handleEdit = (task) => {
         setEditingTask(task);
         const form = document.getElementById('taskForm');
-        form['task-id'].value = task.taskID;
         form['title'].value = task.title;
         form['description'].value = task.description;
         form['employee'].value = task.employeeName;
@@ -277,7 +279,7 @@ const EmployeeDashboard = () => {
                                     color: '#666'
                                 }}
                             >
-                                &times;
+                                ×
                             </button>
                         </div>
                         <div style={{ padding: '20px', textAlign: 'center' }}>
@@ -334,7 +336,6 @@ const EmployeeDashboard = () => {
                         borderLeft: '4px solid transparent',
                         backgroundColor: 'rgba(255, 255, 255, 0.28)'
                     }} 
-                    
                     >
                         <i className="fas fa-users" style={{ marginRight: '10px' }}></i>
                         <span>Employee Task</span>
@@ -351,38 +352,30 @@ const EmployeeDashboard = () => {
                         <i className="fas fa-wallet" style={{ marginRight: '10px' }}></i>
                         <span>Notification</span>
                     </a>
-
-
                     <a href="#" style={{
                         display: 'block',
                         padding: '15px 20px',
                         color: 'white',
                         textDecoration: 'none',
-                        borderLeft: '4px solid transparent',
-                       
+                        borderLeft: '4px solid transparent'
                     }}
                     onClick={() => navigate('/AttendanceRecordCard')}
                     >
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Mark Attendance</span>
                     </a>
-
-
-
                     <a href="#" style={{
                         display: 'block',
                         padding: '15px 20px',
                         color: 'white',
                         textDecoration: 'none',
-                        borderLeft: '4px solid transparent',
-                       
+                        borderLeft: '4px solid transparent'
                     }}
                     onClick={() => navigate('/AttendanceDashboard')}
                     >
                         <i className="fas fa-truck" style={{ marginRight: '10px' }}></i>
                         <span>Employee Attendance</span>
                     </a>
-
                     <a
                         href="#"
                         style={{
@@ -414,7 +407,7 @@ const EmployeeDashboard = () => {
                         textDecoration: 'none',
                         borderLeft: '4px solid transparent'
                     }}
-                    onClick={() =>navigate('/')}
+                    onClick={() => navigate('/')}
                     >
                         <i className="fas fa-tools" style={{ marginRight: '10px' }}></i>
                         <span>Log Out</span>
@@ -491,8 +484,8 @@ const EmployeeDashboard = () => {
                                         borderRadius: '4px',
                                         border: '1px solid #ddd',
                                         minWidth: '250px',
-                                        backgroundColor:'#ffffff',
-                                            color:'#000000',
+                                        backgroundColor: '#ffffff',
+                                        color: '#000000'
                                     }}
                                 />
                             </div>
@@ -517,7 +510,6 @@ const EmployeeDashboard = () => {
                             display: 'flex',
                             alignItems: 'center',
                             gap: '10px'
-                            
                         }}>
                             <div style={{
                                 position: 'relative'
@@ -526,8 +518,7 @@ const EmployeeDashboard = () => {
                                     position: 'absolute',
                                     left: '10px',
                                     top: '50%',
-                                    transform: 'translateY(-50%)',
-                                   
+                                    transform: 'translateY(-50%)'
                                 }}></i>
                                 <input 
                                     type="text"
@@ -539,9 +530,8 @@ const EmployeeDashboard = () => {
                                         borderRadius: '4px',
                                         border: '1px solid #ddd',
                                         minWidth: '250px',
-                                        backgroundColor:'#ffffff',
-                                            color:'#000000',
-                                        
+                                        backgroundColor: '#ffffff',
+                                        color: '#000000'
                                     }}
                                 />
                             </div>
@@ -661,7 +651,7 @@ const EmployeeDashboard = () => {
                                 <thead>
                                     <tr style={{
                                         background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
-                                        color:'white',
+                                        color: 'white',
                                         borderBottom: '1px solid #ddd'
                                     }}>
                                         <th style={{ padding: '12px 15px', textAlign: 'left' }}>Name</th>
@@ -729,7 +719,7 @@ const EmployeeDashboard = () => {
                                         <td style={{ padding: '12px 15px' }}>
                                             <button style={{
                                                 padding: '5px 10px',
-                                               backgroundColor: '#ffffff',
+                                                backgroundColor: '#ffffff',
                                                 color: '#0600ff',
                                                 border: 'none',
                                                 borderRadius: '4px',
@@ -757,9 +747,8 @@ const EmployeeDashboard = () => {
                     <div id="tasks" style={{
                         backgroundColor: 'white',
                         borderRadius: '8px',
-                       
                         padding: '20px',
-                        margin:'60px',
+                        margin: '60px',
                         boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)'
                     }}>
                         <div style={{ marginBottom: '20px' }}>
@@ -775,7 +764,7 @@ const EmployeeDashboard = () => {
                                 backgroundColor: '#f8f9fa',
                                 padding: '15px',
                                 borderRadius: '8px',
-                                boxShadow: ' 2px 5px rgba(72, 255, 0, 0.5)0',
+                                boxShadow: '2px 5px rgba(72, 255, 0, 0.5)',
                                 textAlign: 'center'
                             }}>
                                 <h4 style={{ marginTop: 0, marginBottom: '15px' }}>In Progress Tasks</h4>
@@ -791,7 +780,7 @@ const EmployeeDashboard = () => {
                                             position: 'absolute',
                                             width: '100%',
                                             height: '100%',
-                                            marginLeft:'-60px'
+                                            marginLeft: '-60px'
                                         }}
                                     >
                                         <path
@@ -838,10 +827,9 @@ const EmployeeDashboard = () => {
                                         viewBox="0 0 36 36" 
                                         style={{
                                             position: 'absolute',
-                                            marginLeft:'-60px',
+                                            marginLeft: '-60px',
                                             width: '100%',
                                             height: '100%'
-                                            
                                         }}
                                     >
                                         <path
@@ -888,7 +876,7 @@ const EmployeeDashboard = () => {
                                         viewBox="0 0 36 36" 
                                         style={{
                                             position: 'absolute',
-                                            marginLeft:'-60px',
+                                            marginLeft: '-60px',
                                             width: '100%',
                                             height: '100%'
                                         }}
@@ -933,33 +921,6 @@ const EmployeeDashboard = () => {
                                 gap: '15px'
                             }}>
                                 <div>
-                                    <label htmlFor="task-id" style={{
-                                        display: 'block',
-                                        marginBottom: '5px',
-                                        fontWeight: 'bold'
-                                    }}>Task ID</label>
-                                    <input
-                                        type="text"
-                                        id="task-id"
-                                        name="task-id"
-                                        required
-                                        onInput={() => setErrors((prev) => ({ ...prev, 'task-id': '' }))}
-                                        style={{
-                                            width: '100%',
-                                            padding: '8px',
-                                            borderRadius: '4px',
-                                            border: errors['task-id'] ? '1px solid #e74c3c' : '1px solid #ddd',
-                                            backgroundColor:'#ffffff',
-                                            color:'#000000'
-                                            
-                                            
-                                        }}
-                                    />
-                                    {errors['task-id'] && (
-                                        <p style={{ color: '#e74c3c', margin: '5px 0 0', fontSize: '14px' }}>{errors['task-id']}</p>
-                                    )}
-                                </div>
-                                <div>
                                     <label htmlFor="title" style={{
                                         display: 'block',
                                         marginBottom: '5px',
@@ -975,8 +936,8 @@ const EmployeeDashboard = () => {
                                             width: '100%',
                                             padding: '8px',
                                             borderRadius: '4px',
-                                            backgroundColor:'#ffffff',
-                                            color:'#000000',
+                                            backgroundColor: '#ffffff',
+                                            color: '#000000',
                                             border: errors['title'] ? '1px solid #e74c3c' : '1px solid #ddd'
                                         }}
                                     />
@@ -999,8 +960,8 @@ const EmployeeDashboard = () => {
                                             width: '100%',
                                             padding: '8px',
                                             borderRadius: '4px',
-                                            backgroundColor:'#ffffff',
-                                            color:'#000000',
+                                            backgroundColor: '#ffffff',
+                                            color: '#000000',
                                             border: errors['description'] ? '1px solid #e74c3c' : '1px solid #ddd',
                                             resize: 'vertical'
                                         }}
@@ -1025,8 +986,8 @@ const EmployeeDashboard = () => {
                                             width: '100%',
                                             padding: '8px',
                                             borderRadius: '4px',
-                                            backgroundColor:'#ffffff',
-                                            color:'#000000',
+                                            backgroundColor: '#ffffff',
+                                            color: '#000000',
                                             border: errors['employee'] ? '1px solid #e74c3c' : '1px solid #ddd'
                                         }}
                                     />
@@ -1049,10 +1010,9 @@ const EmployeeDashboard = () => {
                                             width: '100%',
                                             padding: '8px',
                                             borderRadius: '4px',
-                                            backgroundColor:'#ffffff',
-                                            color:'#000000',
-                                            border: errors['department'] ? '1px solid #e74c3c' : '1px solid #ddd',
-                                           
+                                            backgroundColor: '#ffffff',
+                                            color: '#000000',
+                                            border: errors['department'] ? '1px solid #e74c3c' : '1px solid #ddd'
                                         }}
                                     >
                                         <option value="">Select Department</option>
@@ -1082,8 +1042,8 @@ const EmployeeDashboard = () => {
                                             width: '100%',
                                             padding: '8px',
                                             borderRadius: '4px',
-                                            backgroundColor:'#ffffff',
-                                            color:'#000000',
+                                            backgroundColor: '#ffffff',
+                                            color: '#000000',
                                             border: errors['date'] ? '1px solid #e74c3c' : '1px solid #ddd'
                                         }}
                                     />
@@ -1108,8 +1068,8 @@ const EmployeeDashboard = () => {
                                             width: '100%',
                                             padding: '8px',
                                             borderRadius: '4px',
-                                            backgroundColor:'#ffffff',
-                                            color:'#000000',
+                                            backgroundColor: '#ffffff',
+                                            color: '#000000',
                                             border: errors['time-period'] ? '1px solid #e74c3c' : '1px solid #ddd'
                                         }}
                                     />
@@ -1132,10 +1092,9 @@ const EmployeeDashboard = () => {
                                             width: '100%',
                                             padding: '8px',
                                             borderRadius: '4px',
-                                             backgroundColor:'#ffffff',
-                                            color:'#000000',
-                                            border: errors['status'] ? '1px solid #e74c3c' : '1px solid #ddd',
-                                            
+                                            backgroundColor: '#ffffff',
+                                            color: '#000000',
+                                            border: errors['status'] ? '1px solid #e74c3c' : '1px solid #ddd'
                                         }}
                                     >
                                         <option value="">Select Status</option>
@@ -1172,7 +1131,7 @@ const EmployeeDashboard = () => {
                                 <thead>
                                     <tr style={{
                                         background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
-                                        color:'white',
+                                        color: 'white',
                                         borderBottom: '1px solid #ddd'
                                     }}>
                                         <th style={{ padding: '12px 15px', textAlign: 'left' }}>T ID</th>
