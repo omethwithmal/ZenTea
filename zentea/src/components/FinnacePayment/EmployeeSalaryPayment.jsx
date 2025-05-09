@@ -13,7 +13,6 @@ const EmployeeSalaryPayment = () => {
     employeeID: employeeData.employeeID || '',    
     accountNumber: '',
     finalSalary: employeeData.finalSalary || '',
-   
     date: new Date().toISOString().split('T')[0], // Default to today's date
   });
 
@@ -28,7 +27,6 @@ const EmployeeSalaryPayment = () => {
         employeename: employeeData.firstName || '',
         employeeID: employeeData.employeeID || '',
         basicSalary: employeeData.finalSalary || '',
-        
       }));
     }
   }, [employeeData]);
@@ -48,8 +46,8 @@ const EmployeeSalaryPayment = () => {
 
     try {
       // Validate form data
-      if (!formData.accountNumber || !formData.otHours) {
-        throw new Error('Account number and OT hours are required');
+      if (!formData.accountNumber) {
+        throw new Error('Account number is required');
       }
 
       // Send data to backend
@@ -61,7 +59,6 @@ const EmployeeSalaryPayment = () => {
         setFormData(prev => ({
           ...prev,
           accountNumber: '',
-          otHours: '',
           date: new Date().toISOString().split('T')[0]
         }));
         // Optionally navigate to another page after delay
@@ -242,35 +239,6 @@ const EmployeeSalaryPayment = () => {
           />
         </div>
 
-        {/* OT Hours */}
-        <div style={{ marginBottom: '15px' }}>
-          <label
-            style={{
-              display: 'block',
-              fontWeight: 'bold',
-              marginBottom: '5px',
-            }}
-          >
-            Overtime (OT) Hours:
-          </label>
-          <input
-            type="number"
-            name="otHours"
-            value={formData.otHours}
-            onChange={handleChange}
-            placeholder="Enter OT Hours"
-            required
-            style={{
-              width: '100%',
-              padding: '8px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              backgroundColor: "#f4f4f4",
-              color: 'black'
-            }}
-          />
-        </div>
-
         {/* Payment Date */}
         <div style={{ marginBottom: '20px' }}>
           <label
@@ -321,4 +289,4 @@ const EmployeeSalaryPayment = () => {
   );
 };
 
-export default EmployeeSalaryPayment; 
+export default EmployeeSalaryPayment;

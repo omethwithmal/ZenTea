@@ -11,7 +11,6 @@ const UpdateSalaryForm = () => {
     employeeID: "",
     basicSalary: "",
     workHours: "",
-    otHours: "",
     accountNumber: ""
   });
 
@@ -41,7 +40,7 @@ const UpdateSalaryForm = () => {
 
   const validateForm = () => {
     if (!formData.firstName || !formData.employeeID || !formData.basicSalary || !formData.workHours) {
-      setErrorMessage("All fields are required except OT hours and Account Number.");
+      setErrorMessage("All fields are required except Account Number.");
       return false;
     }
     return true;
@@ -113,16 +112,6 @@ const UpdateSalaryForm = () => {
             value={formData.workHours}
             onChange={handleChange}
             required
-          />
-        </div>
-
-        <div className="form-group">
-          <label>OT Hours:</label>
-          <input
-            type="number"
-            name="otHours"
-            value={formData.otHours}
-            onChange={handleChange}
           />
         </div>
 
