@@ -96,27 +96,17 @@ const FinancialDashboard = () => {
   const expenses = maintenanceExpenses + totalSalaries; // Include salaries in expenses
   const profit = totalIncome - expenses;
 
-  // Generate monthly bar chart data
+  // Generate monthly bar chart data - updated to show only current month
   const generateMonthlyBarChartData = () => {
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    
     const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    const displayedMonths = months.slice(0, currentMonth + 1);
+    const currentMonth = currentDate.toLocaleString('default', { month: 'short' });
     
-    // Calculate monthly values with progression
-    return displayedMonths.map((month, index) => {
-      const progress = (index + 1) / (currentMonth + 1);
-      return {
-        month,
-        income: Math.round(totalIncome * progress),
-        expenses: Math.round(expenses * progress),
-        profit: Math.round(profit * progress)
-      };
-    });
+    return [{
+      month: currentMonth,
+      income: totalIncome,
+      expenses: expenses,
+      profit: profit
+    }];
   };
 
   const monthlyBarData = generateMonthlyBarChartData();
@@ -355,10 +345,10 @@ Date: ${salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}`;
       fontFamily: "'Poppins', sans-serif",
       backgroundColor: '#f8f9fa'
     }}>
-      {/* Sidebar Navigation */}
+      {/* Sidebar Navigation with updated gradient color */}
       <div style={{
         width: '250px',
-        background: 'linear-gradient(180deg, #3a7bd5 0%, #00d2ff 100%)',
+        background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
         color: 'white',
         padding: '20px',
         position: 'fixed',
@@ -719,7 +709,7 @@ Date: ${salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}`;
             </div>
           </div>
 
-          {/* Monthly Performance Bar Chart Container */}
+          {/* Monthly Performance Bar Chart Container - Now shows only current month */}
           <div style={{
             backgroundColor: 'white',
             borderRadius: '12px',
@@ -732,7 +722,7 @@ Date: ${salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}`;
               color: '#2c3e50',
               margin: '0 0 15px 0',
               textAlign: 'center'
-            }}>Monthly Financial Performance</h3>
+            }}>Current Month Financial Performance</h3>
             <div style={{ width: '100%', height: '300px' }}>
               <Bar data={monthlyPerformanceBarData} options={monthlyBarOptions} />
             </div>
