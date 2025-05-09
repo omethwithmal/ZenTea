@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const TeaCartPage = () => {
   const [teaItems, setTeaItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTeaItems = async () => {
@@ -28,6 +30,18 @@ const TeaCartPage = () => {
     if (!imagePath) return null;
     if (imagePath.startsWith('http')) return imagePath;
     return `http://localhost:8070/uploads/${imagePath.split('\\').pop()}`;
+  };
+
+  const handleBuyNow = (teaItem) => {
+    navigate('/TeaOrderForm', { 
+      state: { 
+        tea: {
+          teaType: teaItem.teaType,
+          price: teaItem.price,
+          basePrice: teaItem.price // Store the base price for calculations
+        } 
+      } 
+    });
   };
 
   if (loading) {
@@ -78,7 +92,12 @@ const TeaCartPage = () => {
               <p style={styles.description}>{tea.description}</p>
               <div style={styles.cardFooter}>
                 <span style={styles.price}>Rs. {tea.price.toFixed(2)}</span>
-                <button style={styles.buyButton}>Buy Now</button>
+                <button
+                  style={styles.buyButton}
+                  onClick={() => handleBuyNow(tea)}
+                >
+                  Buy Now
+                </button>
               </div>
             </div>
           );
@@ -88,7 +107,6 @@ const TeaCartPage = () => {
   );
 };
 
-// Styles
 const styles = {
   centeredText: {
     display: 'flex',
@@ -153,7 +171,8 @@ const styles = {
     flexDirection: 'column',
     position: 'absolute',
     top: 0,
-    left: 0
+    left: 0,
+    display: 'flex'
   },
   cardTitle: {
     fontSize: '22px',

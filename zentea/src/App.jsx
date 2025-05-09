@@ -171,7 +171,7 @@ function App() {
       <Route path="/add-tea-item" element={<TeaItemForm />} />
       <Route path="/TeaCartPage" element={<TeaCartPage/>}/>
 
-      <Route path="/inventory-form" element={<InventoryForm />} />
+      <Route path="/inventory-form" element={<InventoryForm />} /> 
       <Route path="/inventory-table" element={<InventoryTable />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/analyze" element={<AnalyzePage />} />

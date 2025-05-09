@@ -48,8 +48,8 @@ const TeaOrderForm = () => {
 
   // Initialize form with product data from navigation state
   useEffect(() => {
-    if (location.state) {
-      const { teaType, price, basePrice } = location.state;
+    if (location.state?.tea) {
+      const { teaType, price, basePrice } = location.state.tea;
       setFormData(prev => ({
         ...prev,
         Select_Tea_Type: teaType || '',
@@ -310,7 +310,7 @@ const TeaOrderForm = () => {
               type="text" 
               name="Price" 
               placeholder="Price (LKR)" 
-              value={`Rs.${formData.Price}`} 
+              value={`Rs. ${formData.Price}`} 
               readOnly
               className="form-input"
             />
@@ -342,7 +342,6 @@ const styles = `
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     padding: 20px;
     width: 600px;
-  
   }
 
   .tea-order-card {
@@ -524,9 +523,14 @@ const styles = `
     border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .popup-button:hover {
+    background-color: #2980b9;
   }
 `;
-      
+
 // Add styles to the document
 const styleSheet = document.createElement("style");
 styleSheet.type = "text/css";
