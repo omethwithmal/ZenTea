@@ -11,32 +11,70 @@ const EmployeeSalaryPayment = () => {
   const [formData, setFormData] = useState({
     employeename: employeeData.firstName || '',
     employeeID: employeeData.employeeID || '',    
-    accountNumber: '',
-    finalSalary: employeeData.finalSalary || '',
-    date: new Date().toISOString().split('T')[0], // Default to today's date
+    accountNumber: employeeData.accountNumber || '',
+    basicSalary: employeeData.finalSalary || '',
+    date: new Date().toISOString().split('T')[0],
   });
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [validationErrors, setValidationErrors] = useState({
+    accountNumber: ''
+  });
 
-  // Update form data when employeeData changes
   useEffect(() => {
     if (employeeData) {   
       setFormData(prev => ({
         ...prev,
         employeename: employeeData.firstName || '',
         employeeID: employeeData.employeeID || '',
+        accountNumber: employeeData.accountNumber || '',
         basicSalary: employeeData.finalSalary || '',
       }));
     }
   }, [employeeData]);
 
+  const validateAccountNumber = (accountNumber) => {
+    // Basic validation - adjust according to your requirements
+    if (!accountNumber) {
+      return 'Account number is required';
+    }
+    if (!/^\d+$/.test(accountNumber)) {
+      return 'Account number should contain only numbers';
+    }
+    if (accountNumber.length < 8) {
+      return 'Account number should be at least 8 digits';
+    }
+    if (accountNumber.length > 20) {
+      return 'Account number should not exceed 20 digits';
+    }
+    return '';
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Validate account number in real-time
+    if (name === 'accountNumber') {
+      const error = validateAccountNumber(value);
+      setValidationErrors(prev => ({
+        ...prev,
+        accountNumber: error
+      }));
+    }
+
     setFormData(prev => ({
       ...prev,
       [name]: value,
     }));
+  };
+
+  const validateForm = () => {
+    const accountError = validateAccountNumber(formData.accountNumber);
+    setValidationErrors({
+      accountNumber: accountError
+    });
+    return !accountError;
   };
 
   const handleSubmit = async (e) => {
@@ -44,26 +82,23 @@ const EmployeeSalaryPayment = () => {
     setError('');
     setSuccess('');
 
-    try {
-      // Validate form data
-      if (!formData.accountNumber) {
-        throw new Error('Account number is required');
-      }
+    if (!validateForm()) {
+      setError('Please fix the validation errors');
+      return;
+    }
 
-      // Send data to backend
+    try {
       const response = await axios.post('http://localhost:8070/esalarys/add', formData);
       
       if (response.data.message) {
         setSuccess('Salary payment recorded successfully!');
-        // Reset form after successful submission
         setFormData(prev => ({
           ...prev,
           accountNumber: '',
           date: new Date().toISOString().split('T')[0]
         }));
-        // Optionally navigate to another page after delay
         setTimeout(() => {
-          navigate('/FinancialDashboard'); // Adjust this to your desired route
+          navigate('/FinancialDashboard');
         }, 2000);
       }
     } catch (err) {
@@ -123,7 +158,6 @@ const EmployeeSalaryPayment = () => {
       )}
 
       <form onSubmit={handleSubmit}>
-        {/* Employee Name */}
         <div style={{ marginBottom: '15px' }}>
           <label
             style={{
@@ -152,7 +186,6 @@ const EmployeeSalaryPayment = () => {
           />
         </div>
 
-        {/* Employee ID */}
         <div style={{ marginBottom: '15px' }}>
           <label
             style={{
@@ -181,7 +214,6 @@ const EmployeeSalaryPayment = () => {
           />
         </div>
 
-        {/* Account Number */}
         <div style={{ marginBottom: '15px' }}>
           <label
             style={{
@@ -202,15 +234,23 @@ const EmployeeSalaryPayment = () => {
             style={{
               width: '100%',
               padding: '8px',
-              border: '1px solid #ccc',
+              border: validationErrors.accountNumber ? '1px solid red' : '1px solid #ccc',
               borderRadius: '4px',
               backgroundColor: "#f4f4f4",
               color: 'black'
             }}
           />
+          {validationErrors.accountNumber && (
+            <div style={{
+              color: 'red',
+              fontSize: '12px',
+              marginTop: '5px'
+            }}>
+              {validationErrors.accountNumber}
+            </div>
+          )}
         </div>
 
-        {/* Basic Salary */}
         <div style={{ marginBottom: '15px' }}>
           <label
             style={{
@@ -239,7 +279,6 @@ const EmployeeSalaryPayment = () => {
           />
         </div>
 
-        {/* Payment Date */}
         <div style={{ marginBottom: '20px' }}>
           <label
             style={{
@@ -267,9 +306,9 @@ const EmployeeSalaryPayment = () => {
           />
         </div>
 
-        {/* Pay Button */}
         <button
           type="submit"
+          disabled={!!validationErrors.accountNumber}
           style={{
             width: '100%',
             padding: '10px',
@@ -279,7 +318,10 @@ const EmployeeSalaryPayment = () => {
             cursor: 'pointer',
             fontSize: '16px',
             fontWeight: 'bold',
-            background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
+            background: validationErrors.accountNumber 
+              ? '#cccccc' 
+              : 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
+            opacity: validationErrors.accountNumber ? 0.7 : 1
           }}
         >
           Pay
