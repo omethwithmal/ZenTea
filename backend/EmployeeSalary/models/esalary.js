@@ -6,6 +6,7 @@ const employeeSalarySchema = new Schema({
     type: String,
     required: true,
     trim: true,
+    
   },
   accountNumber: {
     type: String,

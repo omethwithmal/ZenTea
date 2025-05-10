@@ -31,12 +31,19 @@ const FinancialDashboard = () => {
   const [maintenanceExpenses, setMaintenanceExpenses] = useState(0);
   const [orderIncome, setOrderIncome] = useState(0);
 
-  // Fetch salary data
+  // Fetch salary data - Fixed to properly handle employeeID
   const fetchSalaries = async () => {
     try {
       setLoading(true);
       const response = await axios.get('http://localhost:8070/esalarys/displaySalary');
-      setSalaries(response.data);
+      
+      // Ensure employeeID exists for each record
+      const salaryData = response.data.map(salary => ({
+        ...salary,
+        employeeID: salary.employeeID || 'N/A' // Default value if missing
+      }));
+      
+      setSalaries(salaryData);
       setError('');
     } catch (err) {
       console.error('Error fetching salaries:', err);
@@ -69,7 +76,6 @@ const FinancialDashboard = () => {
     fetchMaintenanceExpenses();
     fetchOrderIncome();
     
-    // Set up listener for storage events to update in real-time
     const handleStorageChange = () => {
       fetchOrderIncome();
     };
@@ -84,8 +90,8 @@ const FinancialDashboard = () => {
   // Filter salaries based on search term
   const filteredSalaries = salaries.filter(salary =>
     salary.employeename.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    salary.employeeID.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    salary.accountNumber.toLowerCase().includes(searchTerm.toLowerCase())
+    (salary.employeeID && salary.employeeID.toString().toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (salary.accountNumber && salary.accountNumber.toString().toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   // Calculate total salaries from the filtered list
@@ -93,10 +99,10 @@ const FinancialDashboard = () => {
 
   // Calculate financial metrics
   const totalIncome = orderIncome;
-  const expenses = maintenanceExpenses + totalSalaries; // Include salaries in expenses
+  const expenses = maintenanceExpenses + totalSalaries;
   const profit = totalIncome - expenses;
 
-  // Generate monthly bar chart data - updated to show only current month
+  // Generate monthly bar chart data
   const generateMonthlyBarChartData = () => {
     const currentDate = new Date();
     const currentMonth = currentDate.toLocaleString('default', { month: 'short' });
@@ -236,8 +242,8 @@ const FinancialDashboard = () => {
   // WhatsApp share function
   const handleWhatsAppShare = (salary) => {
     const message = `Salary Details for ${salary.employeename}:
-Employee ID: ${salary.employeeID}
-Account Number: ${salary.accountNumber}
+Employee ID: ${salary.employeeID || 'N/A'}
+Account Number: ${salary.accountNumber || 'N/A'}
 Salary: Rs ${salary.basicSalary?.toFixed(2) || '0.00'}
 Date: ${salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}`;
 
@@ -283,13 +289,13 @@ Date: ${salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}`;
         doc.addPage();
         yPosition = 20;
       }
-      doc.text(`${index + 1}. ${salary.employeename} (${salary.employeeID})`, 14, yPosition);
+      doc.text(`${index + 1}. ${salary.employeename} (${salary.employeeID || 'N/A'})`, 14, yPosition);
       doc.text(`Rs ${salary.basicSalary?.toFixed(2) || '0.00'}`, 150, yPosition);
       yPosition += 7;
     });
 
     // Save PDF
-    doc.save('financial_dashboard_report.pdf');
+    doc.save('financial_report.pdf');
   };
 
   // Notification Handler
@@ -345,7 +351,7 @@ Date: ${salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}`;
       fontFamily: "'Poppins', sans-serif",
       backgroundColor: '#f8f9fa'
     }}>
-      {/* Sidebar Navigation with updated gradient color */}
+      {/* Sidebar Navigation */}
       <div style={{
         width: '250px',
         background: 'linear-gradient(45deg, hsl(130, 100%, 37%) 0%, #99ff00 100%)',
@@ -709,7 +715,7 @@ Date: ${salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}`;
             </div>
           </div>
 
-          {/* Monthly Performance Bar Chart Container - Now shows only current month */}
+          {/* Monthly Performance Bar Chart Container */}
           <div style={{
             backgroundColor: 'white',
             borderRadius: '12px',
@@ -879,7 +885,6 @@ Date: ${salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}`;
                 }}> 
                   <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>#</th>
                   <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Employee Name</th>
-                  <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Employee ID</th>
                   <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Account Number</th>
                   <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Salary</th>
                   <th style={{ padding: '15px', textAlign: 'left', fontWeight: '600' }}>Date</th>
@@ -898,8 +903,9 @@ Date: ${salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}`;
                       >
                         <td style={{ padding: '15px', borderBottom: '1px solid #eee' }}>{index + 1}</td>
                         <td style={{ padding: '15px', borderBottom: '1px solid #eee' }}>{salary.employeename}</td>
-                        <td style={{ padding: '15px', borderBottom: '1px solid #eee' }}>{salary.employeeID}</td>
-                        <td style={{ padding: '15px', borderBottom: '1px solid #eee' }}>{salary.accountNumber}</td>
+                        <td style={{ padding: '15px', borderBottom: '1px solid #eee' }}>
+                          {salary.accountNumber || 'N/A'}
+                        </td>
                         <td style={{ padding: '15px', borderBottom: '1px solid #eee', fontWeight: '600' }}>
                           Rs {salary.basicSalary?.toFixed(2) || '0.00'}
                         </td>
@@ -939,7 +945,7 @@ Date: ${salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}`;
                       fontWeight: 'bold',
                       borderTop: '2px solid #ddd'
                     }}>
-                      <td style={{ padding: '15px' }} colSpan="3"></td>
+                      <td style={{ padding: '15px' }} colSpan="2"></td>
                       <td style={{ padding: '15px', textAlign: 'left' }}>Total Salaries:</td>
                       <td style={{ padding: '15px', fontWeight: '600' }}>
                         Rs {totalSalaries.toLocaleString('en-IN', {
@@ -952,7 +958,7 @@ Date: ${salary.date ? new Date(salary.date).toLocaleDateString() : 'N/A'}`;
                   </>
                 ) : (
                   <tr>
-                    <td colSpan="7" style={{ 
+                    <td colSpan="6" style={{ 
                       padding: '30px', 
                       textAlign: 'center',
                       backgroundColor: 'white',
