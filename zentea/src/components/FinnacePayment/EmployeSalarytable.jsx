@@ -11,7 +11,7 @@ const EmployeeSalaryTable = () => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedSalary, setSelectedSalary] = useState(null);
   const navigate = useNavigate();
-
+                                                                        
   // Fetch all salaries on component mount
   useEffect(() => {
     fetchSalaries();
