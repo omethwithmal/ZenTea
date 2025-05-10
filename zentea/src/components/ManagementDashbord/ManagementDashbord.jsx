@@ -26,12 +26,12 @@ const ManagementDashboard = () => {
                      onClick={() =>navigate('/AddEmployeeForm')}
                     >
                         <i className="fas fa-user-shield"></i>
-                        <span>➕ Add Employee</span>
+                        <span>Add Employee</span>
                         
                     </a>
                     <a href="#" className="IT22090508-admindashbord-nav-link ">
                         <i className="fas fa-user-shield"></i>
-                        <span>🔔Notification</span>
+                        <span>Notification</span>
                         
                     </a>
 
@@ -39,35 +39,35 @@ const ManagementDashboard = () => {
                     onClick={() =>navigate('/EmployeeDashboard')}
                     >
                         <i className="fas fa-users"></i>
-                        <span>👤Employee </span>
+                        <span>Employee </span>
                     </a>
                     <a href="#" className="IT22090508-admindashbord-nav-link "
                      onClick={() =>navigate('/FinancialDashboard')}
                     >
                         <i className="fas fa-wallet"></i>
-                        <span>💰Financial </span>
+                        <span>Financial </span>
                     </a>
                     <a href="#" className="IT22090508-admindashbord-nav-link"
                     onClick={() =>navigate('/Orderdash')}
                     >
                         <i className="fas fa-truck"></i>
-                        <span>🚚 Orders</span>
+                        <span>Orders</span>
                     </a>
                     <a href="#" className="IT22090508-admindashbord-nav-link"
                     onClick={() =>navigate('/dashboard')}
                     >
                         <i className="fas fa-boxes"></i>
-                        <span>📦Inventory</span>
+                        <span>Inventory</span>
                     </a>
                     <a href="#" className="IT22090508-admindashbord-nav-link"
                     onClick={() =>navigate('/MaintenanceSchedule')}
                     >
                         <i className="fas fa-tools"></i>
-                        <span>🛠 Equipment</span>
+                        <span>Equipment</span>
                     </a>
                     <a href="#" className="IT22090508-admindashbord-nav-link ">
                         <i className="fas fa-user-shield"></i>
-                        <span>⚙ Settings</span>
+                        <span>Settings</span>
                         
                     </a>
 

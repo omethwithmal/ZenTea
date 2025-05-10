@@ -11,7 +11,7 @@ const Dashboard = () => {
   // Service data with navigation paths
   const services = [
     {
-      title: "Inventory Overview",
+      title: "Add Tea Inventory",
       icon: <FaBoxes size={24} />,
       description: "View and manage all inventory items",
       stats: "245 items",
@@ -35,12 +35,12 @@ const Dashboard = () => {
       path: "/add-tea-item"
     },
     {
-      title: "Alerts",
+      title: "AleInventory Data",
       icon: <FaBell size={24} />,
-      description: "Manage inventory alerts",
+      description: "Manage Inventory Data",
       stats: "5 new",
       color: "#28a745",
-      path: "/alerts"
+      path: "/inventory-table"
     }
   ];
 
