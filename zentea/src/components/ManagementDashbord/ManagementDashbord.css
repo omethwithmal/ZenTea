@@ -16,7 +16,7 @@
 
 /* Sidebar */
 .IT22090508-admindashbord-sidebar {
-    background: linear-gradient(135deg, hsl(324, 100%, 47%) 0%, #1100ff 100%);
+     background: linear-gradient(135deg, hsl(130, 100%, 37%) 0%, #99ff00 100%);
     padding: 30px;
     color: white;
 }
@@ -185,7 +185,7 @@
 }
 
 .IT22090508-managementdashbord-progress {
-    background: hsl(281, 100%, 40%);
+    background: hsl(104, 100%, 40%);
     height: 100%;
     transition: width 0.3s ease;
 }
